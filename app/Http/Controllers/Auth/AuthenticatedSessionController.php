@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
+use App\Constant\LoginConstant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $permisionAccess = auth()->user()->int_permisionAccess;
+        switch ($permisionAccess) {
+            case LoginConstant::AdminRoot:
+                return redirect()->route('dashboardAdmin');
+
+            case LoginConstant::AdminUser:
+                return redirect()->route('dashboardAdmin');
+
+            case LoginConstant::User:
+                return redirect()->route('dashboardAdmin');
+        }
     }
 
     /**

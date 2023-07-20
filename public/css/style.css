@@ -1,0 +1,16 @@
+.colorRed{
+    color: red;
+}
+
+.BtnBlue{
+    background: #1d3ee6;
+    color: white;
+    width: 300px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-weight: bolder;
+}
+.colorTitle{
+    color:  #1d3ee6;
+}

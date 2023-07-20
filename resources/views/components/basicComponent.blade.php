@@ -6,14 +6,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title class="">@yield('titulo')</title>
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
-    <script src="{{asset('js/script.js')}}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 </head>
 
 <body id="body">
-<div class="colorBody">
+<div class="container">
     @yield('content')
 </div>
 </body>

@@ -14,6 +14,13 @@ class Empresa extends Model
     protected $fillable = [
         'id_empresa',
         'st_nomeEmpresa',
-        'st_cnpj'
+        'st_DocResponsavel',
+        'st_telefone',
+        'id_plano',
+        'st_periodicidade',
+        'st_descricao',
+        'bl_ativo',
+        'id_user',
+        'dt_validade',
     ];
 }
