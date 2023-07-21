@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empresa;
+use App\Models\Lead;
 use App\Models\User;
 use DateInterval;
 use DateTime;
@@ -14,7 +15,14 @@ class AdminController extends Controller
 {
     public function dashboardAdmin()
     {
-        return view('adminRoot.dashboard');
+        $empresas = Empresa::all();
+
+        $dadosInfo = [
+            'empresas'=> count($empresas),
+            'leads'=>count(Lead::all()),
+            'suporte'=>0,
+        ];
+        return view('adminRoot.dashboard', ['dadosInfo'=>$dadosInfo,'empresas'=>$empresas, 'tela'=>'dashboard']);
     }
     public function registerEmpresa(Request $request)
     {
@@ -51,7 +59,7 @@ class AdminController extends Controller
             $dataAtual->add(new DateInterval("P".$request->dt_validade."Y"));
 
             $empresa = Empresa::create([
-                'st_nomeEmpresa' => $request->st_nomeEmpresa,
+                'st_nomeEmpresasdsd' => $request->st_nomeEmpresa,
                 'st_DocResponsavel' => $request->st_DocResponsavel,
                 'st_telefone' => $request->st_telefone,
                 'id_plano' => $request->id_plano,
@@ -72,5 +80,45 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Ocorreu um erro na sua solicitação, favor contatar o suporte');
 
         }
+    }
+
+    public function vizualizarEmpresa(Empresa $id_empresa)
+    {
+        return view('adminRoot.empresas.vizualizarEmpresa',['id_empresa'=>$id_empresa]);
+    }
+    public function vizualizarTodasEmpresa()
+    {
+        $empresas = Empresa::all();
+
+        $dadosInfo = [
+            'empresas'=> count($empresas),
+            'leads'=>count(Lead::all()),
+            'suporte'=>0,
+        ];
+        return view('adminRoot.empresas.vizualizarTodasEmpresa', ['dadosInfo'=>$dadosInfo,'empresas'=>$empresas, 'tela'=>'empresas']);
+    }
+
+    public function vizualizarPlanos()
+    {
+        $empresas = Empresa::all();
+
+        $dadosInfo = [
+            'empresas'=> count($empresas),
+            'leads'=>count(Lead::all()),
+            'suporte'=>0,
+        ];
+        return view('adminRoot.planos.vizualizarPlanos', ['dadosInfo'=>$dadosInfo,'tela'=>'planos']);
+    }
+
+    public function vizualizarChamados()
+    {
+        $empresas = Empresa::all();
+
+        $dadosInfo = [
+            'empresas'=> count($empresas),
+            'leads'=>count(Lead::all()),
+            'suporte'=>0,
+        ];
+        return view('adminRoot.chamados.vizualizarChamados', ['dadosInfo'=>$dadosInfo,'tela'=>'chamados']);
     }
 }

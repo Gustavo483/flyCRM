@@ -11,6 +11,8 @@ class Empresa extends Model
 
     protected $table = 'tb_empresas';
 
+    protected $primaryKey = 'id_empresa';
+
     protected $fillable = [
         'id_empresa',
         'st_nomeEmpresa',
@@ -23,4 +25,7 @@ class Empresa extends Model
         'id_user',
         'dt_validade',
     ];
+    public function user(){
+        return $this->hasOne('App\Models\User','id', 'id_user');
+    }
 }

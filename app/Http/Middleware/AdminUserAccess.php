@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use App\Constant\LoginConstant;
+use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminAccess
+class AdminUserAccess
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class AdminAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->user()->int_permisionAccess === LoginConstant::AdminRoot){
+        if(auth()->user()->int_permisionAccess === LoginConstant::AdminUser){
             return $next($request);
         }
         return back()->with('error', 'Seu perfil não tem acesso a essa página');

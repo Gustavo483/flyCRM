@@ -36,10 +36,28 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->route('dashboardAdmin');
 
             case LoginConstant::AdminUser:
-                return redirect()->route('dashboardAdmin');
+                return redirect()->route('dashboardAdminUser');
 
             case LoginConstant::User:
+                return redirect()->route('dashboarUser');
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function validatePermission()
+    {
+        $permisionAccess = auth()->user()->int_permisionAccess;
+        switch ($permisionAccess) {
+            case LoginConstant::AdminRoot:
                 return redirect()->route('dashboardAdmin');
+
+            case LoginConstant::AdminUser:
+                return redirect()->route('dashboardAdminUser');
+
+            case LoginConstant::User:
+                return redirect()->route('dashboarUser');
         }
     }
 

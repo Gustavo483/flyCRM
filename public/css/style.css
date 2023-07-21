@@ -1,7 +1,91 @@
 .colorRed{
     color: red;
 }
+.posicaoDiv{
+    position: relative;
+    padding-left: 120px;
+}
+#body{
+    background: #f4f4f4;
+}
+.NavbarAdmimHoot{
+    width: 120px;
+    min-height: 100vh;
+    position:fixed;
+    left: 0;
+}
+.linkNavbar{
+    color: white;
+}
+.linkNavbar:hover{
+    color: #7ba9a8;
+}
+.divEmpresas{
 
+}
+.tamanho60{
+    width: 60%;
+}
+.tamanho40{
+    width: 40%;
+}
+.divEmpresas2{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 10px;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.divEmpresas2:hover{
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+}
+.focardiv{
+    color: #142ba1;
+}
+.textBlue{
+    color: #1e3fe7;
+    font-size: 12px;
+    font-weight: bolder;
+}
+.textGray{
+    color: #6c6c6c;
+    font-weight: bolder;
+}
+.textGray2{
+    color: #b9b9b9;
+    font-weight: bolder;
+}
+.textGray3{
+    color: #b9b9b9;
+    font-size: 12px;
+    font-weight: bolder;
+}
+.posicaoLinkUser{
+    position: absolute;
+    top: 20px;
+    left: 30px;
+}
+.none{
+    display: none;!important;
+}
+.navBarAdmin{
+    position: relative;
+    width: 120px;
+    height: 100vh;
+    background: #1e3fe7;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.box{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+}
 .BtnBlue{
     background: #1d3ee6;
     color: white;
@@ -13,4 +97,70 @@
 }
 .colorTitle{
     color:  #1d3ee6;
+}
+.BtnCriarEmpresa{
+    margin: 50px 0;
+    background: #35ff92;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+}
+.BtnCriarEmpresa:hover{
+    background: #2bc4c3;
+}
+.linkProfile{
+    display: flex;
+    text-transform: uppercase;
+    justify-content: center;
+    align-content: center;
+    background: #8999ed;
+    width: 60px;
+    color: white;
+    font-weight: bolder;
+    font-size: 25px;
+    text-decoration: none;
+    padding-top: 9px;
+    height: 60px;
+    border-radius: 50%;
+}
+.linkProfile:hover{
+    background: white;
+    color: #8999ed;
+}
+.linkProfile:focus{
+    background: white;
+    color: #8999ed;
+}
+.AdminInfo1{
+    width: 350px;
+    background: #1d3ee6;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+}
+.AdminInfo2{
+    width: 350px;
+    background: #2bc4c3;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+}
+.AdminInfo3{
+    width: 350px;
+    background: #a4e1e0;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+}
+
+.textInfo{
+    color: white;
+    font-weight: bolder;
 }

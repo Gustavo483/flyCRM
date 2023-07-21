@@ -186,6 +186,9 @@
                         </div>
                     </div>
                 </div>
+                <div>
+                    <h1 class="text-center py-3">Fazer o filtro</h1>
+                </div>
                 <div class="divEmpresas">
                     @foreach($empresas as $empresa)
                         <div onclick="vizualizarEmpresa({{$empresa->id_empresa}})" class="divEmpresas2 my-2 d-flex">
@@ -214,5 +217,7 @@
         </div>
     </div>
 @endsection
+
+
 
 

@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,20 +17,42 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware('guest')->group(function () {
+    Route::get('/', [AuthenticatedSessionController::class, 'create'])->name('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', [AuthenticatedSessionController::class, 'validatePermission'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
     Route::middleware('AdminAccess')->group(function () {
         Route::controller(AdminController::class)->group(function () {
-            Route::get('dashboardAdmin', 'dashboardAdmin')->name('dashboardAdmin');
+            Route::get('dashboard-admin', 'dashboardAdmin')->name('dashboardAdmin');
+
+            // Rotas Empresas
             Route::post('registerEmpresa', 'registerEmpresa')->name('registerEmpresa');
+            Route::get('vizualizar-empresa/{id_empresa}', 'vizualizarEmpresa')->name('vizualizarEmpresa');
+            Route::get('vizualizar-todas-empresa', 'vizualizarTodasEmpresa')->name('vizualizarTodasEmpresa');
+
+            // Rotas Planos
+            Route::get('vizualizar-planos', 'vizualizarPlanos')->name('vizualizarPlanos');
+
+            // Rotas Planos
+            Route::get('vizualizar-chamados', 'vizualizarChamados')->name('vizualizarChamados');
+
+        });
+    });
+
+    Route::middleware('AdminUserAccess')->group(function () {
+        Route::controller(AdminUserController::class)->group(function () {
+            Route::get('dashboard-admin-user', 'dashboardAdminUser')->name('dashboardAdminUser');
+        });
+    });
+
+    Route::middleware('UserAccess')->group(function () {
+        Route::controller(UserController::class)->group(function () {
+            Route::get('dashboar-user', 'dashboarUser')->name('dashboarUser');
         });
     });
 

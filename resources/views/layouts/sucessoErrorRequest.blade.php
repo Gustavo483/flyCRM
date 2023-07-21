@@ -1,7 +1,4 @@
-<nav>
-    teste de navegação aqui e está tudo certo
-</nav>
-<div>
+<div class="py-4">
     @if ($message = Session::get('success'))
         <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
             {{ $message }}
