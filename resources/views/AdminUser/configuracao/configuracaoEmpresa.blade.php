@@ -34,6 +34,7 @@
                 <div id="listaUsuarios" class="p-3 none">
                     <div class="d-flex w-100 align-items-center p-2 divGray mb-1">
                         <div style="width: 40%" class="d-flex align-items-center">
+
                             <div class="iniciaisUsuario"></div>
                             <div class="ps-2 textIndices2">
                                 Usuario 123123
