@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use App\Constant\LoginConstant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -29,6 +30,14 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        $user = auth()->user();
+
+        $dataDeHoje = Carbon::now();
+
+        $user->update([
+            'dt_ultimoLogin'=>$dataDeHoje->format('Y-m-d'),
+        ]);
 
         $permisionAccess = auth()->user()->int_permisionAccess;
         switch ($permisionAccess) {

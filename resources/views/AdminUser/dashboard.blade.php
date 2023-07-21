@@ -6,7 +6,7 @@
     <div class="">
         <div class="posicaoDiv w-100">
             <div class="NavbarAdmimHoot">
-                @include('layouts.navBarAdminRoot')
+                @include('layouts.navBarAdminUser')
             </div>
             <div class="container">
                 <div>

@@ -8,6 +8,22 @@ class AdminUserController extends Controller
 {
     public function dashboardAdminUser()
     {
-        return view('AdminUser.dashboard');
+        return view('AdminUser.dashboard',['tela'=>'dashboard']);
     }
+
+    public function vizualizarTodasleadsEmpresa()
+    {
+        return view('AdminUser.leads.vizualizarTodasleadsEmpresa',['tela'=>'leads']);
+    }
+
+    public function vizualizarAgenda()
+    {
+        return view('AdminUser.agenda.vizualizarAgenda',['tela'=>'agenda']);
+    }
+
+    public function configuracaoEmpresa()
+    {
+        return view('AdminUser.configuracao.configuracaoEmpresa',['tela'=>'configuracao']);
+    }
+
 }

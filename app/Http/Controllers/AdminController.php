@@ -15,14 +15,13 @@ class AdminController extends Controller
 {
     public function dashboardAdmin()
     {
-        $empresas = Empresa::all();
-
+        $usersEmpresas = User::where('int_permisionAccess',1)->get();
         $dadosInfo = [
-            'empresas'=> count($empresas),
+            'empresas'=> count($usersEmpresas),
             'leads'=>count(Lead::all()),
             'suporte'=>0,
         ];
-        return view('adminRoot.dashboard', ['dadosInfo'=>$dadosInfo,'empresas'=>$empresas, 'tela'=>'dashboard']);
+        return view('adminRoot.dashboard', ['dadosInfo'=>$dadosInfo,'usersEmpresas'=>$usersEmpresas, 'tela'=>'dashboard']);
     }
     public function registerEmpresa(Request $request)
     {
@@ -44,9 +43,8 @@ class AdminController extends Controller
             'unique'=> 'O email já está cadastrado no sistema'
         ];
 
+        $request->validate($validacao, $feedback);
         try {
-            $request->validate($validacao, $feedback);
-
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -59,15 +57,14 @@ class AdminController extends Controller
             $dataAtual->add(new DateInterval("P".$request->dt_validade."Y"));
 
             $empresa = Empresa::create([
-                'st_nomeEmpresasdsd' => $request->st_nomeEmpresa,
+                'st_nomeEmpresa' => $request->st_nomeEmpresa,
                 'st_DocResponsavel' => $request->st_DocResponsavel,
                 'st_telefone' => $request->st_telefone,
                 'id_plano' => $request->id_plano,
                 'st_periodicidade' => $request->st_periodicidade,
                 'bl_ativo' => $request->bl_ativo,
                 'st_descricao'=>$request->st_descricao ? : null,
-                'id_user' => $user->id,
-                'dt_validade43222' => $dataAtual,
+                'dt_validade' => $dataAtual,
             ]);
 
             $user->update([
@@ -78,7 +75,6 @@ class AdminController extends Controller
 
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro na sua solicitação, favor contatar o suporte');
-
         }
     }
 
@@ -88,14 +84,14 @@ class AdminController extends Controller
     }
     public function vizualizarTodasEmpresa()
     {
-        $empresas = Empresa::all();
-
+        $usersEmpresas = User::where('int_permisionAccess',1)->get();
         $dadosInfo = [
-            'empresas'=> count($empresas),
+            'empresas'=> count($usersEmpresas),
             'leads'=>count(Lead::all()),
             'suporte'=>0,
         ];
-        return view('adminRoot.empresas.vizualizarTodasEmpresa', ['dadosInfo'=>$dadosInfo,'empresas'=>$empresas, 'tela'=>'empresas']);
+
+        return view('adminRoot.empresas.vizualizarTodasEmpresa', ['dadosInfo'=>$dadosInfo,'usersEmpresas'=>$usersEmpresas, 'tela'=>'empresas']);
     }
 
     public function vizualizarPlanos()

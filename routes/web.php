@@ -21,7 +21,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create'])->name('login');
 });
 
-
 Route::get('/dashboard', [AuthenticatedSessionController::class, 'validatePermission'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -38,21 +37,29 @@ Route::middleware('auth')->group(function () {
             // Rotas Planos
             Route::get('vizualizar-planos', 'vizualizarPlanos')->name('vizualizarPlanos');
 
-            // Rotas Planos
+            // Rotas Chamados
             Route::get('vizualizar-chamados', 'vizualizarChamados')->name('vizualizarChamados');
-
         });
     });
 
     Route::middleware('AdminUserAccess')->group(function () {
         Route::controller(AdminUserController::class)->group(function () {
             Route::get('dashboard-admin-user', 'dashboardAdminUser')->name('dashboardAdminUser');
+
+            //Leads
+            Route::get('vizualizar-todas-leads-empresa', 'vizualizarTodasleadsEmpresa')->name('vizualizarTodasleadsEmpresa');
+
+            //agenda
+            Route::get('vizualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
+
+            //configuracoes
+            Route::get('configuracao-empresa', 'configuracaoEmpresa')->name('configuracaoEmpresa');
         });
     });
 
     Route::middleware('UserAccess')->group(function () {
         Route::controller(UserController::class)->group(function () {
-            Route::get('dashboar-user', 'dashboarUser')->name('dashboarUser');
+            Route::get('dashboard-user', 'dashboardUser')->name('dashboardUser');
         });
     });
 

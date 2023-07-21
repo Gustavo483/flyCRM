@@ -22,7 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'int_permisionAccess',
-        'id_empresa'
+        'id_empresa',
+        'dt_ultimoLogin'
     ];
 
     /**
@@ -44,4 +45,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function empresa(){
+        return $this->hasOne('App\Models\Empresa','id_empresa', 'id_empresa');
+    }
 }

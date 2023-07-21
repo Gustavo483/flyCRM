@@ -190,12 +190,12 @@
                     <h1 class="text-center py-3">Fazer o filtro</h1>
                 </div>
                 <div class="divEmpresas">
-                    @foreach($empresas as $empresa)
-                        <div onclick="vizualizarEmpresa({{$empresa->id_empresa}})" class="divEmpresas2 my-2 d-flex">
+                    @foreach($usersEmpresas as $usersEmpresa)
+                        <div onclick="vizualizarEmpresa({{$usersEmpresa->empresa->id_empresa}})" class="divEmpresas2 my-2 d-flex">
                             <div class="d-flex justify-content-between tamanho60">
-                                <div class="textBlue d-flex align-items-center w-25">{{$empresa->user->name}}</div>
-                                <div class="textGray d-flex align-items-center w-50">{{$empresa->st_nomeEmpresa}}</div>
-                                <div class="textGray d-flex align-items-center justify-content-start w-25">{{$empresa->st_telefone}}</div>
+                                <div class="textBlue d-flex align-items-center w-25">{{$usersEmpresa->name}}</div>
+                                <div class="textGray d-flex align-items-center w-50">{{$usersEmpresa->empresa->st_nomeEmpresa}}</div>
+                                <div class="textGray d-flex align-items-center justify-content-start w-25">{{$usersEmpresa->empresa->st_telefone}}</div>
                             </div>
                             <div class="d-flex justify-content-between tamanho60">
                                 <div class="textBlue d-flex align-items-center w-25">Plano Pro</div>
@@ -204,13 +204,13 @@
                                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"/>
                                         <path d="M11 7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-2 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
                                     </svg>
-                                    <div class="textGray3 d-flex align-items-center ps-3" >{{$empresa->st_periodicidade}}</div>
+                                    <div class="textGray3 d-flex align-items-center ps-3" >{{$usersEmpresa->empresa->st_periodicidade}}</div>
                                 </div>
-                                <div class="textBlue  d-flex align-items-center justify-content-center w-25">{{$empresa->bl_ativo ? 'Ativo' : 'Inativo'}}</div>
-                                <div class="textGray3  d-flex align-items-center justify-content-end w-25">{{$empresa->user->dt_ultimoLogin}}</div>
+                                <div class="textBlue  d-flex align-items-center justify-content-center w-25">{{$usersEmpresa->empresa->bl_ativo ? 'Ativo' : 'Inativo'}}</div>
+                                <div class="textGray3  d-flex align-items-center justify-content-end w-25">{{$usersEmpresa->dt_ultimoLogin}}</div>
                             </div>
                         </div>
-                        <a id="{{$empresa->id_empresa}}" class="none" href="{{route('vizualizarEmpresa',['id_empresa'=>$empresa->id_empresa])}}"></a>
+                        <a id="{{$usersEmpresa->empresa->id_empresa}}" class="none" href="{{route('vizualizarEmpresa',['id_empresa'=>$usersEmpresa->empresa->id_empresa])}}"></a>
                     @endforeach
                 </div>
             </div>

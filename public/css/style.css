@@ -26,9 +26,75 @@
 .tamanho60{
     width: 60%;
 }
+.divCabecalho{
+    padding: 10px;
+    border-radius: 10px;
+    background: white;
+}
+.divCabecalho2{
+    padding: 10px;
+    border-radius: 10px 10px 0 0;!important;
+    background: white;!important;
+}
+
 .tamanho40{
     width: 40%;
 }
+
+.desenho{
+    width: 35px;
+    height: 10px;
+    background: gray;
+    border-radius: 10px;
+}
+.iniciaisUsuario{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: greenyellow;
+}
+
+.pTitle{
+    font-size: 30px;
+    color: gray;
+}
+
+.textIndices{
+    font-size: 18px;
+    color: gray;
+}
+.textIndices2{
+    color: gray;
+}
+.AddConfig{
+    width: 150px;
+    padding: 10px;
+    text-decoration: none;
+    text-align: center;
+    background: #1e3fe7;
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.AddConfig:hover{
+    width: 150px;
+    padding: 10px;
+    text-decoration: none;
+    text-align: center;
+    background: #1e3fe7;
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.linkEdit{
+    text-decoration: none;
+    color: blue;
+}
+.linkDelete{
+    text-decoration: none;
+    color: red;
+}
+
 .divEmpresas2{
     display: flex;
     justify-content: center;
@@ -69,6 +135,23 @@
 }
 .none{
     display: none;!important;
+}
+
+.divGray{
+    background: #f4f4f4;
+    border-radius: 10px;
+}
+.backgroud233{
+    background: #1e3fe7;
+}
+
+.colorBlue{
+    color: blue;!important;
+}
+
+
+#listaUsuarios{
+    background: white;!important;
 }
 .navBarAdmin{
     position: relative;
