@@ -54,6 +54,11 @@ Route::middleware('auth')->group(function () {
 
             //configuracoes
             Route::get('configuracao-empresa', 'configuracaoEmpresa')->name('configuracaoEmpresa');
+
+            //Usuarios
+            Route::post('registrar-usuario', 'registrarUsuario')->name('registrarUsuario');
+            Route::post('editar-usuario', 'editarUsuario')->name('editarUsuario');
+            Route::post('deletar-usuaio', 'deletarUsuaio')->name('deletarUsuaio');
         });
     });
 

@@ -11,3 +11,18 @@ function abrirDiv(id_elemento, cabecalho){
     div.classList.toggle('none')
     divCabecalho.classList.toggle('divCabecalho2')
 }
+function EditarUsuario(usuario){
+    var btn = document.getElementById('EditarUsuarioBtn')
+    console.log(btn)
+    document.getElementById('id_user').value = usuario.id
+    document.getElementById('nameEdit').value = usuario.name
+    document.getElementById('emailEdit').value = usuario.email
+    document.getElementById('st_setorEdit').value = usuario.st_setor
+    btn.click()
+}
+function DeleteUsuaio(usuario){
+    var btn = document.getElementById('DeletarUsuarioBtn')
+    document.getElementById('id_userDelete').value = usuario.id
+    document.getElementById('nameUsario').innerText = usuario.name
+    btn.click()
+}

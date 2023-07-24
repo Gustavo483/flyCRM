@@ -23,7 +23,8 @@ class User extends Authenticatable
         'password',
         'int_permisionAccess',
         'id_empresa',
-        'dt_ultimoLogin'
+        'dt_ultimoLogin',
+        'st_setor'
     ];
 
     /**

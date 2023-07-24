@@ -51,7 +51,10 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: greenyellow;
+    background: #59e9e8;
+    font-size: 15px;
+    color: white;
+    font-weight: bolder;
 }
 
 .pTitle{
@@ -66,6 +69,17 @@
 .textIndices2{
     color: gray;
 }
+.deleteText{
+    color: #bdbdbd;
+    font-weight: bolder;
+    text-align: center;
+}
+.colorRedDelete{
+    color: red;
+    font-weight: bolder;
+    text-align: center;
+}
+
 .AddConfig{
     width: 150px;
     padding: 10px;
@@ -148,7 +162,17 @@
 .colorBlue{
     color: blue;!important;
 }
-
+.BtnConfig{
+    background: #1e3fe7;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    padding: 8px;
+}
+.BtnConfig:hover{
+    background: #2563eb;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+}
 
 #listaUsuarios{
     background: white;!important;
@@ -178,8 +202,20 @@
     border: none;
     font-weight: bolder;
 }
+.BtnRed{
+    background: red;
+    color: white;
+    width: 300px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-weight: bolder;
+}
 .colorTitle{
     color:  #1d3ee6;
+}
+.colorTitlered{
+    color:  red;
 }
 .BtnCriarEmpresa{
     margin: 50px 0;
