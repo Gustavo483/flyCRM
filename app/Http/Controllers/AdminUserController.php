@@ -405,7 +405,7 @@ class AdminUserController extends Controller
     {
         try {
             Origem::where('id_origem',$request->id_origem)->delete();
-            return redirect()->back()->with('success', 'Mídia excluído com sucesso.');
+            return redirect()->back()->with('success', 'Origem excluído com sucesso.');
         }catch (Exception $e) {
             return redirect()->back()->with('error', 'Não foi possivel excluir a origem, favor entrar em contato com o suporte');
         }

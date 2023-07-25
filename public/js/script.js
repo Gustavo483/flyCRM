@@ -75,3 +75,15 @@ function DeleteFase(fase){
     btn.click()
 }
 
+function EditarOrigem(origem){
+    var btn = document.getElementById('EditarOrigemBtn')
+    document.getElementById('id_origemEdit').value = origem.id_origem
+    document.getElementById('st_nomeOrigemEdit').value = origem.st_nomeOrigem
+    btn.click()
+}
+function DeleteOrigem(origem){
+    var btn = document.getElementById('DeletarOrigemBtn')
+    document.getElementById('id_origemDelete').value = origem.id_origem
+    document.getElementById('st_nomeOrigemDelete').innerText = origem.st_nomeOrigem
+    btn.click()
+}
