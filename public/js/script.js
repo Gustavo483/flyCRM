@@ -61,3 +61,17 @@ function DeleteGrupo(grupo){
     document.getElementById('st_nomeGrupoDelete').innerText = grupo.st_nomeGrupo
     btn.click()
 }
+
+function EditarFase(fase){
+    var btn = document.getElementById('EditarFaseBtn')
+    document.getElementById('id_faseEdit').value = fase.id_fase
+    document.getElementById('st_nomeFaseEdit').value = fase.st_nomeFase
+    btn.click()
+}
+function DeleteFase(fase){
+    var btn = document.getElementById('DeletarFaseBtn')
+    document.getElementById('id_faseDelete').value = fase.id_fase
+    document.getElementById('st_nomeFaseDelete').innerText = fase.st_nomeFase
+    btn.click()
+}
+

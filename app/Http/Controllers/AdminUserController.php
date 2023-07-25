@@ -344,10 +344,10 @@ class AdminUserController extends Controller
     public function deletarFase(Request $request)
     {
         try {
-            Midia::where('id_fase', $request->id_fase)->delete();
+            Fase::where('id_fase', $request->id_fase)->delete();
             return redirect()->back()->with('success', 'Fase excluído com sucesso.');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Não foi possivel excluir a Fase, favor entrar em contato com o suporte');
+            return redirect()->back()->with('error', 'Não foi possivel excluir a Fase, favor entrar em contato com o suporte.');
         }
     }
     public function registrarOrigem(Request $request)
