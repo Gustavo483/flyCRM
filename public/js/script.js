@@ -5,10 +5,11 @@ function vizualizarEmpresa(id_empresa){
 function abrirDiv(id_elemento, cabecalho){
     var div = document.getElementById(id_elemento)
     var divCabecalho = document.getElementById(cabecalho)
+    console.log(divCabecalho)
     var btn = document.getElementById(cabecalho+'Desenho')
-    var text = document.getElementsByClassName('divUsuariosEmpresaText')
     btn.classList.toggle('backgroud233')
     div.classList.toggle('none')
+    divCabecalho.classList.toggle('divCabecalho')
     divCabecalho.classList.toggle('divCabecalho2')
 }
 function EditarUsuario(usuario){
@@ -20,9 +21,16 @@ function EditarUsuario(usuario){
     document.getElementById('st_setorEdit').value = usuario.st_setor
     btn.click()
 }
-function DeleteUsuaio(usuario){
+function DeleteUsuario(usuario){
     var btn = document.getElementById('DeletarUsuarioBtn')
     document.getElementById('id_userDelete').value = usuario.id
     document.getElementById('nameUsario').innerText = usuario.name
+    btn.click()
+}
+
+function DeleteStatus(status){
+    var btn = document.getElementById('DeletarStatusBtn')
+    document.getElementById('id_statusDelete').value = status.id
+    document.getElementById('StTituloDelete').innerText = status.st_titulo
     btn.click()
 }

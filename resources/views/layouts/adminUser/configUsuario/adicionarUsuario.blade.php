@@ -1,12 +1,3 @@
-
-<div class="d-flex justify-content-end my-3">
-    <!-- Button trigger modal -->
-    <button type="button" class=" BtnConfig" data-bs-toggle="modal"
-            data-bs-target="#AdicionarUsuario">
-        Adicionar usuario
-    </button>
-</div>
-
 <!-- Modal -->
 <div class="modal fade" id="AdicionarUsuario" data-bs-backdrop="static" data-bs-keyboard="false"
      tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

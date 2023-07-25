@@ -59,6 +59,12 @@ Route::middleware('auth')->group(function () {
             Route::post('registrar-usuario', 'registrarUsuario')->name('registrarUsuario');
             Route::post('editar-usuario', 'editarUsuario')->name('editarUsuario');
             Route::post('deletar-usuaio', 'deletarUsuaio')->name('deletarUsuaio');
+
+            //Status
+            Route::post('registrar-status', 'registrarStatus')->name('registrarStatus');
+            Route::post('editar-status', 'editarStatus')->name('editarStatus');
+            Route::post('deletar-status', 'deletarStatus')->name('deletarStatus');
+
         });
     });
 

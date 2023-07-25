@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Constant\ConstantSystem;
 use Closure;
-use App\Constant\LoginConstant;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,7 +16,7 @@ class AdminAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->user()->int_permisionAccess === LoginConstant::AdminRoot){
+        if(auth()->user()->int_permisionAccess === ConstantSystem::AdminRoot){
             return $next($request);
         }
         return back()->with('error', 'Seu perfil não tem acesso a essa página');

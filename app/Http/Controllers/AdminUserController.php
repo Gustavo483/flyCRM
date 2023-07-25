@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ColumnsKhanban;
 use App\Models\User;
-use App\Constant\LoginConstant;
+use App\Constant\ConstantSystem;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -27,8 +28,11 @@ class AdminUserController extends Controller
 
     public function configuracaoEmpresa()
     {
+        $id_empresa = auth()->user()->id_empresa;
+
         $dados = [
-            'usuarios' => User::where('int_permisionAccess', LoginConstant::User)->where('id_empresa',auth()->user()->id_empresa)->get()
+            'usuarios' => User::where('int_permisionAccess', ConstantSystem::User)->where('id_empresa',$id_empresa)->get(),
+            'status' =>ColumnsKhanban::where('id_empresa', $id_empresa)->orderBy('int_posicao')->get(),
         ];
         return view('AdminUser.configuracao.configuracaoEmpresa',['tela'=>'configuracao','dados'=>$dados]);
     }
@@ -54,7 +58,7 @@ class AdminUserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'st_setor'=> $request->st_setor,
-                'int_permisionAccess' => LoginConstant::User,
+                'int_permisionAccess' => ConstantSystem::User,
                 'id_empresa'=>auth()->user()->id_empresa,
             ]);
             return  redirect()->back()->with('success', 'Usuario cadastrado com sucesso');
@@ -108,5 +112,48 @@ class AdminUserController extends Controller
         }catch (Exception $e) {
             return redirect()->back()->with('error', 'Não foi possivel excluir o usuário, favor entrar em contato suporte,');
         }
+    }
+
+
+    public function registrarStatus(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_titulo' => 'required',
+                'int_posicao' => 'required',
+                'st_color' => 'required',
+            ];
+
+            $feedback = [
+                'required' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar o status do Kankan. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+
+        ColumnsKhanban::create([
+            'id_empresa'=>$id_empresa,
+            'st_titulo'=>$request->st_titulo,
+            'int_posicao'=>$request->int_posicao,
+            'int_tipoKhanban'=>ConstantSystem::KanbanStatus,
+            'st_color'=>$request->st_color,
+        ]);
+
+        return  redirect()->back()->with('success', 'Status cadastrado com sucesso');
+
+    }
+
+    public function editarStatus(Request $request)
+    {
+        dd($request->all());
+    }
+
+    public function deletarStatus(Request $request)
+    {
+        dd($request->all());
     }
 }

@@ -27,7 +27,7 @@
                         <button type="submit" class="BtnRed my-3">sim, quero remover</button>
                     </div>
                     <div class="deleteText p-0 m-0">A ação não pode ser desfeita .</div>
-                    <div class="deleteText p-0 m-0">Todos dados atralos serão removidos.</div>
+                    <div class="deleteText p-0 m-0">Todos dados atrelados serão removidos.</div>
                 </form>
             </div>
         </div>

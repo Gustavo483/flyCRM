@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
-use App\Constant\LoginConstant;
+use App\Constant\ConstantSystem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -41,13 +41,13 @@ class AuthenticatedSessionController extends Controller
 
         $permisionAccess = auth()->user()->int_permisionAccess;
         switch ($permisionAccess) {
-            case LoginConstant::AdminRoot:
+            case ConstantSystem::AdminRoot:
                 return redirect()->route('dashboardAdmin');
 
-            case LoginConstant::AdminUser:
+            case ConstantSystem::AdminUser:
                 return redirect()->route('dashboardAdminUser');
 
-            case LoginConstant::User:
+            case ConstantSystem::User:
                 return redirect()->route('dashboarUser');
         }
     }
@@ -59,13 +59,13 @@ class AuthenticatedSessionController extends Controller
     {
         $permisionAccess = auth()->user()->int_permisionAccess;
         switch ($permisionAccess) {
-            case LoginConstant::AdminRoot:
+            case ConstantSystem::AdminRoot:
                 return redirect()->route('dashboardAdmin');
 
-            case LoginConstant::AdminUser:
+            case ConstantSystem::AdminUser:
                 return redirect()->route('dashboardAdminUser');
 
-            case LoginConstant::User:
+            case ConstantSystem::User:
                 return redirect()->route('dashboarUser');
         }
     }
