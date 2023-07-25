@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ColumnsKhanban;
+use App\Models\Midia;
 use App\Models\User;
 use App\Constant\ConstantSystem;
 use Exception;
@@ -33,6 +34,7 @@ class AdminUserController extends Controller
         $dados = [
             'usuarios' => User::where('int_permisionAccess', ConstantSystem::User)->where('id_empresa',$id_empresa)->get(),
             'status' =>ColumnsKhanban::where('id_empresa', $id_empresa)->orderBy('int_posicao')->get(),
+            'midias'=>Midia::where('id_empresa', $id_empresa)->get(),
         ];
         return view('AdminUser.configuracao.configuracaoEmpresa',['tela'=>'configuracao','dados'=>$dados]);
     }
@@ -155,5 +157,67 @@ class AdminUserController extends Controller
     public function deletarStatus(Request $request)
     {
         dd($request->all());
+    }
+
+
+    public function registrarMidia(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeMidia' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeMidia' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar a mídia. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+
+        Midia::create([
+            'id_empresa'=>$id_empresa,
+            'st_nomeMidia'=>$request->st_nomeMidia,
+        ]);
+
+        return  redirect()->back()->with('success', 'Mídia cadastrada com sucesso');
+    }
+
+    public function editarMidia(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeMidia' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeMidia' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível editar a mídia. Favor verificar os dados e tentar novamente.');
+        }
+
+        $midia = Midia::where('id_midia', $request->id_midia)->first();
+
+        $midia->update([
+            'st_nomeMidia' => $request->st_nomeMidia
+        ]);
+        
+        return redirect()->back()->with('success', 'Midia editada com sucesso');
+    }
+
+    public function deletarMidia(Request $request)
+    {
+        try {
+            Midia::where('id_midia',$request->id_midia)->delete();
+            return redirect()->back()->with('success', 'Mídia excluído com sucesso.');
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possivel excluir a Mídia, favor entrar em contato suporte.');
+        }
     }
 }

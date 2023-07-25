@@ -14,7 +14,6 @@ function abrirDiv(id_elemento, cabecalho){
 }
 function EditarUsuario(usuario){
     var btn = document.getElementById('EditarUsuarioBtn')
-    console.log(btn)
     document.getElementById('id_user').value = usuario.id
     document.getElementById('nameEdit').value = usuario.name
     document.getElementById('emailEdit').value = usuario.email
@@ -32,5 +31,20 @@ function DeleteStatus(status){
     var btn = document.getElementById('DeletarStatusBtn')
     document.getElementById('id_statusDelete').value = status.id
     document.getElementById('StTituloDelete').innerText = status.st_titulo
+    btn.click()
+}
+
+
+function EditarMidias(midia){
+    var btn = document.getElementById('EditarMidiaBtn')
+    console.log(btn)
+    document.getElementById('id_midiaEdit').value = midia.id_midia
+    document.getElementById('st_nomeMidiaEdit').value = midia.st_nomeMidia
+    btn.click()
+}
+function DeleteMidia(midia){
+    var btn = document.getElementById('DeletarMidiaBtn')
+    document.getElementById('id_midiaDelete').value = midia.id_midia
+    document.getElementById('st_nomeMidiaDelete').innerText = midia.st_nomeMidia
     btn.click()
 }

@@ -9,6 +9,8 @@ class Midia extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id_midia';
+
     protected $table = 'tb_midias';
     protected $fillable = [
         'id_midia',

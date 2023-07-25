@@ -65,6 +65,11 @@ Route::middleware('auth')->group(function () {
             Route::post('editar-status', 'editarStatus')->name('editarStatus');
             Route::post('deletar-status', 'deletarStatus')->name('deletarStatus');
 
+            //midias
+            Route::post('registrar-midia', 'registrarMidia')->name('registrarMidia');
+            Route::post('editar-midia', 'editarMidia')->name('editarMidia');
+            Route::post('deletar-midia', 'deletarMidia')->name('deletarMidia');
+
         });
     });
 
