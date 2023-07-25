@@ -34,7 +34,6 @@ function DeleteStatus(status){
     btn.click()
 }
 
-
 function EditarMidias(midia){
     var btn = document.getElementById('EditarMidiaBtn')
     console.log(btn)
@@ -46,5 +45,19 @@ function DeleteMidia(midia){
     var btn = document.getElementById('DeletarMidiaBtn')
     document.getElementById('id_midiaDelete').value = midia.id_midia
     document.getElementById('st_nomeMidiaDelete').innerText = midia.st_nomeMidia
+    btn.click()
+}
+
+function EditarGrupo(grupo){
+    var btn = document.getElementById('EditarGrupoBtn')
+    console.log(btn)
+    document.getElementById('id_GrupoEdit').value = grupo.id_grupo
+    document.getElementById('st_nomeGrupoEdit').value = grupo.st_nomeGrupo
+    btn.click()
+}
+function DeleteGrupo(grupo){
+    var btn = document.getElementById('DeletarGrupoBtn')
+    document.getElementById('id_GrupoDelete').value = grupo.id_grupo
+    document.getElementById('st_nomeGrupoDelete').innerText = grupo.st_nomeGrupo
     btn.click()
 }

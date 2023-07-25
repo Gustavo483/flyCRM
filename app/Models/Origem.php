@@ -9,6 +9,9 @@ class Origem extends Model
 {
     use HasFactory;
     protected $table = 'tb_origens';
+
+    protected $primaryKey = 'id_origem';
+
     protected $fillable = [
         'id_origem',
         'id_empresa',

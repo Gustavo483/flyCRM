@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campanha;
 use App\Models\ColumnsKhanban;
+use App\Models\Fase;
+use App\Models\Grupo;
 use App\Models\Midia;
+use App\Models\Origem;
 use App\Models\User;
 use App\Constant\ConstantSystem;
 use Exception;
@@ -35,6 +39,10 @@ class AdminUserController extends Controller
             'usuarios' => User::where('int_permisionAccess', ConstantSystem::User)->where('id_empresa',$id_empresa)->get(),
             'status' =>ColumnsKhanban::where('id_empresa', $id_empresa)->orderBy('int_posicao')->get(),
             'midias'=>Midia::where('id_empresa', $id_empresa)->get(),
+            'grupos'=>Grupo::where('id_empresa', $id_empresa)->get(),
+            'fases'=>Fase::where('id_empresa', $id_empresa)->get(),
+            'origens'=>Origem::where('id_empresa', $id_empresa)->get(),
+            'campanhas'=>Campanha::where('id_empresa', $id_empresa)->get(),
         ];
         return view('AdminUser.configuracao.configuracaoEmpresa',['tela'=>'configuracao','dados'=>$dados]);
     }
@@ -207,7 +215,7 @@ class AdminUserController extends Controller
         $midia->update([
             'st_nomeMidia' => $request->st_nomeMidia
         ]);
-        
+
         return redirect()->back()->with('success', 'Midia editada com sucesso');
     }
 
@@ -218,6 +226,249 @@ class AdminUserController extends Controller
             return redirect()->back()->with('success', 'Mídia excluído com sucesso.');
         }catch (Exception $e) {
             return redirect()->back()->with('error', 'Não foi possivel excluir a Mídia, favor entrar em contato suporte.');
+        }
+    }
+
+    public function registrarGrupo(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeGrupo' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeGrupo' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar o grupo. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+
+        Grupo::create([
+            'id_empresa'=>$id_empresa,
+            'st_nomeGrupo'=>$request->st_nomeGrupo,
+        ]);
+
+        return  redirect()->back()->with('success', 'Grupo cadastrado com sucesso');
+    }
+
+    public function editarGrupo(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeGrupo' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeGrupo' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível editar o grupo. Favor verificar os dados e tentar novamente.');
+        }
+
+        $grupo = Grupo::where('id_grupo', $request->id_grupo)->first();
+
+        $grupo->update([
+            'st_nomeGrupo' => $request->st_nomeGrupo
+        ]);
+
+        return redirect()->back()->with('success', 'Grupo editado com sucesso');
+    }
+
+    public function deletarGrupo(Request $request)
+    {
+        try {
+            Grupo::where('id_grupo',$request->id_grupo)->delete();
+            return redirect()->back()->with('success', 'Grupo excluído com sucesso.');
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possivel excluir o grupo, favor entrar em contato com o suporte');
+        }
+    }
+
+    public function registrarFase(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeFase' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeFase' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar a fase. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+
+        Fase::create([
+            'id_empresa'=>$id_empresa,
+            'st_nomeFase'=>$request->st_nomeFase,
+        ]);
+
+        return  redirect()->back()->with('success', 'Fase cadastrada com sucesso');
+    }
+
+    public function editarFase(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeFase' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeFase' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível editar a fase. Favor verificar os dados e tentar novamente.');
+        }
+
+        $fase = Fase::where('id_fase', $request->id_fase)->first();
+
+        $fase->update([
+            'st_nomeFase' => $request->st_nomeFase
+        ]);
+
+        return redirect()->back()->with('success', 'Fase editada com sucesso.');
+    }
+
+    public function deletarFase(Request $request)
+    {
+        try {
+            Midia::where('id_fase', $request->id_fase)->delete();
+            return redirect()->back()->with('success', 'Fase excluído com sucesso.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possivel excluir a Fase, favor entrar em contato com o suporte');
+        }
+    }
+    public function registrarOrigem(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeOrigem' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeOrigem' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar a origem. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+
+        Origem::create([
+            'id_empresa'=>$id_empresa,
+            'st_nomeOrigem'=>$request->st_nomeOrigem,
+        ]);
+
+        return  redirect()->back()->with('success', 'Origem cadastrada com sucesso.');
+    }
+
+    public function editarOrigem(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeOrigem' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeOrigem' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível editar a origem. Favor verificar os dados e tentar novamente.');
+        }
+
+        $origem = Origem::where('id_origem', $request->id_origem)->first();
+
+        $origem->update([
+            'st_nomeOrigem' => $request->st_nomeOrigem
+        ]);
+
+        return redirect()->back()->with('success', 'Origem editada com sucesso.');
+    }
+
+    public function deletarOrigem(Request $request)
+    {
+        try {
+            Origem::where('id_origem',$request->id_origem)->delete();
+            return redirect()->back()->with('success', 'Mídia excluído com sucesso.');
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possivel excluir a origem, favor entrar em contato com o suporte');
+        }
+    }
+
+    public function registrarCampanha(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeCampanha' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeCampanha' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar a campanha. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+
+        Campanha::create([
+            'id_empresa'=>$id_empresa,
+            'st_nomeCampanha'=>$request->st_nomeCampanha,
+        ]);
+
+        return  redirect()->back()->with('success', 'Campanha cadastrada com sucesso.');
+    }
+
+    public function editarCampanha(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeCampanha' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeCampanha' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar a campanha. Favor verificar os dados e tentar novamente.');
+        }
+
+        $campanha = Campanha::where('id_campanha', $request->id_campanha)->first();
+
+        $campanha->update([
+            'st_nomeCampanha' => $request->st_nomeCampanha
+        ]);
+
+        return redirect()->back()->with('success', 'Campanha editada com sucesso');
+    }
+
+    public function deletarCampanha(Request $request)
+    {
+        try {
+            Campanha::where('id_campanha',$request->id_campanha)->delete();
+            return redirect()->back()->with('success', 'Campanha excluído com sucesso.');
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possivel excluir a campanha, favor entrar em contato com o suporte.');
         }
     }
 }

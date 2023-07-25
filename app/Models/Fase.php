@@ -10,6 +10,9 @@ class Fase extends Model
     use HasFactory;
 
     protected $table = 'tb_fases';
+
+    protected $primaryKey = 'id_fase';
+
     protected $fillable = [
         'id_fase',
         'id_empresa',

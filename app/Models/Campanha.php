@@ -11,6 +11,8 @@ class Campanha extends Model
 
     protected $table = 'tb_campanhas';
 
+    protected $primaryKey = 'id_empresa';
+
     protected $fillable = [
         'id_campanha',
         'id_empresa',

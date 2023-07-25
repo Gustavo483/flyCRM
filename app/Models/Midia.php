@@ -12,6 +12,7 @@ class Midia extends Model
     protected $primaryKey = 'id_midia';
 
     protected $table = 'tb_midias';
+
     protected $fillable = [
         'id_midia',
         'id_empresa',

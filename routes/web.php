@@ -70,6 +70,26 @@ Route::middleware('auth')->group(function () {
             Route::post('editar-midia', 'editarMidia')->name('editarMidia');
             Route::post('deletar-midia', 'deletarMidia')->name('deletarMidia');
 
+            //Grupos
+            Route::post('registrar-grupo', 'registrarGrupo')->name('registrarGrupo');
+            Route::post('editar-grupo', 'editarGrupo')->name('editarGrupo');
+            Route::post('deletar-grupo', 'deletarGrupo')->name('deletarGrupo');
+
+            //Fases
+            Route::post('registrar-fase', 'registrarFase')->name('registrarFase');
+            Route::post('editar-fase', 'editarFase')->name('editarFase');
+            Route::post('deletar-fase', 'deletarFase')->name('deletarFase');
+
+            //origens
+            Route::post('registrar-origem', 'registrarOrigem')->name('registrarOrigem');
+            Route::post('editar-origem', 'editarOrigem')->name('editarOrigem');
+            Route::post('deletar-origem', 'deletarOrigem')->name('deletarOrigem');
+
+            //campanha
+            Route::post('registrar-campanha', 'registrarCampanha')->name('registrarCampanha');
+            Route::post('editar-campanha', 'editarCampanha')->name('editarCampanha');
+            Route::post('deletar-campanha', 'deletarCampanha')->name('deletarCampanha');
+
         });
     });
 

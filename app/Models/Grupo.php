@@ -10,6 +10,9 @@ class Grupo extends Model
     use HasFactory;
 
     protected $table = 'tb_grupos';
+
+    protected $primaryKey = 'id_grupo';
+
     protected $fillable = [
         'id_grupo',
         'id_empresa',
