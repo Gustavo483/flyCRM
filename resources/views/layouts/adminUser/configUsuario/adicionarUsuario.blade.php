@@ -37,14 +37,12 @@
                         </div>
 
                         <div class="my-2">
-                            <input type="text" class="form-control" placeholder="setor:"
-                                   name="st_setor" aria-describedby="basic-addon1"
-                                   value="{{ old('st_setor') }}" required>
-                            <div id="password" class="colorRed">
-                                {{ $errors->has('st_setor') ? $errors->first('st_setor') : '' }}
-                            </div>
+                            <select class="form-control"  name="id_setor" >
+                                @foreach($dados['setores'] as $setor)
+                                    <option value="{{$setor->id_setor}}">{{$setor->st_nomeSetor}}</option>
+                                @endforeach
+                            </select>
                         </div>
-
                     </div>
 
                     <div class="d-flex justify-content-center">

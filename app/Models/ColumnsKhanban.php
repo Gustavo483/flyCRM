@@ -9,6 +9,8 @@ class ColumnsKhanban extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id_columnsKhanban';
+
     protected $table = 'tb_columns_khanban';
 
     protected $fillable = [

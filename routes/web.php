@@ -90,6 +90,11 @@ Route::middleware('auth')->group(function () {
             Route::post('editar-campanha', 'editarCampanha')->name('editarCampanha');
             Route::post('deletar-campanha', 'deletarCampanha')->name('deletarCampanha');
 
+            //setor
+            Route::post('registrar-setor', 'registrarSetor')->name('registrarSetor');
+            Route::post('editar-setor', 'editarSetor')->name('editarSetor');
+            Route::post('deletar-setor', 'deletarSetor')->name('deletarSetor');
+
         });
     });
 

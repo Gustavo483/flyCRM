@@ -24,7 +24,7 @@ class User extends Authenticatable
         'int_permisionAccess',
         'id_empresa',
         'dt_ultimoLogin',
-        'st_setor'
+        'id_setor'
     ];
 
     /**

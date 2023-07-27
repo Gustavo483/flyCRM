@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Campanha extends Model
+class Setor extends Model
 {
     use HasFactory;
+    protected $table = 'tb_setores';
 
-    protected $table = 'tb_campanhas';
-
-    protected $primaryKey = 'id_campanha';
+    protected $primaryKey = 'id_setor';
 
     protected $fillable = [
-        'id_campanha',
+        'id_setor',
         'id_empresa',
-        'st_nomeCampanha'
+        'st_nomeSetor'
     ];
 }

@@ -38,19 +38,18 @@
                         <div class="my-2">
                             <input type="password" class="form-control" placeholder="password :"
                                    name="password" aria-describedby="basic-addon1"
-                                   value="{{ old('password') }}" required>
+                                   value="{{ old('password') }}">
                             <div id="password" class="colorRed">
                                 {{ $errors->has('password') ? $errors->first('password') : '' }}
                             </div>
                         </div>
 
                         <div class="my-2">
-                            <input id="st_setorEdit" type="text" class="form-control" placeholder="setor:"
-                                   name="st_setor" aria-describedby="basic-addon1"
-                                   value="{{ old('st_setor') }}" required>
-                            <div id="password" class="colorRed">
-                                {{ $errors->has('st_setor') ? $errors->first('st_setor') : '' }}
-                            </div>
+                            <select class="form-control"  name="id_setor">
+                                @foreach($dados['setores'] as $setor)
+                                    <option id="SetoreUsuario{{$setor->id_setor}}" value="{{$setor->id_setor}}">{{$setor->st_nomeSetor}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 

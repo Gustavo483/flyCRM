@@ -8,6 +8,7 @@ use App\Models\Fase;
 use App\Models\Grupo;
 use App\Models\Midia;
 use App\Models\Origem;
+use App\Models\Setor;
 use App\Models\User;
 use App\Constant\ConstantSystem;
 use Exception;
@@ -43,6 +44,7 @@ class AdminUserController extends Controller
             'fases'=>Fase::where('id_empresa', $id_empresa)->get(),
             'origens'=>Origem::where('id_empresa', $id_empresa)->get(),
             'campanhas'=>Campanha::where('id_empresa', $id_empresa)->get(),
+            'setores'=>Setor::where('id_empresa', $id_empresa)->get(),
         ];
         return view('AdminUser.configuracao.configuracaoEmpresa',['tela'=>'configuracao','dados'=>$dados]);
     }
@@ -54,7 +56,7 @@ class AdminUserController extends Controller
                 'name' => 'required',
                 'email'=>'required|unique:users',
                 'password'=>'required',
-                'st_setor' => 'required',
+                'id_setor' => 'required',
             ];
 
             $feedback = [
@@ -67,7 +69,7 @@ class AdminUserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'st_setor'=> $request->st_setor,
+                'id_setor'=> $request->id_setor,
                 'int_permisionAccess' => ConstantSystem::User,
                 'id_empresa'=>auth()->user()->id_empresa,
             ]);
@@ -83,7 +85,7 @@ class AdminUserController extends Controller
         try {
             $validacao = [
                 'name' => 'required',
-                'st_setor' => 'required',
+                'id_setor' => 'required',
             ];
 
             $feedback = [
@@ -109,7 +111,7 @@ class AdminUserController extends Controller
             'name' => $request->name,
             'email' => $request->email ? $request->email :$user->email,
             'password' => $request->password ? Hash::make($request->password) :$user->password,
-            'st_setor'=> $request->st_setor,
+            'id_setor'=> $request->id_setor,
         ]);
 
         return redirect()->back()->with('success', 'Usuario Cadastro com sucesso');
@@ -159,12 +161,42 @@ class AdminUserController extends Controller
 
     public function editarStatus(Request $request)
     {
-        dd($request->all());
+
+        try {
+            $validacao = [
+                'st_titulo' => 'required',
+                'int_posicao' => 'required',
+                'st_color' => 'required',
+            ];
+
+            $feedback = [
+                'required' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível editar o status do Kankan. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+        $kanban = ColumnsKhanban::where('id_columnsKhanban',$request->id_columnsKhanban)->first();
+        $kanban->update([
+            'st_titulo'=>$request->st_titulo,
+            'int_posicao'=>$request->int_posicao,
+            'st_color'=>$request->st_color,
+        ]);
+        return  redirect()->back()->with('success', 'Status atualizado com sucesso');
+
     }
 
     public function deletarStatus(Request $request)
     {
-        dd($request->all());
+        try {
+            ColumnsKhanban::where('id_columnsKhanban', $request->id_columnsKhanban)->delete();
+            return redirect()->back()->with('success', 'Status excluído com sucesso.');
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possivel excluir o Status, favor entrar em contato suporte,');
+        }
     }
 
 
@@ -469,6 +501,68 @@ class AdminUserController extends Controller
             return redirect()->back()->with('success', 'Campanha excluído com sucesso.');
         }catch (Exception $e) {
             return redirect()->back()->with('error', 'Não foi possivel excluir a campanha, favor entrar em contato com o suporte.');
+        }
+    }
+
+
+    public function registrarSetor(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeSetor' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeSetor' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar o setor. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+
+        Setor::create([
+            'id_empresa'=>$id_empresa,
+            'st_nomeSetor'=>$request->st_nomeSetor,
+        ]);
+
+        return  redirect()->back()->with('success', 'Setor cadastrada com sucesso.');
+    }
+
+    public function editarSetor(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeSetor' => 'required',
+            ];
+
+            $feedback = [
+                'st_nomeSetor' => 'O campo é requirido',
+            ];
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar o setor. Favor verificar os dados e tentar novamente.');
+        }
+
+        $setor = Setor::where('id_setor', $request->id_setor)->first();
+
+        $setor->update([
+            'st_nomeSetor' => $request->st_nomeSetor
+        ]);
+
+        return redirect()->back()->with('success', 'Setor editada com sucesso.');
+    }
+
+    public function deletarSetor(Request $request)
+    {
+        try {
+            Setor::where('id_setor',$request->id_setor)->delete();
+            return redirect()->back()->with('success', 'Setor excluído com sucesso.');
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possivel excluir o setor, favor entrar em contato com o suporte.');
         }
     }
 }
