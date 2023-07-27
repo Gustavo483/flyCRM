@@ -95,6 +95,11 @@ Route::middleware('auth')->group(function () {
             Route::post('editar-setor', 'editarSetor')->name('editarSetor');
             Route::post('deletar-setor', 'deletarSetor')->name('deletarSetor');
 
+            //Produto servico
+            Route::get('produto-servico', 'produtoServico')->name('produtoServico');
+            Route::post('registrar-produto-servico', 'registrarProdutoServico')->name('registrarProdutoServico');
+            Route::post('editar-produto-servico', 'editarProdutoServico')->name('editarProdutoServico');
+            Route::post('deletar-produto-servicos', 'deletarProdutoServicos')->name('deletarProdutoServicos');
         });
     });
 

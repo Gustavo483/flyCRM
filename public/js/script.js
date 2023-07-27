@@ -123,3 +123,18 @@ function DeleteSetor(setor){
     document.getElementById('st_nomeSetorDelete').innerText = setor.st_nomeSetor
     btn.click()
 }
+function DeleteProduto(produto){
+    var btn = document.getElementById('DeletarProdutoBtn')
+    document.getElementById('id_produtoServicoDelete').value = produto.id_produtoServico
+    document.getElementById('st_nomeProdutoServicoDelete').innerText = produto.st_nomeProdutoServico
+    btn.click()
+}
+function EditarProduto(produto){
+    var btn = document.getElementById('EditarProdutoBtn')
+    console.log(btn)
+    document.getElementById('id_ProdutoServicoEdit').value = produto.id_produtoServico
+    document.getElementById('st_nomeProdutoServicoEdit').value = produto.st_nomeProdutoServico
+    document.getElementById('st_descricaoEdit').value = produto.st_descricao
+    document.getElementById('st_colorProdutoServicoEdit').value = produto.st_color
+    btn.click()
+}

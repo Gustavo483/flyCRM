@@ -8,6 +8,7 @@ use App\Models\Fase;
 use App\Models\Grupo;
 use App\Models\Midia;
 use App\Models\Origem;
+use App\Models\ProdutoServico;
 use App\Models\Setor;
 use App\Models\User;
 use App\Constant\ConstantSystem;
@@ -17,6 +18,84 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
+
+    public function registrarProdutoServico(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_nomeProdutoServico' => 'required',
+                'st_color' => 'required',
+            ];
+
+            $feedback = [
+                'required' => 'O campo é requirido',
+            ];
+
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar o Produto/Serviço. Favor verificar os dados e tentar novamente.');
+        }
+
+        $id_empresa = auth()->user()->id_empresa;
+
+        ProdutoServico::create([
+            'id_empresa'=>$id_empresa,
+            'st_nomeProdutoServico'=>$request->st_nomeProdutoServico,
+            'st_descricao'=>$request->st_descricao ? $request->st_descricao : null,
+            'st_color'=>$request->st_color
+        ]);
+
+        return  redirect()->back()->with('success', 'Status cadastrado com sucesso');
+    }
+
+    public function editarProdutoServico(Request $request)
+    {
+
+        try {
+            $validacao = [
+                'st_nomeProdutoServico' => 'required',
+                'st_color' => 'required',
+            ];
+
+            $feedback = [
+                'required' => 'O campo é requirido',
+            ];
+
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível editar o Produto/Serviço. Favor verificar os dados e tentar novamente.');
+        }
+
+        $produtoServico = ProdutoServico::where('id_produtoServico',$request->id_produtoServico)->first();
+        $produtoServico->update([
+            'st_nomeProdutoServico'=>$request->st_nomeProdutoServico,
+            'st_descricao'=>$request->st_descricao ? $request->st_descricao : null,
+            'st_color'=>$request->st_color,
+        ]);
+
+        return  redirect()->back()->with('success', 'Produto/Serviço atualizado com sucesso');
+    }
+
+    public function deletarProdutoServicos(Request $request)
+    {
+        try {
+            ProdutoServico::where('id_produtoServico', $request->id_produtoServico)->delete();
+            return redirect()->back()->with('success', 'Produto/Serviço excluído com sucesso.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possivel excluir o Produto/Serviço, favor entrar em contato suporte,');
+        }
+    }
+
+
+    public function produtoServico()
+    {
+        $id_empresa = auth()->user()->id_empresa;
+        $produtos = ProdutoServico::where('id_empresa',$id_empresa)->get();
+        return view('AdminUser.produtoServico.index',['tela'=>'produtoServico','produtos'=>$produtos]);
+    }
+
     public function dashboardAdminUser()
     {
         return view('AdminUser.dashboard',['tela'=>'dashboard']);

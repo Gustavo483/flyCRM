@@ -9,9 +9,14 @@ class ProdutoServico extends Model
 {
     use HasFactory;
     protected $table = 'tb_produto_servicos';
+
+    protected $primaryKey = 'id_produtoServico';
+
     protected $fillable = [
         'id_produtoServico',
         'id_empresa',
-        'st_nomeProdutoServico'
+        'st_nomeProdutoServico',
+        'st_color',
+        'st_descricao'
     ];
 }
