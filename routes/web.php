@@ -113,6 +113,8 @@ Route::middleware('auth')->group(function () {
             //leads
             Route::get('vizualizar-todas-leads-user', 'vizualizarTodasleadsUser')->name('vizualizarTodasleadsUser');
             Route::post('registrar-leads', 'registrarLeads')->name('registrarLeads');
+            Route::get('vizualizar-lead-user/{id_lead}', 'vizualizarLeadUser')->name('vizualizarLeadUser');
+
             // Oportunidades
             Route::get('vizualizar-oportunidades-user', 'vizualizarOportunidadesUser')->name('vizualizarOportunidadesUser');
 

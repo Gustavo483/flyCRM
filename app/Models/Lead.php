@@ -10,6 +10,8 @@ class Lead extends Model
     use HasFactory;
 
     protected $table = 'tb_leads';
+    protected $primaryKey = 'id_lead';
+
     protected $fillable = [
         'id_lead',
         'st_nome',
@@ -31,5 +33,11 @@ class Lead extends Model
 
     public function observacoes(){
         return $this->hasMany('App\Models\ObservacaoLead','id_lead', 'id_lead');
+    }
+    public function fase(){
+        return $this->hasOne('App\Models\Fase','id_fase', 'id_fase');
+    }
+    public function produto(){
+        return $this->hasOne('App\Models\ProdutoServico','id_produtoServico', 'id_produtoServico');
     }
 }

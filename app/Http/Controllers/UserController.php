@@ -14,6 +14,11 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
+    public function vizualizarLeadUser( Lead $id_lead)
+    {
+        dd($id_lead);
+    }
     public function registrarLeads(Request $request)
     {
         try {
@@ -54,7 +59,7 @@ class UserController extends Controller
             'id_campanha'=>$request->id_campanha,
             'id_produtoServico'=>$request->id_produtoServico,
             'id_fase'=>$request->id_fase,
-            'int_temperatura'=>70,
+            'int_temperatura'=>$request->int_temperatura,
             'id_grupo'=>$request->id_grupo,
             'st_observacoes'=>$request->st_observacoes ? $request->st_observacoes : null ,
             'id_userResponsavel'=>$usuario,
@@ -93,7 +98,26 @@ class UserController extends Controller
 
     public function vizualizarTodasleadsUser()
     {
-        return view('User.leads.vizualizarTodasLeadsUser', ['tela' =>'leads']);
+        $usuario = auth()->user()->id;
+        $empresa = auth()->user()->id_empresa;
+        $leads = Lead::where('id_userResponsavel',$usuario)->get();
+        $dadosInfo = [
+            'leads'=> count($leads),
+            'Oportunidades'=>0,
+            'atendimento'=>0,
+        ];
+
+        $dadosCadastroLeads = [
+            'origens' => Origem::where('id_empresa', $empresa)->get(),
+            'campanhas' => Campanha::where('id_empresa', $empresa)->get(),
+            'Produtos' => ProdutoServico::where('id_empresa', $empresa)->get(),
+            'fases' => Fase::where('id_empresa', $empresa)->get(),
+            'grupos' => Grupo::where('id_empresa', $empresa)->get(),
+            'status' => ColumnsKhanban::where('id_empresa', $empresa)->get(),
+            'midias' => Midia::where('id_empresa', $empresa)->get()
+        ];
+
+        return view('User.leads.vizualizarTodasLeadsUser', ['tela' =>'leads','dadosInfo'=>$dadosInfo,'dadosCadastroLeads'=>$dadosCadastroLeads,'leads'=>$leads]);
     }
 
     public function vizualizarOportunidadesUser()

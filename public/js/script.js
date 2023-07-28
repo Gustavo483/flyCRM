@@ -1,7 +1,13 @@
 function vizualizarEmpresa(id_empresa){
-    var bltEmpresa = document.getElementById(id_empresa)
-    bltEmpresa.click()
+    var btnEmpresa = document.getElementById(id_empresa)
+    btnEmpresa.click()
 }
+
+function vizualizarLead(id_ledas){
+    var btnEmpresa = document.getElementById('Leads'+id_ledas)
+    btnEmpresa.click()
+}
+
 function abrirDiv(id_elemento, cabecalho){
     var div = document.getElementById(id_elemento)
     var divCabecalho = document.getElementById(cabecalho)
