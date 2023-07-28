@@ -15,6 +15,7 @@ class ObservacaoLead extends Model
         'bl_oportunidade',
         'dt_contato',
         'st_titulo',
-        'st_descricao'
+        'st_descricao',
+        'id_empresa'
     ];
 }

@@ -163,7 +163,7 @@
                         <div id="" style="width: 20%" class="textIndices text-end pe-3">Ações</div>
                     </div>
                     @foreach($produtos as  $produto)
-                        <div class="divCabecalho">
+                        <div class="divCabecalho mt-3">
                             <div class="d-flex justify-content-between w-100">
                                 <div style="width: 40%" class="d-flex align-items-center">
                                     <div style="background:{{$produto->st_color}}" class="desenho2"></div>

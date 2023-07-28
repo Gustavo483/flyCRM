@@ -8,16 +8,93 @@ use App\Models\Fase;
 use App\Models\Grupo;
 use App\Models\Lead;
 use App\Models\Midia;
+use App\Models\ObservacaoLead;
 use App\Models\Origem;
 use App\Models\ProdutoServico;
+use DateTime;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
 
+    public function registrarOportunidade(Request $request)
+    {
+        try {
+            $validacao = [
+                'dt_contato' => 'required',
+                'st_descricao' => 'required'
+            ];
+
+            $feedback = [
+                'required' => 'O campo é requirido',
+            ];
+
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar a oportunidade. Favor verificar os dados e tentar novamente.');
+        }
+
+        $agora = new DateTime();
+        $dia = $agora->format('d/m/Y');
+        $hora = $agora->format('H:i:s');
+
+        $dataObjeto = DateTime::createFromFormat('Y-m-d', $request->dt_contato);
+
+        $usuario = auth()->user();
+
+        ObservacaoLead::create([
+            'dt_contato'=>$request->dt_contato,
+            'id_lead'=>$request->id_lead,
+            'st_titulo'=>$dia.' ás '.$hora.' - '.$usuario->name.' adicionou uma oportunidade para '. $dataObjeto->format('d/m/Y').' :',
+            'st_descricao'=>$request->st_descricao,
+            'bl_oportunidade'=>1,
+            'id_empresa'=>$usuario->id_empresa
+        ]);
+
+        return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
+    }
+
+    public function registrarObservacao(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_descricao' => 'required'
+            ];
+
+            $feedback = [
+                'required' => 'O campo é requirido',
+            ];
+
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar a observação. Favor verificar os dados e tentar novamente.');
+        }
+
+        $agora = new DateTime();
+        $dia = $agora->format('d/m/Y');
+        $hora = $agora->format('H:i:s');
+
+
+        $usuario = auth()->user();
+
+        ObservacaoLead::create([
+            'id_lead'=>$request->id_lead,
+            'st_titulo'=>$dia.' ás '.$hora.' - '.$usuario->name.' adicionou uma observação: ' ,
+            'st_descricao'=>$request->st_descricao,
+            'bl_oportunidade'=>0,
+            'id_empresa'=>$usuario->id_empresa
+        ]);
+
+        return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
+    }
     public function vizualizarLeadUser( Lead $id_lead)
     {
-        dd($id_lead);
+        $Lead = $id_lead;
+        return view('User.leads.vizualizarLeadUser',['lead'=>$Lead]);
     }
     public function registrarLeads(Request $request)
     {
@@ -32,8 +109,7 @@ class UserController extends Controller
                 'id_produtoServico' => 'required',
                 'id_fase' => 'required',
                 'id_grupo' => 'required',
-                'id_columnsKhanban' => 'required',
-                'st_descricao' => 'required',
+                'id_columnsKhanban' => 'required'
             ];
 
             $feedback = [
@@ -48,6 +124,7 @@ class UserController extends Controller
 
         $id_empresa = auth()->user()->id_empresa;
         $usuario = auth()->user()->id;
+
 
         Lead::create([
             'st_nome'=>$request->st_nome,
@@ -122,7 +199,28 @@ class UserController extends Controller
 
     public function vizualizarOportunidadesUser()
     {
-        return view('User.oportunidades.vizualizarOportunidadesUser', ['tela' =>'oportunidade']);
+        $usuario = auth()->user()->id;
+        $empresa = auth()->user()->id_empresa;
+        $leads = Lead::where('id_userResponsavel',$usuario)->get();
+        $hoje = new DateTime();
+
+        $oportunidadesHoje = new Collection();
+        $oportunidadesOutroDia = new Collection();
+
+        foreach ($leads as $lead){
+            if (isset($lead->observacoes)){
+                foreach ($lead->observacoes as $observacoes) {
+                    if ($observacoes->dt_contato === $hoje->format('Y-m-d')){
+                        $oportunidadesHoje->push($observacoes);
+                    }
+                    if ($observacoes->dt_contato != $hoje->format('Y-m-d')){
+                        $oportunidadesOutroDia->push($observacoes);
+                    }
+                }
+            }
+        }
+        dd($oportunidadesHoje,$oportunidadesOutroDia);
+        return view('User.oportunidades.vizualizarOportunidadesUser', ['tela' =>'oportunidade', 'oportunidadesHoje'=>$oportunidadesHoje,'oportunidadesOutroDia'=>$oportunidadesOutroDia ]);
     }
 
     public function produtoServicoUser()

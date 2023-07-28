@@ -117,6 +117,8 @@ Route::middleware('auth')->group(function () {
 
             // Oportunidades
             Route::get('vizualizar-oportunidades-user', 'vizualizarOportunidadesUser')->name('vizualizarOportunidadesUser');
+            Route::post('registrar-oportunidade', 'registrarOportunidade')->name('registrarOportunidade');
+            Route::post('registrar-observacao', 'registrarObservacao')->name('registrarObservacao');
 
             //Produto servico
             Route::get('produto-servico-user', 'produtoServicoUser')->name('produtoServicoUser');
