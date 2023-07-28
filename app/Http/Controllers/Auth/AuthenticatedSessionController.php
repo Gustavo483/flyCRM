@@ -48,7 +48,7 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->route('dashboardAdminUser');
 
             case ConstantSystem::User:
-                return redirect()->route('dashboarUser');
+                return redirect()->route('dashboardUser');
         }
     }
 
@@ -66,7 +66,7 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->route('dashboardAdminUser');
 
             case ConstantSystem::User:
-                return redirect()->route('dashboarUser');
+                return redirect()->route('dashboardUser');
         }
     }
 

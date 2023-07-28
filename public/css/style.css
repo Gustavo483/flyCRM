@@ -257,6 +257,18 @@
 .BtnCriarEmpresa:hover{
     background: #2bc4c3;
 }
+
+.BtnCriarLeads{
+    margin: 50px 0;
+    background: #8999ed;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+}
+.BtnCriarLeads:hover{
+    background: #2bc4c3;
+}
 .linkProfile{
     display: flex;
     text-transform: uppercase;

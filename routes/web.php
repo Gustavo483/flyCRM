@@ -106,6 +106,23 @@ Route::middleware('auth')->group(function () {
     Route::middleware('UserAccess')->group(function () {
         Route::controller(UserController::class)->group(function () {
             Route::get('dashboard-user', 'dashboardUser')->name('dashboardUser');
+
+            //agenda
+            Route::get('vizualizar-agenda-user', 'vizualizarAgendaUser')->name('vizualizarAgendaUser');
+
+            //leads
+            Route::get('vizualizar-todas-leads-user', 'vizualizarTodasleadsUser')->name('vizualizarTodasleadsUser');
+            Route::post('registrar-leads', 'registrarLeads')->name('registrarLeads');
+            // Oportunidades
+            Route::get('vizualizar-oportunidades-user', 'vizualizarOportunidadesUser')->name('vizualizarOportunidadesUser');
+
+            //Produto servico
+            Route::get('produto-servico-user', 'produtoServicoUser')->name('produtoServicoUser');
+            Route::post('registrar-produto-servico-user', 'registrarProdutoServicoUser')->name('registrarProdutoServicoUser');
+            Route::post('editar-produto-servico-user', 'editarProdutoServicoUser')->name('editarProdutoServicoUser');
+
+
+
         });
     });
 

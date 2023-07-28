@@ -21,11 +21,15 @@ class Lead extends Model
         'id_campanha',
         'id_produtoServico',
         'id_fase',
-        'id_temperatura',
+        'int_temperatura',
         'id_grupo',
         'st_observacoes',
         'id_userResponsavel',
         'id_columnsKhanban',
         'id_empresa'
     ];
+
+    public function observacoes(){
+        return $this->hasMany('App\Models\ObservacaoLead','id_lead', 'id_lead');
+    }
 }
