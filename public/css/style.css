@@ -254,6 +254,12 @@
     border-radius: 50%;
     border: none;
 }
+.divGhafhcs{
+    width: 500px;
+}
+.divGhafhcs2{
+    width: 300px;
+}
 .BtnCriarEmpresa:hover{
     background: #2bc4c3;
 }

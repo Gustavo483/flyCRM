@@ -11,10 +11,13 @@ use App\Models\Midia;
 use App\Models\ObservacaoLead;
 use App\Models\Origem;
 use App\Models\ProdutoServico;
+use Carbon\Carbon;
+use DateInterval;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -146,8 +149,89 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'Lead cadastrado com sucesso.');
     }
+
+    public function leadsUltimosQuinzeDias(): mixed
+    {
+        $hoje = new DateTime();
+        $intervalo = new DateInterval('P15D');
+        $intervalodias = $hoje->sub($intervalo)->format('Y-m-d');
+
+        $TESTE =  new DateTime();
+        $final = $TESTE->format('Y-m-d');
+        $currentMonth = Carbon::now()->format('Y-m');
+        $userResponsavel = auth()->user()->id;
+        $userCountByDay = Lead::selectRaw('DATE(created_at) as day, COUNT(*) as count')
+            ->whereRaw("DATE_FORMAT(created_at, '%Y-%m') = '$currentMonth'")
+            ->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )
+            ->whereRaw("id_userResponsavel = '$userResponsavel'" )
+            ->groupBy('day')
+            ->orderBy('day', 'ASC')
+            ->get();
+
+        $results = [];
+
+        foreach ($userCountByDay as $userCount) {
+            $date = Carbon::createFromFormat('Y-m-d', $userCount->day);
+            $formattedDate = $date->format('d/m');
+            $results[] = [
+                'day' => $formattedDate,
+                'qnt' => $userCount->count,
+            ];
+        }
+
+        return json_encode($results);
+    }
     public function dashboardUser()
     {
+        $userResponsavel = auth()->user()->id;
+
+        $leads15days = $this->leadsUltimosQuinzeDias();
+
+        $sqlFases = 'SELECT f.st_nomeFase AS fase, COUNT(*) AS count FROM tb_leads as l
+                    left JOIN tb_fases AS f ON l.id_fase = f.id_fase
+                    WHERE id_userResponsavel = '.$userResponsavel.' GROUP BY fase';
+
+        $fases = DB::select($sqlFases);
+
+        $sqlStatus = 'SELECT s.st_titulo AS status, COUNT(*) AS count FROM tb_leads as l
+                    left JOIN tb_columns_khanban AS s ON l.id_columnsKhanban = s.id_columnsKhanban
+                    WHERE id_userResponsavel = '.$userResponsavel.' GROUP BY status';
+
+        $status = DB::select($sqlStatus);
+
+        $labelsFases= '';
+        $dataFases = '';
+        foreach ($fases as $fase){
+            $nomeFase = $fase->fase ? : 'Sem fase';
+            if ($labelsFases === ''){
+                $labelsFases.= '"'.$nomeFase.'"';
+                $dataFases.= '"'.$fase->count.'"';
+            }else{
+                $labelsFases.= ',"'.$nomeFase.'"';
+                $dataFases.= ',"'.$fase->count.'"';
+            }
+        }
+
+        $labelsStatus= '';
+        $dataStatus = '';
+        foreach ($status as $statu){
+            $nomeStatus = $statu->status ? : 'Sem status';
+            if ($labelsStatus === ''){
+                $labelsStatus.= '"'.$nomeStatus.'"';
+                $dataStatus.= '"'.$statu->count.'"';
+            }else{
+                $labelsStatus.= ',"'.$nomeStatus.'"';
+                $dataStatus.= ',"'.$statu->count.'"';
+            }
+        }
+
+
+        // Gráficos
+        $graphics = [
+            'leadsUltimosQuinzeDias' => json_encode($leads15days),
+        ];
+
+        //dados para a tela
         $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
         $leads = Lead::where('id_userResponsavel',$usuario)->get();
@@ -165,7 +249,8 @@ class UserController extends Controller
             'status' => ColumnsKhanban::where('id_empresa', $empresa)->get(),
             'midias' => Midia::where('id_empresa', $empresa)->get()
         ];
-        return view('User.dashboard', ['tela' =>'dashboard','dadosInfo'=>$dadosInfo, 'dadosCadastroLeads'=>$dadosCadastroLeads ]);
+
+        return view('User.dashboard', ['tela' =>'dashboard','dadosInfo'=>$dadosInfo, 'dadosCadastroLeads'=>$dadosCadastroLeads,'graphics'=>$graphics,'labelsFases'=>$labelsFases,'dataFases'=>$dataFases,'labelsStatus'=>$labelsStatus,'dataStatus'=>$dataStatus]);
     }
 
     public function vizualizarAgendaUser()

@@ -29,9 +29,73 @@
                 <div>
                     Dasboard User
                 </div>
+                <div class="d-flex">
+                    <div class="w-75">
+                        tsffsdf
+                    </div>
+                    <div class="w-25">
+                        <div class="divGhafhcs2 mt-5">
+                            <canvas id="divGhafhcsStatus"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-around align-items-center">
+                    <div class="divGhafhcs mt-5">
+                        <canvas id="chartLeads15Dias"></canvas>
+                    </div>
+                    <div class="divGhafhcs2 mt-5">
+                        <canvas id="divGhafhcsFases"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <script>
+        const leadsUltimosQuinzeDias = {!!  $graphics['leadsUltimosQuinzeDias'] !!};
+        const chartLeads15Dias = document.getElementById('chartLeads15Dias');
+        new Chart(chartLeads15Dias, {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: 'Leads 15 dias',
+                        data: JSON.parse(leadsUltimosQuinzeDias)
+                    }]
+            },
+            options: {
+                parsing: {
+                    xAxisKey: 'day',
+                    yAxisKey: 'qnt'
+                }
+            }
+        });
+
+        const divGhafhcsFases = document.getElementById('divGhafhcsFases');
+        new Chart(divGhafhcsFases, {
+            type: 'doughnut',
+            data: {
+                labels: [{!! $labelsFases!!}],
+                datasets: [
+                    {
+                        label: 'Quantidade',
+                        data: [{!! $dataFases!!}],
+                    }]
+            }
+        });
+
+        const divGhafhcsStatus = document.getElementById('divGhafhcsStatus');
+        new Chart(divGhafhcsStatus, {
+            type: 'doughnut',
+            data: {
+                labels: [{!! $labelsStatus!!}],
+                datasets: [
+                    {
+                        label: 'Quantidade',
+                        data: [{!! $dataStatus!!}],
+                }]
+            }
+        });
+    </script>
 @endsection
 
 
