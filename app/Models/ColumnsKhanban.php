@@ -21,4 +21,8 @@ class ColumnsKhanban extends Model
         'int_posicao',
         'int_tipoKhanban'
     ];
+    public function leads()
+    {
+        return $this->hasMany('App\Models\Lead','id_columnsKhanban', 'id_columnsKhanban')->orderBy('int_posicao');
+    }
 }

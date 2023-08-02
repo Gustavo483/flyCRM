@@ -125,7 +125,8 @@ Route::middleware('auth')->group(function () {
             Route::post('registrar-produto-servico-user', 'registrarProdutoServicoUser')->name('registrarProdutoServicoUser');
             Route::post('editar-produto-servico-user', 'editarProdutoServicoUser')->name('editarProdutoServicoUser');
 
-
+            Route::get('teste-kanban', 'kanbanteste')->name('kanbanteste');
+            Route::post('/board/{id}/reorder', 'saveTasksOrder');
 
         });
     });

@@ -25,14 +25,35 @@
                     </div>
                     @include('components.userComponents.CadastrarLead')
                 </div>
-                @include('components.userComponents.infos')
-                <div>
-                    Dasboard User
+                <main>
+                    <div id="projeto-id" style="display: none">{{$id_empresa}}</div>
+                    @csrf
+                    <section>
+                        @foreach ($columns as $column)
+                            <article data-column-id="{{ $column->id_columnsKhanban }}">
+                                <div class="coluna-head">
+                                    <label class="coluna-head3" style="background:{{$column->st_color}}">{{ $column->st_titulo }}</label>
+                                </div>
+
+                                <div class="coluna-body">
+                                    @foreach ($column->leads as $leads)
+                                        <div class="tarefa bg" data-position="{{ $leads->int_posicao }}" data-id="{{ $leads->id_lead }}" draggable="true">
+                                            <div class="nome">{{ $leads->st_nome }}</div>
+                                        </div>
+                                    @endforeach
+
+                                    <div class="coluna-footer"></div>
+                                </div>
+                            </article>
+                        @endforeach
+                    </section>
+                </main>
+
+                <div class="mt-5">
+                    @include('components.userComponents.infos')
                 </div>
+
                 <div class="d-flex">
-                    <div class="w-75">
-                        tsffsdf
-                    </div>
                     <div class="w-25">
                         <div class="divGhafhcs2 mt-5">
                             <canvas id="divGhafhcsStatus"></canvas>
@@ -50,6 +71,7 @@
             </div>
         </div>
     </div>
+    <script src="{{asset('js/board.js')}}"></script>
     <script>
         const leadsUltimosQuinzeDias = {!!  $graphics['leadsUltimosQuinzeDias'] !!};
         const chartLeads15Dias = document.getElementById('chartLeads15Dias');

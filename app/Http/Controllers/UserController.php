@@ -18,6 +18,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -161,7 +162,6 @@ class UserController extends Controller
         $currentMonth = Carbon::now()->format('Y-m');
         $userResponsavel = auth()->user()->id;
         $userCountByDay = Lead::selectRaw('DATE(created_at) as day, COUNT(*) as count')
-            ->whereRaw("DATE_FORMAT(created_at, '%Y-%m') = '$currentMonth'")
             ->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )
             ->whereRaw("id_userResponsavel = '$userResponsavel'" )
             ->groupBy('day')
@@ -224,8 +224,6 @@ class UserController extends Controller
                 $dataStatus.= ',"'.$statu->count.'"';
             }
         }
-
-
         // Gráficos
         $graphics = [
             'leadsUltimosQuinzeDias' => json_encode($leads15days),
@@ -249,8 +247,47 @@ class UserController extends Controller
             'status' => ColumnsKhanban::where('id_empresa', $empresa)->get(),
             'midias' => Midia::where('id_empresa', $empresa)->get()
         ];
+        $columns = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban', 1)->orderBy('int_posicao')->get();
 
-        return view('User.dashboard', ['tela' =>'dashboard','dadosInfo'=>$dadosInfo, 'dadosCadastroLeads'=>$dadosCadastroLeads,'graphics'=>$graphics,'labelsFases'=>$labelsFases,'dataFases'=>$dataFases,'labelsStatus'=>$labelsStatus,'dataStatus'=>$dataStatus]);
+        return view('User.dashboard', [
+            'tela' =>'dashboard',
+            'dadosInfo'=>$dadosInfo,
+            'dadosCadastroLeads'=>$dadosCadastroLeads,
+            'graphics'=>$graphics,
+            'labelsFases'=>$labelsFases,
+            'dataFases'=>$dataFases,
+            'labelsStatus'=>$labelsStatus,
+            'dataStatus'=>$dataStatus,
+            'columns'=>$columns,
+            'id_empresa'=>$empresa
+        ]);
+    }
+    public function kanbanteste()
+    {
+        $empresa = auth()->user()->id_empresa;
+        $columns = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban', 1)->orderBy('int_posicao')->get();
+        return view('User.teste', [
+            'columns'=>$columns
+        ]);
+    }
+    public function saveTasksOrder(Request $request)
+    {
+        try {
+            $dados = json_decode($request->json, true);
+            foreach ($dados as $id_tarefa => $tarefa) {
+                $lead = Lead::where('id_lead',$id_tarefa )->first();
+                $lead->update([
+                    'id_columnsKhanban'=>$tarefa['coluna'],
+                    'int_posicao'=>$tarefa['posicao']
+                ]);
+            }
+        }
+        catch (Throwable $erro) {
+            DB::rollBack();
+            echo "Erro ao salvar ordem das tarefas: {$erro}";
+            die;
+        }
+        echo 'Ordem atualizada com sucesso!';
     }
 
     public function vizualizarAgendaUser()
