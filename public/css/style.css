@@ -26,6 +26,7 @@
 .tamanho60{
     width: 60%;
 }
+
 .divCabecalho{
     padding: 10px;
     border-radius: 10px;
@@ -35,6 +36,22 @@
     padding: 10px;
     border-radius: 10px 10px 0 0;!important;
     background: white;!important;
+}
+.DivInfoGerais{
+    width: 300px;
+    height: 325px;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+.DivInfoGerais2{
+    width: 500px;
+    height: 325px;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
 }
 
 .tamanho40{
@@ -256,6 +273,7 @@
 }
 .divGhafhcs{
     width: 500px;
+
 }
 .divGhafhcs2{
     width: 300px;
@@ -286,6 +304,14 @@
     border-radius: 10px;
     padding: 10px;
     width: 90%;
+}
+.divFiltro2{
+    border: 1px solid rgba(145, 255, 185, 0.8);
+    border-radius: 10px;
+    padding: 10px;
+}
+.proxOportunidade{
+    color: #2563eb;
 }
 
 .colorgray{

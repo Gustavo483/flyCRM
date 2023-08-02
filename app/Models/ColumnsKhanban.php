@@ -25,4 +25,8 @@ class ColumnsKhanban extends Model
     {
         return $this->hasMany('App\Models\Lead','id_columnsKhanban', 'id_columnsKhanban')->orderBy('int_posicao');
     }
+
+    public function ToDoUser(){
+        return $this->hasMany('App\Models\ToDoKhanban','id_columnsKhanban', 'id_columnsKhanban')->where('id_user',auth()->user()->id);
+    }
 }

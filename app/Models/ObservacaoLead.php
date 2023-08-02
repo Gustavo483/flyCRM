@@ -18,4 +18,8 @@ class ObservacaoLead extends Model
         'st_descricao',
         'id_empresa'
     ];
+    public function lead()
+    {
+        return $this->hasOne('App\Models\Lead','id_lead', 'id_lead');
+    }
 }

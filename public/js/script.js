@@ -8,6 +8,10 @@ function vizualizarLead(id_ledas){
     btnEmpresa.click()
 }
 
+function abrirLead(id_lead){
+    document.getElementById('Lead'+id_lead).click()
+}
+
 function abrirDiv(id_elemento, cabecalho){
     var div = document.getElementById(id_elemento)
     var divCabecalho = document.getElementById(cabecalho)

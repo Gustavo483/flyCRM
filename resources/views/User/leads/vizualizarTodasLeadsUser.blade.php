@@ -60,7 +60,7 @@
                     @foreach($leads as $lead)
                         <div onclick="vizualizarLead({{$lead->id_lead}})" class="divEmpresas2 my-3 d-flex">
                             <div class="d-flex justify-content-between tamanho60">
-                                <div class="textBlue d-flex align-items-center w-25">{{$lead->fase->st_nomeFase}}</div>
+                                <div class="textBlue d-flex align-items-center w-25">{{isset($lead->fase->st_nomeFase)?$lead->fase->st_nomeFase:''}}</div>
                                 <div class="textGray d-flex align-items-center w-50">{{$lead->st_nome}}</div>
                                 <div class="textGray d-flex align-items-center justify-content-start w-25">{{$lead->int_telefone}}</div>
                             </div>

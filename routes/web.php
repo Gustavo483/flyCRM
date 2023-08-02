@@ -128,6 +128,9 @@ Route::middleware('auth')->group(function () {
             Route::get('teste-kanban', 'kanbanteste')->name('kanbanteste');
             Route::post('/board/{id}/reorder', 'saveTasksOrder');
 
+            Route::post('registrar-dado-kanban', 'registrarDadoKanban')->name('registrarDadoKanban');
+
+
         });
     });
 

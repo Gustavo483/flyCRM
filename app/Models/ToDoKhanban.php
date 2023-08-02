@@ -10,6 +10,8 @@ class ToDoKhanban extends Model
     use HasFactory;
 
     protected $table = 'tb_to_do_khanban';
+    protected $primaryKey = 'id_toDoKhanban';
+
     protected $fillable = [
         'id_toDoKhanban',
         'id_columnsKhanban',

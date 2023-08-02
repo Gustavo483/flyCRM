@@ -31,6 +31,15 @@ article {
     color: white;
     border-radius: 10px;
     text-align: center;
+    position: relative;
+}
+.btntessdf{
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    border: none;
+    color: white;
+    font-size: 25px;
 }
 
 article > * { transition: background 350ms ease-out; }

@@ -11,6 +11,7 @@ use App\Models\Midia;
 use App\Models\ObservacaoLead;
 use App\Models\Origem;
 use App\Models\ProdutoServico;
+use App\Models\ToDoKhanban;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
@@ -22,6 +23,32 @@ use Throwable;
 
 class UserController extends Controller
 {
+    public function registrarDadoKanban(Request $request)
+    {
+        try {
+            $validacao = [
+                'st_descricao' => 'required',
+            ];
+
+            $feedback = [
+                'required' => 'O campo é requirido',
+            ];
+
+            $request->validate($validacao, $feedback);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Não foi possível adicionar a atividade. Favor verificar os dados e tentar novamente.');
+        }
+        $CollunsToDo = ColumnsKhanban::where('st_titulo','a fazer')->where('id_empresa', auth()->user()->id_empresa)->first();
+        ToDoKhanban::create([
+            'id_columnsKhanban'=>$CollunsToDo->id_columnsKhanban,
+            'id_user'=>auth()->user()->id,
+            'st_descricao'=>$request->st_descricao,
+            'int_posicao'=>ToDoKhanban::where('id_columnsKhanban', $CollunsToDo->id_columnsKhanban)->count() + 1,
+        ]);
+
+        return redirect()->back()->with('success', 'Atividade cadastrada com sucesso.');
+    }
 
     public function registrarOportunidade(Request $request)
     {
@@ -159,7 +186,6 @@ class UserController extends Controller
 
         $TESTE =  new DateTime();
         $final = $TESTE->format('Y-m-d');
-        $currentMonth = Carbon::now()->format('Y-m');
         $userResponsavel = auth()->user()->id;
         $userCountByDay = Lead::selectRaw('DATE(created_at) as day, COUNT(*) as count')
             ->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )
@@ -224,20 +250,40 @@ class UserController extends Controller
                 $dataStatus.= ',"'.$statu->count.'"';
             }
         }
-        // Gráficos
+
         $graphics = [
             'leadsUltimosQuinzeDias' => json_encode($leads15days),
         ];
 
-        //dados para a tela
         $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
         $leads = Lead::where('id_userResponsavel',$usuario)->get();
+
+        $id_leads = [];
+
+        foreach ($leads as $lead){
+            array_push($id_leads,$lead->id_lead);
+        }
+
+        $observacoes = ObservacaoLead::wherein('id_lead',$id_leads)->where('dt_contato','>=',date('Y-m-d'))->where('bl_oportunidade',1)->orderby('dt_contato')->limit(5)->get();
+
+        $hoje = new DateTime();
+        $intervalo = new DateInterval('P15D');
+        $intervalodias = $hoje->sub($intervalo)->format('Y-m-d');
+        $hoje2 = date('Y-m-d');
+
+        $DivInfoGerais = [
+            'leads'=> Lead::where('id_userResponsavel',$usuario)->whereRaw("created_at BETWEEN '$intervalodias' AND '$hoje2'" )->count(),
+            'oportunidades'=> ObservacaoLead::wherein('id_lead',$id_leads)->where('bl_oportunidade',1)->whereRaw("created_at BETWEEN '$intervalodias' AND '$hoje2'" )->count(),
+            'conversoes'=> 1
+        ];
+
         $dadosInfo = [
             'leads'=> count($leads),
-            'Oportunidades'=>0,
+            'Oportunidades'=>ObservacaoLead::wherein('id_lead',$id_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
             'atendimento'=>0,
         ];
+
         $dadosCadastroLeads = [
             'origens' => Origem::where('id_empresa', $empresa)->get(),
             'campanhas' => Campanha::where('id_empresa', $empresa)->get(),
@@ -247,8 +293,9 @@ class UserController extends Controller
             'status' => ColumnsKhanban::where('id_empresa', $empresa)->get(),
             'midias' => Midia::where('id_empresa', $empresa)->get()
         ];
-        $columns = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban', 1)->orderBy('int_posicao')->get();
+        $columnsStatus = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban', 1)->orderBy('int_posicao')->get();
 
+        $columnsToDo = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban',2)->orderBy('int_posicao')->get();
         return view('User.dashboard', [
             'tela' =>'dashboard',
             'dadosInfo'=>$dadosInfo,
@@ -258,8 +305,11 @@ class UserController extends Controller
             'dataFases'=>$dataFases,
             'labelsStatus'=>$labelsStatus,
             'dataStatus'=>$dataStatus,
-            'columns'=>$columns,
-            'id_empresa'=>$empresa
+            'columnsStatus'=>$columnsStatus,
+            'columnsToDo'=>$columnsToDo,
+            'id_empresa'=>$empresa,
+            'observacoes'=>$observacoes,
+            'DivInfoGerais'=>$DivInfoGerais
         ]);
     }
     public function kanbanteste()
@@ -275,11 +325,22 @@ class UserController extends Controller
         try {
             $dados = json_decode($request->json, true);
             foreach ($dados as $id_tarefa => $tarefa) {
-                $lead = Lead::where('id_lead',$id_tarefa )->first();
-                $lead->update([
-                    'id_columnsKhanban'=>$tarefa['coluna'],
-                    'int_posicao'=>$tarefa['posicao']
-                ]);
+
+                $frutas = explode("-", $id_tarefa);
+                if ($frutas[0] ==='todo'){
+                    $toDo = ToDoKhanban::where('id_toDoKhanban',$frutas[1])->first();
+                    $toDo->update([
+                        'id_columnsKhanban'=>$tarefa['coluna'],
+                        'int_posicao'=>$tarefa['posicao']
+                    ]);
+                }
+                if ($frutas[0] ==='status'){
+                    $lead = Lead::where('id_lead',$frutas[1])->first();
+                    $lead->update([
+                        'id_columnsKhanban'=>$tarefa['coluna'],
+                        'int_posicao'=>$tarefa['posicao']
+                    ]);
+                }
             }
         }
         catch (Throwable $erro) {
@@ -332,17 +393,28 @@ class UserController extends Controller
         foreach ($leads as $lead){
             if (isset($lead->observacoes)){
                 foreach ($lead->observacoes as $observacoes) {
-                    if ($observacoes->dt_contato === $hoje->format('Y-m-d')){
+                    if ($observacoes->dt_contato === $hoje->format('Y-m-d') && $observacoes->bl_oportunidade === 1){
                         $oportunidadesHoje->push($observacoes);
                     }
-                    if ($observacoes->dt_contato != $hoje->format('Y-m-d')){
+                    if ($observacoes->dt_contato != $hoje->format('Y-m-d') && $observacoes->bl_oportunidade === 1){
                         $oportunidadesOutroDia->push($observacoes);
                     }
                 }
             }
         }
-        dd($oportunidadesHoje,$oportunidadesOutroDia);
-        return view('User.oportunidades.vizualizarOportunidadesUser', ['tela' =>'oportunidade', 'oportunidadesHoje'=>$oportunidadesHoje,'oportunidadesOutroDia'=>$oportunidadesOutroDia ]);
+
+        $oportunidades = [
+            'oportunidadesHoje'=>$oportunidadesHoje,
+            'oportunidadesOutroDia'=>$oportunidadesOutroDia
+        ];
+
+        $dadosInfo = [
+            'leads'=> count($leads),
+            'leadsHoje'=>count($oportunidadesHoje),
+            'totalOportunidades'=>count($oportunidadesOutroDia),
+        ];
+
+        return view('User.oportunidades.vizualizarOportunidadesUser', ['tela' =>'oportunidade', 'oportunidades'=>$oportunidades,'dadosInfo'=>$dadosInfo ]);
     }
 
     public function produtoServicoUser()

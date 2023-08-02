@@ -34,6 +34,11 @@ class Lead extends Model
     public function observacoes(){
         return $this->hasMany('App\Models\ObservacaoLead','id_lead', 'id_lead');
     }
+
+    public function proxObservacoes(){
+        return $this->hasMany('App\Models\ObservacaoLead','id_lead', 'id_lead')->where('bl_oportunidade',1)->orderBy('dt_contato', 'desc')->limit(5);
+    }
+
     public function fase(){
         return $this->hasOne('App\Models\Fase','id_fase', 'id_fase');
     }
