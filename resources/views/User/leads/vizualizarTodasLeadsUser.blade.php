@@ -66,7 +66,7 @@
                                 <div class="textGray d-flex align-items-center justify-content-start w-25">{{$lead->int_telefone}}</div>
                             </div>
                             <div class="d-flex justify-content-between tamanho60 align-items-center">
-                                <div class="textBlue w-25">{{$lead->produto->st_nomeProdutoServico}}</div>
+                                <div class="textBlue w-25">{{isset($lead->produto) ? $lead->produto->st_nomeProdutoServico : ''}}</div>
                                 <div class="" style="width: 120px; height:10px">
                                     <div style="width:{{$lead->int_temperatura}}%;" class="divTemperatura"></div>
                                 </div>

@@ -12,7 +12,9 @@
                 <div>
                     @include('layouts.sucessoErrorRequest')
                 </div>
-                <p class="pTitle">Configuração do sistema</p>
+                <div class=" colorgray">
+                    Configuração do sistema
+                </div>
 
                 <!-- Configurações para os usuarios -->
                 <div>

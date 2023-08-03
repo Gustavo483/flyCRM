@@ -349,6 +349,15 @@
     background: #5bfda6;
     color: green;
 }
+.infoResponsavel{
+    width: 40px;
+    padding:5px;
+    border-radius: 50%;
+    background: #5bfda6;
+    border: none;
+    font-weight: bold;
+    color:  #6b6b6b;
+}
 .linksLeads{
     width: 220px;
     background: white;

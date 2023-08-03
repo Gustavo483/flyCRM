@@ -1,64 +1,47 @@
-@extends('components.basicComponent')
+<html>
+<head>
+    <title>My Evo Calendar</title>
+    <link rel="stylesheet" type="text/css" href="css/evo-calendar.css"/>
+    <link href="{{asset('css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('css/board.css')}}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.3/evo-calendar/css/evo-calendar.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-@section('titulo', 'DashboarRoot')
+</head>
+<body>
 
-@section('content')
-    <div class="">
-        <div class="posicaoDiv w-100">
-            <div class="NavbarAdmimHoot">
-                @include('layouts.navBarAdminUser')
-            </div>
-            <div class="container">
-                <div>
-                    @include('layouts.sucessoErrorRequest')
-                </div>
-                <div class="d-flex justify-content-between py-4">
-                    <div class="AdminInfo1">
-                        <div class="textInfo">
-                            <h5> 0 empresas ativas</h5>
-                        </div>
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="#142ba1"
-                                 class="bi bi-building" viewBox="0 0 16 16">
-                                <path
-                                    d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1ZM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Z"/>
-                                <path
-                                    d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1Zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3V1Z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="AdminInfo2">
-                        <div class="textInfo">
-                            <h5>0 leads totais</h5>
-                        </div>
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="#25a7a6"
-                                 class="bi bi-person-heart" viewBox="0 0 16 16">
-                                <path
-                                    d="M9 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h10s1 0 1-1-1-4-6-4-6 3-6 4Zm13.5-8.09c1.387-1.425 4.855 1.07 0 4.277-4.854-3.207-1.387-5.702 0-4.276Z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="AdminInfo3">
-                        <div class="textInfo">
-                            <h5>0 chamada de suporte </h5>
-                        </div>
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="#7ba9a8"
-                                 class="bi bi-headset" viewBox="0 0 16 16">
-                                <path
-                                    d="M8 1a5 5 0 0 0-5 5v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a6 6 0 1 1 12 0v6a2.5 2.5 0 0 1-2.5 2.5H9.366a1 1 0 0 1-.866.5h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 .866.5H11.5A1.5 1.5 0 0 0 13 12h-1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h1V6a5 5 0 0 0-5-5z"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    vizualizar agenda
-                </div>
-            </div>
+<div class="posicaoDiv w-100">
+    <div class="container">
+        <div class="NavbarAdmimHoot">
+            @include('layouts.navBarAdminUser')
         </div>
+        <div>
+            @include('layouts.sucessoErrorRequest')
+        </div>
+        <div class=" colorgray">
+            Agenda
+        </div>
+        <div class="my-5" id="calendar"></div>
     </div>
-@endsection
+</div>
 
+<!-- Add jQuery library (required) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
 
+<!-- Add the evo-calendar.js for.. obviously, functionality! -->
+<script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
+
+<script>
+    $("#calendar").evoCalendar({
+        theme:'Midnight Blue',
+        language:'pt',
+        calendarEvents: {!!  $teste !!}
+        }
+    );
+
+</script>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+</html>

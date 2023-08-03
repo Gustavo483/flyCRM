@@ -3,7 +3,7 @@
         <div class="posicaoLinkUser">
             <div class="Profile d-flex justify-content-end py-3">
                 <a class=" linkProfile" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{auth()->user()->name[0]}}
+                    {{auth()->user()->st_iniciaisNome}}
                 </a>
                 <ul class="dropdown-menu p-0" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="{{route('profile.edit')}}">Perfil</a></li>

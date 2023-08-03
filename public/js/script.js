@@ -29,7 +29,9 @@ function EditarUsuario(usuario){
     document.getElementById('nameEdit').value = usuario.name
     document.getElementById('emailEdit').value = usuario.email
     var SetorUsuario =document.getElementById('SetoreUsuario'+usuario.id_setor)
-    SetorUsuario.setAttribute('selected', true)
+    if (SetorUsuario){
+        SetorUsuario.setAttribute('selected', true)
+    }
     btn.click()
 }
 function DeleteUsuario(usuario){

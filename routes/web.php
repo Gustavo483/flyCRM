@@ -48,6 +48,10 @@ Route::middleware('auth')->group(function () {
 
             //Leads
             Route::get('vizualizar-todas-leads-empresa', 'vizualizarTodasleadsEmpresa')->name('vizualizarTodasleadsEmpresa');
+            Route::get('vizualizar-lead-admin-user/{id_lead}', 'vizualizarLeadAdminUser')->name('vizualizarLeadAdminUser');
+            Route::post('Editar-Lead-admin/{id_lead}', 'EditarLeadAdmin')->name('EditarLeadAdmin');
+            Route::post('registrar-leads-admin', 'registrarLeadsAdmin')->name('registrarLeadsAdmin');
+            Route::post('filtrar-leads-admin', 'filtrarLeadsAdmin')->name('filtrarLeadsAdmin');
 
             //agenda
             Route::get('vizualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
@@ -100,6 +104,16 @@ Route::middleware('auth')->group(function () {
             Route::post('registrar-produto-servico', 'registrarProdutoServico')->name('registrarProdutoServico');
             Route::post('editar-produto-servico', 'editarProdutoServico')->name('editarProdutoServico');
             Route::post('deletar-produto-servicos', 'deletarProdutoServicos')->name('deletarProdutoServicos');
+
+            // Kanban
+            Route::post('registrar-kanban-admin', 'registrarDadoKanbanAdmin')->name('registrarDadoKanbanAdmin');
+
+            //Oportunidade
+            Route::post('registrar-oportunidade-admin', 'registrarOportunidadeAdmin')->name('registrarOportunidadeAdmin');
+            Route::post('registrar-observacao-admin', 'registrarObservacaoAdmin')->name('registrarObservacaoAdmin');
+            Route::get('vizualizar-oportunidades-user-admin', 'vizualizarOportunidadesUserAdmin')->name('vizualizarOportunidadesUserAdmin');
+
+
         });
     });
 
@@ -128,16 +142,15 @@ Route::middleware('auth')->group(function () {
             Route::post('editar-produto-servico-user', 'editarProdutoServicoUser')->name('editarProdutoServicoUser');
 
             Route::get('teste-kanban', 'kanbanteste')->name('kanbanteste');
-            Route::post('/board/{id}/reorder', 'saveTasksOrder');
 
             Route::post('registrar-dado-kanban', 'registrarDadoKanban')->name('registrarDadoKanban');
-
         });
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/board/{id}/reorder', [UserController::class, 'saveTasksOrder'])->middleware(['auth', 'verified'])->name('saveTasksOrder');
 });
 
 require __DIR__.'/auth.php';

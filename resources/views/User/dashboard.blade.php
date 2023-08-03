@@ -1,6 +1,6 @@
 @extends('components.basicComponent')
 
-@section('titulo', 'DashboarRoot')
+@section('titulo', 'DashboarUser')
 
 @section('content')
     <div class="">
@@ -47,17 +47,17 @@
                             <div onclick="vizualizarLead({{$lead->lead->id_lead}})" class="divEmpresas2 my-3 d-flex">
                                 <div class="d-flex justify-content-between tamanho60">
                                     <div class="textBlue d-flex align-items-center w-25">{{isset($lead->lead->fase->st_nomeFase)?$lead->lead->fase->st_nomeFase:''}}</div>
-                                    <div class="textGray d-flex align-items-center w-50">{{$lead->lead->st_nome}}</div>
-                                    <div class="textGray d-flex align-items-center justify-content-start w-25">{{$lead->lead->int_telefone}}</div>
+                                    <div class="textGray d-flex align-items-center w-50">{{isset($lead->lead) ? $lead->lead->st_nome :''}}</div>
+                                    <div class="textGray d-flex align-items-center justify-content-start w-25">{{ isset($lead->lead)? $lead->lead->int_telefone:''}}</div>
                                 </div>
                                 <div class="d-flex justify-content-between tamanho40 align-items-center">
-                                    <div class="textBlue w-50">{{$lead->lead->produto->st_nomeProdutoServico}}</div>
+                                    <div class="textBlue w-50">{{isset($lead->lead->produto) ?$lead->lead->produto->st_nomeProdutoServico :''}}</div>
                                     <div class="d-flex  align-items-center w-50">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#b9b9b9" class="bi bi-calendar4-week" viewBox="0 0 16 16">
                                             <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"/>
                                             <path d="M11 7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-2 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
                                         </svg>
-                                        <div class="textGray3 d-flex align-items-center ps-3" >{{isset($lead->lead->observacoes->last()->dt_contato)? $lead->lead->observacoes->last()->dt_contato : '--'}}</div>
+                                        <div class="textGray3 d-flex align-items-center ps-3" >{{isset($lead->dt_contato)? $lead->dt_contato : '--'}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -186,7 +186,7 @@
                                     @if($column->st_titulo === 'a fazer')
                                         <label class="coluna-head3" style="background:{{$column->st_color}}">
                                             {{ $column->st_titulo }}
-                                            <button style="background: {{$column->st_color}}" type="button" class="btntessdf" data-bs-toggle="modal" data-bs-target="#CriarDadoKanban">
+                                            <button style="background: {{$column->st_color}}" type="button" class="BtnAdicionarKanbanToDo" data-bs-toggle="modal" data-bs-target="#CriarDadoKanban">
                                                 +
                                             </button>
                                         </label>

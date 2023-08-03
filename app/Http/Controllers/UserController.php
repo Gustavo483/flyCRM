@@ -172,7 +172,7 @@ class UserController extends Controller
         $usuario = auth()->user()->id;
 
 
-        Lead::create([
+        $lead = Lead::create([
             'st_nome'=>$request->st_nome,
             'int_telefone'=>$request->int_telefone,
             'int_posicao'=>Lead::where('id_columnsKhanban', $request->id_columnsKhanban)->count() + 1,
@@ -190,17 +190,30 @@ class UserController extends Controller
             'id_empresa'=>$id_empresa
         ]);
 
-        return redirect()->back()->with('success', 'Lead cadastrado com sucesso.');
+        $agora = new DateTime();
+        $dia = $agora->format('d/m/Y');
+        $hora = $agora->format('H:i:s');
+        $usuario = auth()->user();
+
+        ObservacaoLead::create([
+            'id_lead'=>$lead->id_lead,
+            'st_titulo'=>$dia.' ás '.$hora.' - '.$usuario->name.'- Lead Cadastrado no sistema.',
+            'bl_oportunidade'=>0,
+            'id_empresa'=>$usuario->id_empresa
+        ]);
+
+        return redirect()->route('vizualizarLeadUser', ['id_lead'=>$lead->id_lead])->with('success', 'Lead cadastrado com sucesso.');
     }
 
     public function leadsUltimosQuinzeDias(): mixed
     {
         $hoje = new DateTime();
         $intervalo = new DateInterval('P15D');
+        $intervalo2 = new DateInterval('P1D');
         $intervalodias = $hoje->sub($intervalo)->format('Y-m-d');
 
         $TESTE =  new DateTime();
-        $final = $TESTE->format('Y-m-d');
+        $final = $TESTE->add($intervalo2)->format('Y-m-d');
         $userResponsavel = auth()->user()->id;
         $userCountByDay = Lead::selectRaw('DATE(created_at) as day, COUNT(*) as count')
             ->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )
@@ -208,7 +221,6 @@ class UserController extends Controller
             ->groupBy('day')
             ->orderBy('day', 'ASC')
             ->get();
-
         $results = [];
 
         foreach ($userCountByDay as $userCount) {

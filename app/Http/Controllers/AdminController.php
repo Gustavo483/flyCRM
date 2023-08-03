@@ -25,25 +25,29 @@ class AdminController extends Controller
     }
     public function registerEmpresa(Request $request)
     {
-        $validacao = [
-            'st_nomeEmpresa' => 'required',
-            'name'=>'required',
-            'email'=>'required|unique:users',
-            'password'=>'required',
-            'st_DocResponsavel' => 'required',
-            'st_telefone' => 'required',
-            'id_plano' => 'required',
-            'st_periodicidade'=> 'required',
-            'bl_ativo'=> 'required',
-            'dt_validade'=> 'required'
-        ];
+        try {
+            $validacao = [
+                'st_nomeEmpresa' => 'required',
+                'name'=>'required',
+                'email'=>'required|unique:users',
+                'password'=>'required',
+                'st_DocResponsavel' => 'required',
+                'st_telefone' => 'required',
+                'id_plano' => 'required',
+                'st_periodicidade'=> 'required',
+                'bl_ativo'=> 'required',
+                'dt_validade'=> 'required'
+            ];
 
-        $feedback = [
-            'required' => 'O campo é requirido',
-            'unique'=> 'O email já está cadastrado no sistema'
-        ];
+            $feedback = [
+                'required' => 'O campo é requirido',
+                'unique'=> 'O email já está cadastrado no sistema'
+            ];
 
-        $request->validate($validacao, $feedback);
+            $request->validate($validacao, $feedback);
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', 'O email informado já está em uso, favor registrar um novo.');
+        }
         try {
             $user = User::create([
                 'name' => $request->name,
