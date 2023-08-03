@@ -11,6 +11,7 @@
             <div class="container">
                 <div>
                     @include('layouts.sucessoErrorRequest')
+                    @include('components.userComponents.EditarLead')
                 </div>
 
                 <div>
@@ -102,9 +103,16 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="d-flex justify-content-between my-5">
+                    <div style="width: 70%" class="mt-4 d-flex justify-content-end">
+                        <!-- Button editar modal -->
+                        <button type="button" class="BtnEditarLeads p-0 m-0" data-bs-toggle="modal"
+                                data-bs-target="#EditarLead">
+                            Editar lead
+                        </button>
+                    </div>
+                    <div class=" border DivPrincipal">
+                    </div>
+                    <div class="d-flex justify-content-between mb-5">
                         <div class="DivPrincipal p-3">
                             <div class="">
                                 @foreach($lead->observacoes->sortByDesc('created_at') as $observacao)
@@ -138,18 +146,18 @@
                                 <p class="colorgray3 m-0">{{$lead->st_email}}</p>
                             </div>
                             <div class="mt-5">
-                                <p class="colorgray3 m-0 ">Origem: {{$lead->origem->st_nomeOrigem}}</p>
-                                <p class="colorgray3 m-0">Mídia: {{$lead->midia->st_nomeMidia}}</p>
-                                <p class="colorgray3 m-0">Campanha: {{$lead->campanha->st_nomeCampanha}}</p>
-                                <p class="colorgray3 m-0">Responsável: {{$lead->responsavel->name}}</p>
+                                <p class="colorgray3 m-0 ">Origem: {{isset($lead->origem->st_nomeOrigem) ?  $lead->origem->st_nomeOrigem : ''}}</p>
+                                <p class="colorgray3 m-0">Mídia: {{isset($lead->midia->st_nomeMidia) ? $lead->midia->st_nomeMidia:''}}</p>
+                                <p class="colorgray3 m-0">Campanha: {{isset($lead->campanha->st_nomeCampanha) ? $lead->campanha->st_nomeCampanha:''}}</p>
+                                <p class="colorgray3 m-0">Responsável: {{isset($lead->responsavel->name) ? $lead->responsavel->name : ''}}</p>
                             </div>
 
                             <div class="my-5">
-                                <p class="colorgray3 m-0">Status: {{$lead->status->st_titulo}}</p>
+                                <p class="colorgray3 m-0">Status: {{isset($lead->status->st_titulo) ? $lead->status->st_titulo : ''}}</p>
                                 <p class="colorgray3 m-0">Temperatura: {{$lead->int_temperatura}}%</p>
-                                <p class="colorgray3 m-0">Fase: {{$lead->fase->st_nomeFase}}</p>
-                                <p class="colorgray3 m-0">Grupo: {{$lead->grupo->st_nomeGrupo}}</p>
-                                <p class="colorgray3 m-0">Produto/Serviço: {{$lead->servico->st_nomeProdutoServico}}</p>
+                                <p class="colorgray3 m-0">Fase: {{isset($lead->fase->st_nomeFase) ? $lead->fase->st_nomeFase : ''}}</p>
+                                <p class="colorgray3 m-0">Grupo: {{isset($lead->grupo->st_nomeGrupo) ? $lead->grupo->st_nomeGrupo :''}}</p>
+                                <p class="colorgray3 m-0">Produto/Serviço: {{isset($lead->servico->st_nomeProdutoServico) ?$lead->servico->st_nomeProdutoServico :''}}</p>
                             </div>
                         </div>
                     </div>

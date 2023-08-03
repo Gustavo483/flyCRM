@@ -48,7 +48,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div class="mb-5">
                     @foreach($oportunidades['oportunidadesHoje']->sortByDesc('dt_contato') as $observacao)
                         <div onclick="abrirLead({{$observacao->lead->id_lead}})" class="DivOportunidade d-flex justify-content-between align-items-center mt-4">
                             <div>

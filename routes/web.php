@@ -113,7 +113,9 @@ Route::middleware('auth')->group(function () {
             //leads
             Route::get('vizualizar-todas-leads-user', 'vizualizarTodasleadsUser')->name('vizualizarTodasleadsUser');
             Route::post('registrar-leads', 'registrarLeads')->name('registrarLeads');
+            Route::post('filtrar-leads', 'filtrarLeads')->name('filtrarLeads');
             Route::get('vizualizar-lead-user/{id_lead}', 'vizualizarLeadUser')->name('vizualizarLeadUser');
+            Route::post('Editar-Lead{id_lead}', 'EditarLead')->name('EditarLead');
 
             // Oportunidades
             Route::get('vizualizar-oportunidades-user', 'vizualizarOportunidadesUser')->name('vizualizarOportunidadesUser');
@@ -129,7 +131,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/board/{id}/reorder', 'saveTasksOrder');
 
             Route::post('registrar-dado-kanban', 'registrarDadoKanban')->name('registrarDadoKanban');
-
 
         });
     });

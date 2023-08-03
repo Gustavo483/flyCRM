@@ -124,8 +124,23 @@ class UserController extends Controller
     }
     public function vizualizarLeadUser( Lead $id_lead)
     {
+        $empresa = auth()->user()->id_empresa;
+        $dadosCadastroLeads = [
+            'origens' => Origem::where('id_empresa', $empresa)->get(),
+            'campanhas' => Campanha::where('id_empresa', $empresa)->get(),
+            'Produtos' => ProdutoServico::where('id_empresa', $empresa)->get(),
+            'fases' => Fase::where('id_empresa', $empresa)->get(),
+            'grupos' => Grupo::where('id_empresa', $empresa)->get(),
+            'status' => ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),
+            'midias' => Midia::where('id_empresa', $empresa)->get()
+        ];
         $Lead = $id_lead;
-        return view('User.leads.vizualizarLeadUser',['lead'=>$Lead]);
+        return view('User.leads.vizualizarLeadUser',['lead'=>$Lead,'dadosCadastroLeads'=>$dadosCadastroLeads]);
+    }
+    public function EditarLead(Lead $id_lead, Request $request)
+    {
+        $id_lead->update($request->all());
+        return redirect()->back()->with('success', 'Lead atualizado com sucesso.');
     }
     public function registrarLeads(Request $request)
     {
@@ -290,7 +305,7 @@ class UserController extends Controller
             'Produtos' => ProdutoServico::where('id_empresa', $empresa)->get(),
             'fases' => Fase::where('id_empresa', $empresa)->get(),
             'grupos' => Grupo::where('id_empresa', $empresa)->get(),
-            'status' => ColumnsKhanban::where('id_empresa', $empresa)->get(),
+            'status' => ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),
             'midias' => Midia::where('id_empresa', $empresa)->get()
         ];
         $columnsStatus = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban', 1)->orderBy('int_posicao')->get();
@@ -355,9 +370,15 @@ class UserController extends Controller
     {
         return view('User.agenda.vizualizarAgenda', ['tela' =>'agenda']);
     }
-
     public function vizualizarTodasleadsUser()
     {
+        $dadosForm = [
+            'dt_inicio'=>null,
+            'dt_final'=>null,
+            'id_fase'=>null,
+            'id_columnsKhanban'=>null,
+        ];
+
         $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
         $leads = Lead::where('id_userResponsavel',$usuario)->get();
@@ -373,12 +394,86 @@ class UserController extends Controller
             'Produtos' => ProdutoServico::where('id_empresa', $empresa)->get(),
             'fases' => Fase::where('id_empresa', $empresa)->get(),
             'grupos' => Grupo::where('id_empresa', $empresa)->get(),
-            'status' => ColumnsKhanban::where('id_empresa', $empresa)->get(),
+            'status' => ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),
             'midias' => Midia::where('id_empresa', $empresa)->get()
         ];
 
-        return view('User.leads.vizualizarTodasLeadsUser', ['tela' =>'leads','dadosInfo'=>$dadosInfo,'dadosCadastroLeads'=>$dadosCadastroLeads,'leads'=>$leads]);
+        return view('User.leads.vizualizarTodasLeadsUser', ['tela' =>'leads','dadosInfo'=>$dadosInfo,'dadosCadastroLeads'=>$dadosCadastroLeads,'leads'=>$leads,'dadosForm'=>$dadosForm]);
     }
+
+    public function filtrarLeads(Request $request)
+    {
+        $usuario = auth()->user()->id;
+        $empresa = auth()->user()->id_empresa;
+
+        $dadosForm = [
+            'dt_inicio'=>$request->dt_inicio,
+            'dt_final'=>$request->dt_final,
+            'id_fase'=>$request->id_fase,
+            'id_columnsKhanban'=>$request->id_columnsKhanban,
+        ];
+
+        $where = "";
+        if ($request->dt_inicio && $request->dt_final){
+            $where.="created_at BETWEEN '$request->dt_inicio' AND '$request->dt_final'" ;
+            $request->id_fase ? $where.= ' and id_fase = '.$request->id_fase :'';
+            $request->id_columnsKhanban ? $where.= ' and id_columnsKhanban = '.$request->id_columnsKhanban :'';
+        }
+        if ($request->dt_inicio && !$request->dt_final){
+            $where.="created_at >= '$request->dt_inicio'";
+            $request->id_fase ? $where.= ' and id_fase = '.$request->id_fase :'';
+            $request->id_columnsKhanban ? $where.= ' and id_columnsKhanban = '.$request->id_columnsKhanban :'';
+        }
+        if (!$request->dt_inicio && $request->dt_final){
+            $where.="created_at =< '$request->dt_final'";
+            $request->id_fase ? $where.= ' and id_fase = '.$request->id_fase :'';
+            $request->id_columnsKhanban ? $where.= ' and id_columnsKhanban = '.$request->id_columnsKhanban :'';
+        }
+        if (!$request->dt_inicio && !$request->dt_final){
+            if ($request->id_fase){
+                $where.= 'id_fase = '.$request->id_fase;
+                $request->id_columnsKhanban ? $where.= ' and id_columnsKhanban = '.$request->id_columnsKhanban :'';
+            }
+            if ($request->id_columnsKhanban && !$request->id_fase){
+                $where.= ' id_columnsKhanban = '.$request->id_columnsKhanban;
+            }
+        }
+
+        if ($where){
+            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_userResponsavel = '.$usuario;
+        }else{
+            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_userResponsavel = '.$usuario;
+        }
+
+        $leadsSql = DB::select($sqlLeads);
+
+        $ids_leads = [];
+        foreach ($leadsSql as $lead){
+            array_push($ids_leads,$lead->id_lead);
+        }
+
+        $leads = Lead::wherein('id_lead',$ids_leads)->get();
+
+        $dadosInfo = [
+            'leads'=> count($leads),
+            'Oportunidades'=>0,
+            'atendimento'=>0,
+        ];
+
+        $dadosCadastroLeads = [
+            'origens' => Origem::where('id_empresa', $empresa)->get(),
+            'campanhas' => Campanha::where('id_empresa', $empresa)->get(),
+            'Produtos' => ProdutoServico::where('id_empresa', $empresa)->get(),
+            'fases' => Fase::where('id_empresa', $empresa)->get(),
+            'grupos' => Grupo::where('id_empresa', $empresa)->get(),
+            'status' => ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),
+            'midias' => Midia::where('id_empresa', $empresa)->get()
+        ];
+
+        return view('User.leads.vizualizarTodasLeadsUser', ['tela' =>'leads','dadosInfo'=>$dadosInfo,'dadosCadastroLeads'=>$dadosCadastroLeads,'leads'=>$leads, 'dadosForm'=>$dadosForm]);
+    }
+
+
 
     public function vizualizarOportunidadesUser()
     {

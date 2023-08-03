@@ -19,22 +19,23 @@
 
                 <div class="d-flex justify-content-between aling-items-center mt-5">
                     <div class="divFiltro">
-                        <form method="post" action="{{route('registrarLeads')}}">
+                        <form method="post" action="{{route('filtrarLeads')}}">
+                            @csrf
                             <div class="d-flex justify-content-between">
                                 <div class=" d-flex tamanhoDivSearch">
-                                    <input class="form-select me-2" type="date" name="dt_inicio">
-                                    <input class="form-select me-2" type="date" name="dt_final">
-                                    <select class="form-select me-2" name="id_fase" aria-label="Default select example" required>
+                                    <input value="{{$dadosForm['dt_inicio'] ? : '' }}" class="form-select me-2" type="date" name="dt_inicio">
+                                    <input value="{{$dadosForm['dt_final'] ? : '' }}" class="form-select me-2" type="date" name="dt_final">
+                                    <select class="form-select me-2" name="id_fase" aria-label="Default select example">
                                         <option value="">fases:</option>
                                         @foreach($dadosCadastroLeads['fases'] as $fases)
-                                            <option value="{{$fases->id_fase}}">{{$fases->st_nomeFase}}</option>
+                                            <option {{$dadosForm['id_fase'] == $fases->id_fase ? 'selected' : '' }} value="{{$fases->id_fase}}">{{$fases->st_nomeFase}}</option>
                                         @endforeach
                                     </select>
 
-                                    <select class="form-select " name="id_columnsKhanban" aria-label="Default select example" required>
+                                    <select class="form-select " name="id_columnsKhanban" aria-label="Default select example" >
                                         <option value="">status:</option>
                                         @foreach($dadosCadastroLeads['status'] as $status)
-                                            <option value="{{$status->id_columnsKhanban}}">{{$status->st_titulo}}</option>
+                                            <option {{$dadosForm['id_columnsKhanban'] == $status->id_columnsKhanban ? 'selected' : '' }} value="{{$status->id_columnsKhanban}}">{{$status->st_titulo}}</option>
                                         @endforeach
                                     </select>
                                 </div>
