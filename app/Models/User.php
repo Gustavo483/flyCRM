@@ -21,6 +21,7 @@ class User extends Authenticatable
         'id',
         'name',
         'email',
+        'st_iniciaisNome',
         'password',
         'int_permisionAccess',
         'id_empresa',

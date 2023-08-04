@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
 use App\Models\Campanha;
 use App\Models\ColumnsKhanban;
 use App\Models\Fase;
@@ -23,6 +24,49 @@ use Throwable;
 
 class UserController extends Controller
 {
+
+    public function registrarAtividadeAgendaUser(Request $request)
+    {
+        if (!$request->st_data && !$request->st_dataFinal && !$request->dt_contato){
+            return redirect()->back()->with('error', 'Informe um período de data ou uma data para registro.');
+        }
+        $meses = ['Janeiro','February','March','April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        if ($request->periodo == 0 ){
+            $data = explode("-", $request->st_data);
+            try {
+                Agenda::create([
+                    'id_user'=>auth()->user()->id,
+                    'st_color'=>$request->st_color,
+                    'st_date'=>$meses[intval($data[1] -1)].'/'.$data[2].'/'.$data[0],
+                    'st_titulo'=>$request->st_titulo,
+                    'int_tipoData'=>1,
+                    'st_descricao'=>$request->st_descricao,
+                ]);
+            }catch (Exception $e) {
+                return redirect()->back()->with('error', 'Informe uma data correto para registro.');
+            }
+
+            return redirect()->back()->with('success', 'Atividade cadastrada com sucesso.');
+        }
+        if ($request->periodo == 1 ){
+            try {
+                $data = explode("-", $request->st_datainicio);
+                $data2 = explode("-", $request->st_dataFinal);
+                Agenda::create([
+                    'id_user'=>auth()->user()->id,
+                    'st_color'=>$request->st_color,
+                    'st_date'=>$meses[intval($data[1] -1)].'/'.$data[2].'/'.$data[0],
+                    'st_dateFinal'=>$meses[intval($data2[1] -1)].'/'.$data2[2].'/'.$data2[0],
+                    'st_titulo'=>$request->st_titulo,
+                    'st_descricao'=>$request->st_descricao,
+                    'int_tipoData'=>2,
+                ]);
+            }catch (Exception $e) {
+                return redirect()->back()->with('error', 'Informe um periodo de data correto correto para registro.');
+            }
+            return redirect()->back()->with('success', 'Atividade cadastrada com sucesso.');
+        }
+    }
     public function registrarDadoKanban(Request $request)
     {
         try {
@@ -234,8 +278,19 @@ class UserController extends Controller
 
         return json_encode($results);
     }
+
+    public function verificarAtividadesConcluidasToDo()
+    {
+        $colunaConcluidoEmpresa = ColumnsKhanban::where('st_titulo','concluído')->where('int_tipoKhanban',2)->where('id_empresa',auth()->user()->id_empresa)->first();
+        ToDoKhanban::where('id_user',auth()->user()->id)->where('id_columnsKhanban',$colunaConcluidoEmpresa->id_columnsKhanban)->where('bl_ativo',1)->where('updated_at','<',date('Y-m-d'))->update([
+            'bl_ativo'=> 0,
+        ]);
+    }
     public function dashboardUser()
     {
+
+        $this->verificarAtividadesConcluidasToDo();
+
         $userResponsavel = auth()->user()->id;
 
         $leads15days = $this->leadsUltimosQuinzeDias();
@@ -353,16 +408,16 @@ class UserController extends Controller
             $dados = json_decode($request->json, true);
             foreach ($dados as $id_tarefa => $tarefa) {
 
-                $frutas = explode("-", $id_tarefa);
-                if ($frutas[0] ==='todo'){
-                    $toDo = ToDoKhanban::where('id_toDoKhanban',$frutas[1])->first();
+                $tarf = explode("-", $id_tarefa);
+                if ($tarf[0] ==='todo'){
+                    $toDo = ToDoKhanban::where('id_toDoKhanban',$tarf[1])->first();
                     $toDo->update([
                         'id_columnsKhanban'=>$tarefa['coluna'],
                         'int_posicao'=>$tarefa['posicao']
                     ]);
                 }
-                if ($frutas[0] ==='status'){
-                    $lead = Lead::where('id_lead',$frutas[1])->first();
+                if ($tarf[0] ==='status'){
+                    $lead = Lead::where('id_lead',$tarf[1])->first();
                     $lead->update([
                         'id_columnsKhanban'=>$tarefa['coluna'],
                         'int_posicao'=>$tarefa['posicao']
@@ -380,7 +435,32 @@ class UserController extends Controller
 
     public function vizualizarAgendaUser()
     {
-        return view('User.agenda.vizualizarAgenda', ['tela' =>'agenda']);
+        $results = [];
+
+        $dadosAgenda = Agenda::where('id_user', auth()->user()->id)->get();
+        foreach ($dadosAgenda as $agenda){
+            if ($agenda->int_tipoData === 1){
+                $results[] = [
+                    'id' => $agenda->id_agenda,
+                    'name' => $agenda->st_titulo,
+                    'date' => $agenda->st_date,
+                    'description'=> $agenda->st_descricao,
+                    'type'=>"event",
+                    'color'=> $agenda->st_color
+                ];
+            }else{
+                $results[] = [
+                    'id' => $agenda->id_agenda,
+                    'name' => $agenda->st_titulo,
+                    'date' => [$agenda->st_date,$agenda->st_dateFinal],
+                    'description'=> $agenda->st_descricao,
+                    'type'=>"event",
+                    'color'=> $agenda->st_color
+                ];
+            }
+        }
+//        dd(json_decode($results));
+        return view('User.agenda.vizualizarAgenda',['tela'=>'agenda', 'dadosAgenda'=>json_encode($results)]);
     }
     public function vizualizarTodasleadsUser()
     {

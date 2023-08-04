@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
 use App\Models\Campanha;
 use App\Models\ColumnsKhanban;
 use App\Models\Fase;
@@ -27,6 +28,48 @@ use Illuminate\Support\Facades\Hash;
 class AdminUserController extends Controller
 {
 
+    public function registrarAtividadeAgenda(Request $request)
+    {
+        if (!$request->st_data && !$request->st_dataFinal && !$request->dt_contato){
+            return redirect()->back()->with('error', 'Informe um período de data ou uma data para registro.');
+        }
+        $meses = ['Janeiro','February','March','April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        if ($request->periodo == 0 ){
+            $data = explode("-", $request->st_data);
+            try {
+                Agenda::create([
+                    'id_user'=>auth()->user()->id,
+                    'st_color'=>$request->st_color,
+                    'st_date'=>$meses[intval($data[1] -1)].'/'.$data[2].'/'.$data[0],
+                    'st_titulo'=>$request->st_titulo,
+                    'int_tipoData'=>1,
+                    'st_descricao'=>$request->st_descricao,
+                ]);
+            }catch (Exception $e) {
+                return redirect()->back()->with('error', 'Informe uma data correto para registro.');
+            }
+
+            return redirect()->back()->with('success', 'Atividade cadastrada com sucesso.');
+        }
+        if ($request->periodo == 1 ){
+            try {
+                $data = explode("-", $request->st_datainicio);
+                $data2 = explode("-", $request->st_dataFinal);
+                Agenda::create([
+                    'id_user'=>auth()->user()->id,
+                    'st_color'=>$request->st_color,
+                    'st_date'=>$meses[intval($data[1] -1)].'/'.$data[2].'/'.$data[0],
+                    'st_dateFinal'=>$meses[intval($data2[1] -1)].'/'.$data2[2].'/'.$data2[0],
+                    'st_titulo'=>$request->st_titulo,
+                    'st_descricao'=>$request->st_descricao,
+                    'int_tipoData'=>2,
+                ]);
+            }catch (Exception $e) {
+                return redirect()->back()->with('error', 'Informe um periodo de data correto correto para registro.');
+            }
+            return redirect()->back()->with('success', 'Atividade cadastrada com sucesso.');
+        }
+    }
     public function filtrarLeadsAdmin(Request $request)
     {
         $usuario = auth()->user()->id;
@@ -142,6 +185,7 @@ class AdminUserController extends Controller
             'leadsHoje'=>count($oportunidadesHoje),
             'totalOportunidades'=>count($oportunidadesOutroDia),
         ];
+
 
         return view('AdminUser.oportunidades.vizualizarOportunidadesAdminUser', ['tela' =>'oportunidade', 'oportunidades'=>$oportunidades,'dadosInfo'=>$dadosInfo ]);
     }
@@ -439,6 +483,14 @@ class AdminUserController extends Controller
 
         return json_encode($results);
     }
+
+    public function verificarAtividadesConcluidasToDo()
+    {
+        $colunaConcluidoEmpresa = ColumnsKhanban::where('st_titulo','concluído')->where('int_tipoKhanban',2)->where('id_empresa',auth()->user()->id_empresa)->first();
+         ToDoKhanban::where('id_user',auth()->user()->id)->where('id_columnsKhanban',$colunaConcluidoEmpresa->id_columnsKhanban)->where('bl_ativo',1)->where('updated_at','<',date('Y-m-d'))->update([
+            'bl_ativo'=> 0,
+        ]);
+    }
     public function dashboardAdminUser()
     {
         $empresa = auth()->user()->id_empresa;
@@ -456,6 +508,8 @@ class AdminUserController extends Controller
                     WHERE l.id_empresa = '.$empresa.' GROUP BY status';
 
         $status = DB::select($sqlStatus);
+
+        $this->verificarAtividadesConcluidasToDo();
 
         $labelsFases= '';
         $dataFases = '';
@@ -505,8 +559,8 @@ class AdminUserController extends Controller
 
         $DivInfoGerais = [
             'leads'=> Lead::where('id_empresa',$empresa)->whereRaw("created_at BETWEEN '$intervalodias' AND '$hoje2'" )->count(),
-            'oportunidades'=> ObservacaoLead::wherein('id_lead',$id_leads)->where('bl_oportunidade',1)->whereRaw("created_at BETWEEN '$intervalodias' AND '$hoje2'" )->count(),
-            'conversoes'=> 1
+            'oportunidades'=> ObservacaoLead::wherein('id_lead',$id_leads)->where('bl_oportunidade',1)->whereRaw("dt_contato BETWEEN '$intervalodias' AND '$hoje2'" )->count(),
+            'conversoes'=> 0
         ];
 
         $dadosInfo = [
@@ -556,13 +610,11 @@ class AdminUserController extends Controller
             'id_columnsKhanban'=>null,
         ];
 
-        $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
         $leads = Lead::where('id_empresa',$empresa)->get();
-
         $dadosInfo = [
             'leads'=> count($leads),
-            'Oportunidades'=>0,
+            'Oportunidades'=>ObservacaoLead::where('id_empresa',auth()->user()->id_empresa)->where('dt_contato',date('Y-m-d'))->where('bl_oportunidade',1)->count(),
             'atendimento'=>0,
         ];
 
@@ -584,15 +636,30 @@ class AdminUserController extends Controller
     {
         $results = [];
 
-        $results[] = [
-            'id' => 'bHay68s',
-            'name' => "Ano novo BB",
-            'date' => "January/1/2023",
-            'type'=>"event",
-            'everyYear'=>true
-            ];
+        $dadosAgenda = Agenda::where('id_user', auth()->user()->id)->get();
+        foreach ($dadosAgenda as $agenda){
+            if ($agenda->int_tipoData === 1){
+                $results[] = [
+                    'id' => $agenda->id_agenda,
+                    'name' => $agenda->st_titulo,
+                    'date' => $agenda->st_date,
+                    'description'=> $agenda->st_descricao,
+                    'type'=>"event",
+                    'color'=> $agenda->st_color
+                ];
+            }else{
+                $results[] = [
+                    'id' => $agenda->id_agenda,
+                    'name' => $agenda->st_titulo,
+                    'date' => [$agenda->st_date,$agenda->st_dateFinal],
+                    'description'=> $agenda->st_descricao,
+                    'type'=>"event",
+                    'color'=> $agenda->st_color
+                ];
+            }
+        }
 //        dd(json_decode($results));
-        return view('AdminUser.agenda.vizualizarAgenda',['tela'=>'agenda', 'teste'=>json_encode($results)]);
+        return view('AdminUser.agenda.vizualizarAgenda',['tela'=>'agenda', 'dadosAgenda'=>json_encode($results)]);
     }
 
     public function configuracaoEmpresa()
@@ -614,6 +681,7 @@ class AdminUserController extends Controller
 
     public function registrarUsuario(Request $request)
     {
+        $nome = explode(" ", $request->name);
         try {
             $validacao = [
                 'name' => 'required',
@@ -628,6 +696,7 @@ class AdminUserController extends Controller
             ];
             $request->validate($validacao, $feedback);
 
+            $nome = explode(" ", $request->name);
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -635,6 +704,7 @@ class AdminUserController extends Controller
                 'id_setor'=> $request->id_setor,
                 'int_permisionAccess' => ConstantSystem::User,
                 'id_empresa'=>auth()->user()->id_empresa,
+                'st_iniciaisNome'=> count($nome)> 1 ? $nome[0][0].$nome[1][0] : $nome[0][0],
             ]);
             return  redirect()->back()->with('success', 'Usuario cadastrado com sucesso');
 

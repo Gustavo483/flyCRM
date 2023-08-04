@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ColumnsKhanban;
 use App\Models\Empresa;
 use App\Models\Lead;
 use App\Models\User;
@@ -72,6 +73,28 @@ class AdminController extends Controller
             ]);
 
             $user->update([
+                'id_empresa'=>$empresa->id_empresa,
+            ]);
+
+            ColumnsKhanban::create([
+                'st_titulo'=>'a fazer',
+                'st_color'=> '#1d3ee6',
+                'int_posicao'=> 1,
+                'int_tipoKhanban'=>2,
+                'id_empresa'=>$empresa->id_empresa,
+            ]);
+            ColumnsKhanban::create([
+                'st_titulo'=>'realizando',
+                'st_color'=> '#2bc4c3',
+                'int_posicao'=> 2,
+                'int_tipoKhanban'=>2,
+                'id_empresa'=>$empresa->id_empresa,
+            ]);
+            ColumnsKhanban::create([
+                'st_titulo'=>'concluído',
+                'st_color'=> '#a4e1e0',
+                'int_posicao'=> 3,
+                'int_tipoKhanban'=>2,
                 'id_empresa'=>$empresa->id_empresa,
             ]);
 

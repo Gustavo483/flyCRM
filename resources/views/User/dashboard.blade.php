@@ -121,7 +121,7 @@
                                 </div>
 
                                 <div class="coluna-body">
-                                    @foreach ($column->leads as $leads)
+                                    @foreach ($column->leadsKanbanStatus as $leads)
                                         <div class="tarefa bg" data-position="{{ $leads->int_posicao }}" data-id="status-{{ $leads->id_lead }}" draggable="true">
                                             <div class="nome">{{ $leads->st_nome }}</div>
                                         </div>
@@ -200,11 +200,20 @@
                                 </div>
 
                                 <div class="coluna-body">
-                                    @foreach ($column->ToDoUser as $ToDo)
-                                        <div class="tarefa bg" data-position="{{$ToDo->int_posicao}}" data-id="todo-{{ $ToDo->id_toDoKhanban}}" draggable="true">
-                                            <div class="nome">{{$ToDo->st_descricao}}</div>
-                                        </div>
-                                    @endforeach
+                                    @if($column->st_titulo != 'concluído')
+                                        @foreach ($column->ToDoUser as $ToDo)
+                                            <div class="tarefa bg" data-position="{{$ToDo->int_posicao}}" data-id="todo-{{ $ToDo->id_toDoKhanban}}" draggable="true">
+                                                <div class="nome">{{$ToDo->st_descricao}}</div>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                    @if($column->st_titulo === 'concluído')
+                                        @foreach ($column->ToDoUser as $ToDo)
+                                            <div class="tarefa bg" data-position="{{$ToDo->int_posicao}}" data-id="todo-{{ $ToDo->id_toDoKhanban}}" draggable="true">
+                                                <div class="nome">{{$ToDo->st_descricao}}</div>
+                                            </div>
+                                        @endforeach
+                                    @endif
 
                                     <div class="coluna-footer"></div>
                                 </div>

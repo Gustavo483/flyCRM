@@ -218,6 +218,17 @@
     background: #2563eb;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
+.BtnConfig2{
+    background: #8773c1;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    padding: 8px;
+}
+.BtnConfig2:hover{
+    background: #c4b3fd;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+}
 
 #listaUsuarios{
     background: white;!important;

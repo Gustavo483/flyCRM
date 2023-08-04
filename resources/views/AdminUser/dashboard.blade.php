@@ -130,7 +130,7 @@
                                 </div>
 
                                 <div class="coluna-body">
-                                    @foreach ($column->leads as $leads)
+                                    @foreach ($column->leadsKanbanStatus as $leads)
                                         <div class="tarefa bg" data-position="{{ $leads->int_posicao }}" data-id="status-{{ $leads->id_lead }}" draggable="true">
                                             <div class="nome">{{ $leads->st_nome }}</div>
                                         </div>

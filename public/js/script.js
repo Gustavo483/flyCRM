@@ -22,6 +22,22 @@ function abrirDiv(id_elemento, cabecalho){
     divCabecalho.classList.toggle('divCabecalho')
     divCabecalho.classList.toggle('divCabecalho2')
 }
+
+function testeFuncao() {
+    var periodicidade = document.getElementById('periodicidade').value
+    var divPeriodicidade = document.getElementById('divPeriodicidade')
+    var divPeriodicidadeDia = document.getElementById('divPeriodicidadeDia')
+    if (periodicidade) {
+        divPeriodicidade.classList.toggle('none')
+        divPeriodicidadeDia.classList.toggle('none')
+    } else {
+        divPeriodicidade.classList.toggle('none')
+        divPeriodicidadeDia.classList.toggle('none')
+    }
+
+    console.log(divPeriodicidade, divPeriodicidadeDia)
+}
+
 function EditarUsuario(usuario){
     console.log(usuario.id_setor)
     var btn = document.getElementById('EditarUsuarioBtn')

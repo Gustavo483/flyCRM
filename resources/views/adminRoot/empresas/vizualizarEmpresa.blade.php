@@ -12,7 +12,9 @@
                 <div>
                     @include('layouts.sucessoErrorRequest')
                 </div>
-                Vizualizar dados da empresa aqui
+                <div class=" colorgray">
+                    Vizualizar empresa
+                </div>
             </div>
         </div>
     </div>

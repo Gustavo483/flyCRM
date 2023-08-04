@@ -25,8 +25,12 @@ class ColumnsKhanban extends Model
     {
         return $this->hasMany('App\Models\Lead','id_columnsKhanban', 'id_columnsKhanban')->orderBy('int_posicao');
     }
+    public function leadsKanbanStatus()
+    {
+        return $this->hasMany('App\Models\Lead','id_columnsKhanban', 'id_columnsKhanban')->orderBy('int_posicao')->limit(4);
+    }
 
     public function ToDoUser(){
-        return $this->hasMany('App\Models\ToDoKhanban','id_columnsKhanban', 'id_columnsKhanban')->where('id_user',auth()->user()->id);
+        return $this->hasMany('App\Models\ToDoKhanban','id_columnsKhanban', 'id_columnsKhanban')->where('id_user',auth()->user()->id)->where('bl_ativo',1);
     }
 }

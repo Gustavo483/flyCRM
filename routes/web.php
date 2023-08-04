@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
             Route::get('dashboard-admin', 'dashboardAdmin')->name('dashboardAdmin');
 
             // Rotas Empresas
-            Route::post('registerEmpresa', 'registerEmpresa')->name('registerEmpresa');
+            Route::post('registrar-empresa', 'registerEmpresa')->name('registerEmpresa');
             Route::get('vizualizar-empresa/{id_empresa}', 'vizualizarEmpresa')->name('vizualizarEmpresa');
             Route::get('vizualizar-todas-empresa', 'vizualizarTodasEmpresa')->name('vizualizarTodasEmpresa');
 
@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
 
             //agenda
             Route::get('vizualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
+            Route::post('registrar-atividade-agenda', 'registrarAtividadeAgenda')->name('registrarAtividadeAgenda');
 
             //configuracoes
             Route::get('configuracao-empresa', 'configuracaoEmpresa')->name('configuracaoEmpresa');
@@ -123,6 +124,9 @@ Route::middleware('auth')->group(function () {
 
             //agenda
             Route::get('vizualizar-agenda-user', 'vizualizarAgendaUser')->name('vizualizarAgendaUser');
+
+            Route::post('registrar-atividade-agenda-user', 'registrarAtividadeAgendaUser')->name('registrarAtividadeAgendaUser');
+
 
             //leads
             Route::get('vizualizar-todas-leads-user', 'vizualizarTodasleadsUser')->name('vizualizarTodasleadsUser');
