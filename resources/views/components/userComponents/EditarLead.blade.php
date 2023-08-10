@@ -28,7 +28,7 @@
                         </div>
 
 
-                        <input type="text" class="form-control  w-75" placeholder="telefone:"
+                        <input type="text" class="form-control  w-75" placeholder="Telefone:"
                                name="int_telefone" aria-describedby="basic-addon1"
                                value="{{ old('int_telefone') ?:$lead->int_telefone }}" required>
                         <div id="int_telefone" class="colorRed">
@@ -106,7 +106,7 @@
 
                     <div class="my-4">
                         <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Deixe sua observação aqui"
+                                            <textarea class="form-control" placeholder="Deixe sua observação aqui:"
                                                       name="st_observacoes" id=""
                                                       style="height: 100px">{{ $lead->st_observacoes }}</textarea>
                             <label for="floatingTextarea2">Descrição/Observações</label>

@@ -16,7 +16,8 @@
 
                 <div>
                     <div class=" colorgray">
-                        Leads > detalhamento lead
+                        <a class="colorgrayLink" href="{{route('vizualizarTodasleadsEmpresa')}}">Leads</a>
+                        > detalhamento lead
                     </div>
                     <div class="flexName mt-3">
                         <h1 class=" NameLead p-0 me-2">{{$lead->st_nome}}</h1>
@@ -24,9 +25,11 @@
                             <div style="width:{{$lead->int_temperatura}}%;" class="divTemperatura"></div>
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <span class="divService px-2">Curso tecnico em logistica</span>
-                    </div>
+                    @if(isset($lead->servico))
+                        <div class="mt-2">
+                            <span class="divService px-2">{{$lead->servico->st_nomeProdutoServico}}</span>
+                        </div>
+                    @endif
 
                     <div class="d-flex mt-5">
                         <a type="button" class="linksLeads me-3" data-bs-toggle="modal" data-bs-target="#AdicionarObservacao">
@@ -57,7 +60,7 @@
                                         </div>
                                         <div class="my-4">
                                             <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Deixe sua observação aqui"
+                                            <textarea class="form-control" placeholder="Deixe sua observação aqui:"
                                                       name="st_descricao" id=""
                                                       style="height: 100px"></textarea>
                                                 <label for="floatingTextarea2">Observações</label>
@@ -88,7 +91,7 @@
                                         @csrf
                                         <div class="my-4">
                                             <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Deixe sua observação aqui"
+                                            <textarea class="form-control" placeholder="Deixe sua observação aqui:"
                                                       name="st_descricao" id=""
                                                       style="height: 100px" required></textarea>
                                                 <label for="floatingTextarea2">Observações</label>
@@ -139,10 +142,19 @@
                             </div>
                         </div>
                         <div class="DivInfo p-3">
-                            <h4 class="colorgray2">Informações</h4>
+                            <h4 class="colorgray2">Informações </h4>
                             <div class="mt-3">
                                 <p class="colorgray2 m-0 bolder">{{$lead->st_nome}}</p>
-                                <p class="colorgray3 m-0">{{$lead->int_telefone}}</p>
+                                <div class="colorgray3 m-0 d-flex justify-content-between">
+                                    <div>
+                                        {{$lead->int_telefone}}
+                                    </div>
+                                    <div>
+                                        <a target=”_blank” href="https://web.whatsapp.com/send/?l=pt_BR&phone=55{{$lead->int_telefone}}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="#7ba7d7" width="20px" height="20px" viewBox="0 0 320 512"><path d="M112 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm40 304V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V256.9L59.4 304.5c-9.1 15.1-28.8 20-43.9 10.9s-20-28.8-10.9-43.9l58.3-97c17.4-28.9 48.6-46.6 82.3-46.6h29.7c33.7 0 64.9 17.7 82.3 46.6l58.3 97c9.1 15.1 4.2 34.8-10.9 43.9s-34.8 4.2-43.9-10.9L232 256.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V352H152z"/></svg>
+                                        </a>
+                                    </div>
+                                </div>
                                 <p class="colorgray3 m-0">{{$lead->st_email}}</p>
                             </div>
                             <div class="mt-5">

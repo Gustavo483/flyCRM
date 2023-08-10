@@ -31,14 +31,14 @@ Route::middleware('auth')->group(function () {
 
             // Rotas Empresas
             Route::post('registrar-empresa', 'registerEmpresa')->name('registerEmpresa');
-            Route::get('vizualizar-empresa/{id_empresa}', 'vizualizarEmpresa')->name('vizualizarEmpresa');
-            Route::get('vizualizar-todas-empresa', 'vizualizarTodasEmpresa')->name('vizualizarTodasEmpresa');
+            Route::get('visualizar-empresa/{id_empresa}', 'vizualizarEmpresa')->name('vizualizarEmpresa');
+            Route::get('visualizar-todas-empresa', 'vizualizarTodasEmpresa')->name('vizualizarTodasEmpresa');
 
             // Rotas Planos
-            Route::get('vizualizar-planos', 'vizualizarPlanos')->name('vizualizarPlanos');
+            Route::get('visualizar-planos', 'vizualizarPlanos')->name('vizualizarPlanos');
 
             // Rotas Chamados
-            Route::get('vizualizar-chamados', 'vizualizarChamados')->name('vizualizarChamados');
+            Route::get('visualizar-chamados', 'vizualizarChamados')->name('vizualizarChamados');
         });
     });
 
@@ -47,14 +47,14 @@ Route::middleware('auth')->group(function () {
             Route::get('dashboard-admin-user', 'dashboardAdminUser')->name('dashboardAdminUser');
 
             //Leads
-            Route::get('vizualizar-todas-leads-empresa', 'vizualizarTodasleadsEmpresa')->name('vizualizarTodasleadsEmpresa');
-            Route::get('vizualizar-lead-admin-user/{id_lead}', 'vizualizarLeadAdminUser')->name('vizualizarLeadAdminUser');
+            Route::get('visualizar-todas-leads-empresa', 'vizualizarTodasleadsEmpresa')->name('vizualizarTodasleadsEmpresa');
+            Route::get('visualizar-lead-admin-user/{id_lead}', 'vizualizarLeadAdminUser')->name('vizualizarLeadAdminUser');
             Route::post('Editar-Lead-admin/{id_lead}', 'EditarLeadAdmin')->name('EditarLeadAdmin');
             Route::post('registrar-leads-admin', 'registrarLeadsAdmin')->name('registrarLeadsAdmin');
             Route::post('filtrar-leads-admin', 'filtrarLeadsAdmin')->name('filtrarLeadsAdmin');
 
             //agenda
-            Route::get('vizualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
+            Route::get('visualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
             Route::post('registrar-atividade-agenda', 'registrarAtividadeAgenda')->name('registrarAtividadeAgenda');
 
             //configuracoes
@@ -108,12 +108,12 @@ Route::middleware('auth')->group(function () {
 
             // Kanban
             Route::post('registrar-kanban-admin', 'registrarDadoKanbanAdmin')->name('registrarDadoKanbanAdmin');
-
+            Route::post('editar-kanban-admin', 'editarDadoKanbanAdmin')->name('editarDadoKanbanAdmin');
+            Route::post('deletar-kanban-admin', 'deletarDadoKanbanAdmin')->name('deletarDadoKanbanAdmin');
             //Oportunidade
             Route::post('registrar-oportunidade-admin', 'registrarOportunidadeAdmin')->name('registrarOportunidadeAdmin');
             Route::post('registrar-observacao-admin', 'registrarObservacaoAdmin')->name('registrarObservacaoAdmin');
-            Route::get('vizualizar-oportunidades-user-admin', 'vizualizarOportunidadesUserAdmin')->name('vizualizarOportunidadesUserAdmin');
-
+            Route::get('visualizar-oportunidades-user-admin', 'vizualizarOportunidadesUserAdmin')->name('vizualizarOportunidadesUserAdmin');
 
         });
     });
@@ -123,20 +123,20 @@ Route::middleware('auth')->group(function () {
             Route::get('dashboard-user', 'dashboardUser')->name('dashboardUser');
 
             //agenda
-            Route::get('vizualizar-agenda-user', 'vizualizarAgendaUser')->name('vizualizarAgendaUser');
+            Route::get('visualizar-agenda-user', 'vizualizarAgendaUser')->name('vizualizarAgendaUser');
 
             Route::post('registrar-atividade-agenda-user', 'registrarAtividadeAgendaUser')->name('registrarAtividadeAgendaUser');
 
 
             //leads
-            Route::get('vizualizar-todas-leads-user', 'vizualizarTodasleadsUser')->name('vizualizarTodasleadsUser');
+            Route::get('visualizar-todas-leads-user', 'vizualizarTodasleadsUser')->name('vizualizarTodasleadsUser');
             Route::post('registrar-leads', 'registrarLeads')->name('registrarLeads');
             Route::post('filtrar-leads', 'filtrarLeads')->name('filtrarLeads');
-            Route::get('vizualizar-lead-user/{id_lead}', 'vizualizarLeadUser')->name('vizualizarLeadUser');
+            Route::get('visualizar-lead-user/{id_lead}', 'vizualizarLeadUser')->name('vizualizarLeadUser');
             Route::post('Editar-Lead{id_lead}', 'EditarLead')->name('EditarLead');
 
             // Oportunidades
-            Route::get('vizualizar-oportunidades-user', 'vizualizarOportunidadesUser')->name('vizualizarOportunidadesUser');
+            Route::get('visualizar-oportunidades-user', 'vizualizarOportunidadesUser')->name('vizualizarOportunidadesUser');
             Route::post('registrar-oportunidade', 'registrarOportunidade')->name('registrarOportunidade');
             Route::post('registrar-observacao', 'registrarObservacao')->name('registrarObservacao');
 
@@ -148,6 +148,8 @@ Route::middleware('auth')->group(function () {
             Route::get('teste-kanban', 'kanbanteste')->name('kanbanteste');
 
             Route::post('registrar-dado-kanban', 'registrarDadoKanban')->name('registrarDadoKanban');
+            Route::post('editar-kanban', 'editarDadoKanban')->name('editarDadoKanban');
+            Route::post('deletar-kanban', 'deletarDadoKanban')->name('deletarDadoKanban');
         });
     });
 

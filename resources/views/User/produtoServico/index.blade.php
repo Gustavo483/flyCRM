@@ -18,7 +18,7 @@
                             <form method="post" action="{{route('registrarProdutoServicoUser')}}">
                                 @csrf
                                 <div class="my-3">
-                                    <input type="text" class="form-control" placeholder="Nome :" name="st_nomeProdutoServico"
+                                    <input type="text" class="form-control" placeholder="Nome:" name="st_nomeProdutoServico"
                                            aria-describedby="basic-addon1" value="{{ old('st_nomeProdutoServico') }}" required>
                                     <div id="st_nomeProdutoServico" class="colorRed">
                                         {{ $errors->has('st_nomeProdutoServico') ? $errors->first('st_nomeProdutoServico') : '' }}
@@ -26,7 +26,7 @@
                                 </div>
 
                                 <div class="my-3">
-                                    <input type="text" class="form-control" placeholder="Descrição :" name="st_descricao"
+                                    <input type="text" class="form-control" placeholder="Descrição:" name="st_descricao"
                                            aria-describedby="basic-addon1" value="{{ old('st_descricao') }}" required>
                                     <div id="st_descricao" class="colorRed">
                                         {{ $errors->has('st_descricao') ? $errors->first('st_descricao') : '' }}
@@ -71,14 +71,14 @@
                                 @csrf
                                 <div class="my-3">
                                     <input id="id_ProdutoServicoEdit" type="text" class="none" name="id_produtoServico">
-                                    <input id="st_nomeProdutoServicoEdit" type="text" class="form-control" placeholder="Título :" name="st_nomeProdutoServico"
+                                    <input id="st_nomeProdutoServicoEdit" type="text" class="form-control" placeholder="Título:" name="st_nomeProdutoServico"
                                            aria-describedby="basic-addon1" value="{{ old('st_nomeProdutoServico') }}" required>
                                     <div class="colorRed">
                                         {{ $errors->has('st_nomeProdutoServico') ? $errors->first('st_nomeProdutoServico') : '' }}
                                     </div>
                                 </div>
                                 <div class="my-3">
-                                    <input id="st_descricaoEdit" type="text" class="form-control" placeholder="Posição :" name="st_descricao"
+                                    <input id="st_descricaoEdit" type="text" class="form-control" placeholder="Posição:" name="st_descricao"
                                            aria-describedby="basic-addon1" value="{{ old('st_descricao') }}" required>
                                     <div class="colorRed">
                                         {{ $errors->has('st_descricao') ? $errors->first('st_descricao') : '' }}

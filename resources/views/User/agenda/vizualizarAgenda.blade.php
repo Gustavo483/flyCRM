@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div class="posicaoDiv w-100">
+<div class="posicaoDiv w-100 tamanhoDivConteudo">
     <div class="container">
         <div class="NavbarAdmimHoot">
             @include('layouts.navBarUser')
@@ -37,7 +37,7 @@
                     <div class="modal-body">
                         <form method="post" action="{{route('registrarAtividadeAgendaUser')}}">
                             @csrf
-                            <label>Registrar em mais de um dia ?</label>
+                            <label>Registrar em mais de um dia:</label>
                             <select class="form-control" id="periodicidade" name="periodo" onchange="testeFuncao()">
                                 <option value="0">Não</option>
                                 <option value="1">Sim</option>
@@ -57,7 +57,7 @@
                             </div>
 
                             <div class="my-3">
-                                <label>Título :</label>
+                                <label>Título:</label>
                                 <input type='text' class="form-control"  name="st_titulo" value="{{ old('st_titulo') }}" required>
                             </div>
                             <div class="my-3">
@@ -83,6 +83,9 @@
         </div>
         <div class="my-5" id="calendar"></div>
     </div>
+</div>
+<div class="my-5 d-flex justify-content-center">
+    <img class="imgLogo" src="{{asset('imgs/logo_temporaria.png')}}">
 </div>
 <script src="{{asset('js/script.js')}}"></script>
 <!-- Add jQuery library (required) -->

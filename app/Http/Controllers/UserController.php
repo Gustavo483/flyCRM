@@ -46,7 +46,7 @@ class UserController extends Controller
                 return redirect()->back()->with('error', 'Informe uma data correto para registro.');
             }
 
-            return redirect()->back()->with('success', 'Atividade cadastrada com sucesso.');
+            return redirect()->back()->with('success', 'Atividade cadastrada na agenda com sucesso.');
         }
         if ($request->periodo == 1 ){
             try {
@@ -64,9 +64,24 @@ class UserController extends Controller
             }catch (Exception $e) {
                 return redirect()->back()->with('error', 'Informe um periodo de data correto correto para registro.');
             }
-            return redirect()->back()->with('success', 'Atividade cadastrada com sucesso.');
+            return redirect()->back()->with('success', 'Atividade cadastrada na agenda com sucesso.');
         }
     }
+
+    public function editarDadoKanban(Request $request)
+    {
+        ToDoKhanban::where('id_toDoKhanban', $request->id_toDoKhanban)->update([
+            'st_descricao' => $request->st_descricao
+        ]);
+        return redirect()->back()->with('success', 'Atividade atualizada com sucesso.');
+    }
+
+    public function deletarDadoKanban(Request $request)
+    {
+        ToDoKhanban::where('id_toDoKhanban', $request->id_toDoKhanban)->delete();
+        return redirect()->back()->with('success', 'Atividade deletada com sucesso.');
+    }
+
     public function registrarDadoKanban(Request $request)
     {
         try {
@@ -123,7 +138,7 @@ class UserController extends Controller
         ObservacaoLead::create([
             'dt_contato'=>$request->dt_contato,
             'id_lead'=>$request->id_lead,
-            'st_titulo'=>$dia.' ás '.$hora.' - '.$usuario->name.' adicionou uma oportunidade para '. $dataObjeto->format('d/m/Y').' :',
+            'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' adicionou uma oportunidade para '. $dataObjeto->format('d/m/Y').' :',
             'st_descricao'=>$request->st_descricao,
             'bl_oportunidade'=>1,
             'id_empresa'=>$usuario->id_empresa
@@ -158,7 +173,7 @@ class UserController extends Controller
 
         ObservacaoLead::create([
             'id_lead'=>$request->id_lead,
-            'st_titulo'=>$dia.' ás '.$hora.' - '.$usuario->name.' adicionou uma observação: ' ,
+            'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' adicionou uma observação: ' ,
             'st_descricao'=>$request->st_descricao,
             'bl_oportunidade'=>0,
             'id_empresa'=>$usuario->id_empresa
@@ -241,7 +256,7 @@ class UserController extends Controller
 
         ObservacaoLead::create([
             'id_lead'=>$lead->id_lead,
-            'st_titulo'=>$dia.' ás '.$hora.' - '.$usuario->name.'- Lead Cadastrado no sistema.',
+            'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' - Lead Cadastrado no sistema.',
             'bl_oportunidade'=>0,
             'id_empresa'=>$usuario->id_empresa
         ]);
@@ -352,18 +367,21 @@ class UserController extends Controller
         $hoje = new DateTime();
         $intervalo = new DateInterval('P15D');
         $intervalodias = $hoje->sub($intervalo)->format('Y-m-d');
-        $hoje2 = date('Y-m-d');
+        $hoje2 = new DateTime();
+        $intervalo2 = new DateInterval('P1D');
+        $final = $hoje2->add($intervalo2)->format('Y-m-d');
+
 
         $DivInfoGerais = [
-            'leads'=> Lead::where('id_userResponsavel',$usuario)->whereRaw("created_at BETWEEN '$intervalodias' AND '$hoje2'" )->count(),
-            'oportunidades'=> ObservacaoLead::wherein('id_lead',$id_leads)->where('bl_oportunidade',1)->whereRaw("created_at BETWEEN '$intervalodias' AND '$hoje2'" )->count(),
+            'leads'=> Lead::where('id_userResponsavel',$usuario)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->count(),
+            'oportunidades'=> ObservacaoLead::wherein('id_lead',$id_leads)->where('bl_oportunidade',1)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->count(),
             'conversoes'=> 1
         ];
 
         $dadosInfo = [
             'leads'=> count($leads),
             'Oportunidades'=>ObservacaoLead::wherein('id_lead',$id_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
-            'atendimento'=>0,
+            'atendimento'=>Lead::where('id_userResponsavel',$usuario)->where('bl_atendimento', 1)->count(),
         ];
 
         $dadosCadastroLeads = [
@@ -418,10 +436,13 @@ class UserController extends Controller
                 }
                 if ($tarf[0] ==='status'){
                     $lead = Lead::where('id_lead',$tarf[1])->first();
-                    $lead->update([
-                        'id_columnsKhanban'=>$tarefa['coluna'],
-                        'int_posicao'=>$tarefa['posicao']
-                    ]);
+                    if ($lead->id_columnsKhanban != $tarefa['coluna']){
+                        $lead->update([
+                            'id_columnsKhanban'=>$tarefa['coluna'],
+                            'int_posicao'=>$tarefa['posicao'],
+                            'bl_atendimento'=>1
+                        ]);
+                    }
                 }
             }
         }
@@ -474,10 +495,18 @@ class UserController extends Controller
         $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
         $leads = Lead::where('id_userResponsavel',$usuario)->get();
+        $id_leads = [];
+
+        foreach ($leads as $lead){
+            array_push($id_leads,$lead->id_lead);
+        }
+
+        $hoje2 = new DateTime();
+
         $dadosInfo = [
             'leads'=> count($leads),
-            'Oportunidades'=>0,
-            'atendimento'=>0,
+            'Oportunidades'=>ObservacaoLead::wherein('id_lead',$id_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
+            'atendimento'=>Lead::where('id_userResponsavel',$usuario)->where('bl_atendimento', 1)->count(),
         ];
 
         $dadosCadastroLeads = [
@@ -546,10 +575,12 @@ class UserController extends Controller
 
         $leads = Lead::wherein('id_lead',$ids_leads)->get();
 
+        $hoje2 = new DateTime();
+
         $dadosInfo = [
             'leads'=> count($leads),
-            'Oportunidades'=>0,
-            'atendimento'=>0,
+            'Oportunidades'=>ObservacaoLead::wherein('id_lead',$ids_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
+            'atendimento'=>Lead::where('id_userResponsavel',$usuario)->where('bl_atendimento', 1)->count(),
         ];
 
         $dadosCadastroLeads = [

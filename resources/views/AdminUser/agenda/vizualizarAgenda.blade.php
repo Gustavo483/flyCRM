@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div class="posicaoDiv w-100">
+<div class="posicaoDiv w-100 tamanhoDivConteudo">
     <div class="container">
         <div class="NavbarAdmimHoot">
             @include('layouts.navBarAdminUser')
@@ -83,6 +83,9 @@
         </div>
         <div class="my-5" id="calendar"></div>
     </div>
+</div>
+<div class="my-5 d-flex justify-content-center">
+    <img class="imgLogo" src="{{asset('imgs/logo_temporaria.png')}}">
 </div>
 <script src="{{asset('js/script.js')}}"></script>
 <!-- Add jQuery library (required) -->

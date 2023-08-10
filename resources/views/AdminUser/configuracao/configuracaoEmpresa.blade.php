@@ -206,7 +206,7 @@
                             <div style="width: 40%" class="d-flex align-items-center">
                                 <div id="divGruposEmpresaDesenho" class="desenho"></div>
                                 <div class="ps-2 textIndices">
-                                    grupos
+                                    Grupos
                                 </div>
                             </div>
                             <div id="" style="width: 20%" class="textIndices text-end pe-3">Ações</div>

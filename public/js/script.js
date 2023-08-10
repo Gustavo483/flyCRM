@@ -4,7 +4,13 @@ function vizualizarEmpresa(id_empresa){
 }
 
 function vizualizarLead(id_ledas){
+    console.log(id_ledas)
     var btnEmpresa = document.getElementById('Leads'+id_ledas)
+    console.log(btnEmpresa)
+    btnEmpresa.click()
+}
+function vizualizarLeadKanban(id_ledas){
+    var btnEmpresa = document.getElementById('LeadsKanban'+id_ledas)
     btnEmpresa.click()
 }
 
@@ -38,6 +44,14 @@ function testeFuncao() {
     console.log(divPeriodicidade, divPeriodicidadeDia)
 }
 
+function vizualizarTarefa(dados){
+    console.log('entrei aqui')
+    document.getElementById('inputId'). value = dados.id_toDoKhanban
+    document.getElementById('inputIdDelete'). value = dados.id_toDoKhanban
+    document.getElementById('st_descricaoEditKanban'). value = dados.st_descricao
+    console.log('entrei aqui e esta tudo certo',dados)
+    document.getElementById('EditarTarefa').click()
+}
 function EditarUsuario(usuario){
     console.log(usuario.id_setor)
     var btn = document.getElementById('EditarUsuarioBtn')

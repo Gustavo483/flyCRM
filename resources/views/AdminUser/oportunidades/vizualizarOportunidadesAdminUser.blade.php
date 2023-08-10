@@ -53,9 +53,17 @@
                         <div onclick="abrirLead({{$observacao->lead->id_lead}})" class="DivOportunidade d-flex justify-content-between align-items-center mt-4">
                             <div>
                                 <p>{{$observacao->st_titulo}}</p>
-                                <p>{{$observacao->st_descricao}}</p>
+                                <p class="colorBlack">{{$observacao->st_descricao}}</p>
                             </div>
-                            <div>
+                            <div class="d-flex align-items-center">
+                                <div class="pe-5 tamanha33">
+                                    <div class="colorBlack">
+                                        {{isset($observacao->lead) ? $observacao->lead->st_nome : ''}}
+                                    </div>
+                                    <div class="colorBlack">
+                                        {{isset($observacao->lead->produto) ? $observacao->lead->produto->st_nomeProdutoServico : ''}}
+                                    </div>
+                                </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" class="ms-3" fill="#3956ea" viewBox="0 0 448 512"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zM329 305c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-95 95-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L329 305z"/></svg>
                             </div>
                             <a class="none" id="Lead{{$observacao->lead->id_lead}}" href="{{route('vizualizarLeadAdminUser', ['id_lead'=>$observacao->lead->id_lead])}}"></a>
@@ -65,9 +73,17 @@
                         <div onclick="abrirLead({{$observacao->lead->id_lead}})" class="DivOportunidade d-flex justify-content-between align-items-center mt-4">
                             <div>
                                 <p>{{$observacao->st_titulo}}</p>
-                                <p>{{$observacao->st_descricao}}</p>
+                                <p class="colorBlack">{{$observacao->st_descricao}}</p>
                             </div>
-                            <div>
+                            <div class="d-flex align-items-center">
+                                <div class="pe-5 tamanha33">
+                                    <div class="colorBlack">
+                                        {{isset($observacao->lead) ? $observacao->lead->st_nome : ''}}
+                                    </div>
+                                    <div class="colorBlack">
+                                        {{isset($observacao->lead->produto) ? $observacao->lead->produto->st_nomeProdutoServico : ''}}
+                                    </div>
+                                </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" class="ms-3" fill="#3956ea" viewBox="0 0 448 512"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zM329 305c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-95 95-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L329 305z"/></svg>
                             </div>
                             <a class="none" id="Lead{{$observacao->lead->id_lead}}" href="{{route('vizualizarLeadAdminUser', ['id_lead'=>$observacao->lead->id_lead])}}"></a>

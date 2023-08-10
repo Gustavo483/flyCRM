@@ -152,7 +152,7 @@
 
                                     <div class="my-4">
                                         <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Deixe sua observação aqui"
+                                            <textarea class="form-control" placeholder="Deixe sua observação aqui:"
                                                       name="st_descricao" id=""
                                                       style="height: 100px"></textarea>
                                             <label for="floatingTextarea2">Descrição/Observações</label>
@@ -160,7 +160,7 @@
                                     </div>
 
                                     <div class="my-2">
-                                        <input type="password" class="form-control" placeholder="password :"
+                                        <input type="password" class="form-control" placeholder="Password:"
                                                name="password" aria-describedby="basic-addon1"
                                                value="{{ old('password') }}" required>
                                         <div id="password" class="colorRed">

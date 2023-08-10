@@ -49,12 +49,15 @@ class AdminController extends Controller
         }catch (Exception $e) {
             return redirect()->back()->with('error', 'O email informado já está em uso, favor registrar um novo.');
         }
+
+        $nome = explode(" ", $request->name);
         try {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'int_permisionAccess' => 1,
+                'st_iniciaisNome'=> count($nome)> 1 ? strtoupper($nome[0][0].$nome[1][0]) : strtoupper($nome[0][0]),
             ]);
 
             $dataAtual = new DateTime();

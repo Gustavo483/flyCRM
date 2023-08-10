@@ -113,7 +113,7 @@
 
                     <div class="my-4">
                         <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Deixe sua observação aqui"
+                                            <textarea class="form-control" placeholder="Deixe sua observação aqui:"
                                                       name="st_observacoes" id=""
                                                       style="height: 100px">{{ $lead->st_observacoes }}</textarea>
                             <label for="floatingTextarea2">Descrição/Observações</label>

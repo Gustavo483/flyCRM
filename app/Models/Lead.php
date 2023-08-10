@@ -28,7 +28,8 @@ class Lead extends Model
         'st_observacoes',
         'id_userResponsavel',
         'id_columnsKhanban',
-        'id_empresa'
+        'id_empresa',
+        'bl_atendimento'
     ];
 
     public function observacoes(){
@@ -36,7 +37,7 @@ class Lead extends Model
     }
 
     public function proxObservacoes(){
-        return $this->hasMany('App\Models\ObservacaoLead','id_lead', 'id_lead')->where('bl_oportunidade',1)->orderBy('dt_contato', 'desc')->limit(5);
+        return $this->hasMany('App\Models\ObservacaoLead','id_lead', 'id_lead')->where('bl_oportunidade',1)->orderBy('dt_contato', 'desc')->limit(7);
     }
 
     public function fase(){

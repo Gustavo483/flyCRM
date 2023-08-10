@@ -14,12 +14,22 @@
 </head>
 
 <body id="body">
-    <div class="">
+    <div class="tamanhoDivConteudo">
         @yield('content')
+    </div>
+    <div class="my-5 d-flex justify-content-center">
+        <img class="imgLogo" src="{{asset('imgs/logo_temporaria.png')}}">
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{asset('js/script.js')}}"></script>
+<script>
+    @if ($message = Session::get('success'))
+        @if($message === 'Atividade cadastrada com sucesso.' or $message === 'Atividade atualizada com sucesso.' or $message === 'Atividade deletada com sucesso.')
+            window.scrollTo(0, document.body.scrollHeight);
+        @endif
+    @endif
+</script>
 </html>
 
