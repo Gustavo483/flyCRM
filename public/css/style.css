@@ -12,6 +12,17 @@
 .tamanhoDivConteudo{
     min-height: 80vh;
 }
+.filtroavancancado{
+    font-size: 14px;
+    border: none;
+    background: none;
+    color: blue;
+}
+
+.filtroavancancado:hover{
+    text-decoration: underline;
+}
+
 .postionRelative{
     position: relative;
 }

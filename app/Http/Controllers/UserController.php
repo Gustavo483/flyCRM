@@ -24,7 +24,102 @@ use Throwable;
 
 class UserController extends Controller
 {
+    public function filtrarLeadsAvancadoUser(Request $request)
+    {
+        $usuario = auth()->user()->id;
+        $empresa = auth()->user()->id_empresa;
 
+        $dadosForm = [
+            "dt_inicio" => $request->dt_inicio,
+            "dt_final" => $request->dt_final,
+            "st_nome" => $request->st_nome,
+            "st_email" => $request->st_email,
+            "int_telefone" => $request->int_telefone,
+            "id_origem" => $request->id_origem,
+            "id_midia" => $request->id_midia,
+            "id_campanha" => $request->id_campanha,
+            "id_produtoServico" => $request->id_produtoServico,
+            "id_fase" => $request->id_fase,
+            "int_temperatura" => $request->int_temperatura,
+            "id_grupo" => $request->id_grupo,
+            "id_columnsKhanban" => $request->id_columnsKhanban,
+        ];
+
+        $where = "";
+        $atualizouData = 0;
+        $primeiroWhere = 0;
+
+        $usarLike = ['st_nome','st_email','int_telefone'];
+        foreach ($dadosForm as $key => $filtro){
+            if ($dadosForm['dt_inicio'] && $key === 'dt_inicio' && $dadosForm['dt_final']){
+                $atualizouData !== 0 ? $where.=' and ' :'';
+                $where.="created_at BETWEEN '$request->dt_inicio' AND '$request->dt_final'" ;
+                $atualizouData ++;
+                $primeiroWhere ++;
+                continue;
+            }
+            if ($dadosForm['dt_inicio'] && $key === 'dt_inicio' && !$dadosForm['dt_final']){
+                $atualizouData !== 0 ? $where.=' and ' :'';
+                $where.="created_at >= '$request->dt_inicio'";
+                $primeiroWhere ++;
+                continue;
+            }
+            if ($dadosForm['dt_final'] && !$dadosForm['dt_inicio'] && $key === 'dt_final' && ! $atualizouData){
+                $atualizouData !== 0 ? $where.=' and ' :'';
+                $where.="created_at <= '$request->dt_final'";
+                $primeiroWhere ++;
+                continue;
+            }
+            if ($key !== 'dt_inicio' && $key !== 'dt_final'){
+                if ($dadosForm[$key] && in_array($key,$usarLike)){
+                    $primeiroWhere ? $where.=" and " :'';
+                    $like = '%'.$dadosForm[$key].'%';
+                    $where.=" $key like '$like'";
+                    $primeiroWhere ++;
+                }
+                if ($dadosForm[$key] && ! in_array($key,$usarLike)){
+                    $primeiroWhere ? $where.=" and " :'';
+                    $where.=" $key = '$dadosForm[$key]'";
+                    $primeiroWhere ++;
+                }
+            }
+        }
+
+        if ($where){
+            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_userResponsavel = '.$usuario;
+        }else{
+            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_userResponsavel = '.$usuario;
+        }
+
+        $leadsSql = DB::select($sqlLeads);
+
+        $ids_leads = [];
+        foreach ($leadsSql as $lead){
+            array_push($ids_leads,$lead->id_lead);
+        }
+
+        $leads = Lead::wherein('id_lead',$ids_leads)->get();
+
+        $hoje2 = new DateTime();
+
+        $dadosInfo = [
+            'leads'=> count($leads),
+            'Oportunidades'=>ObservacaoLead::wherein('id_lead',$ids_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
+            'atendimento'=>Lead::where('id_userResponsavel',$usuario)->where('bl_atendimento', 1)->count(),
+        ];
+
+        $dadosCadastroLeads = [
+            'origens' => Origem::where('id_empresa', $empresa)->get(),
+            'campanhas' => Campanha::where('id_empresa', $empresa)->get(),
+            'Produtos' => ProdutoServico::where('id_empresa', $empresa)->get(),
+            'fases' => Fase::where('id_empresa', $empresa)->get(),
+            'grupos' => Grupo::where('id_empresa', $empresa)->get(),
+            'status' => ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),
+            'midias' => Midia::where('id_empresa', $empresa)->get()
+        ];
+
+        return view('User.leads.vizualizarTodasLeadsUser', ['tela' =>'leads','dadosInfo'=>$dadosInfo,'dadosCadastroLeads'=>$dadosCadastroLeads,'leads'=>$leads, 'dadosForm'=>$dadosForm]);
+    }
     public function registrarAtividadeAgendaUser(Request $request)
     {
         if (!$request->st_data && !$request->st_dataFinal && !$request->dt_contato){
@@ -486,11 +581,21 @@ class UserController extends Controller
     public function vizualizarTodasleadsUser()
     {
         $dadosForm = [
-            'dt_inicio'=>null,
-            'dt_final'=>null,
-            'id_fase'=>null,
-            'id_columnsKhanban'=>null,
+            "dt_inicio" => null,
+            "dt_final" => null,
+            "st_nome" => null,
+            "st_email" => null,
+            "int_telefone" => null,
+            "id_origem" => null,
+            "id_midia" => null,
+            "id_campanha" => null,
+            "id_produtoServico" => null,
+            "id_fase" => null,
+            "int_temperatura" => null,
+            "id_grupo" => null,
+            "id_columnsKhanban" => null
         ];
+
 
         $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
@@ -528,10 +633,19 @@ class UserController extends Controller
         $empresa = auth()->user()->id_empresa;
 
         $dadosForm = [
-            'dt_inicio'=>$request->dt_inicio,
-            'dt_final'=>$request->dt_final,
-            'id_fase'=>$request->id_fase,
-            'id_columnsKhanban'=>$request->id_columnsKhanban,
+            "dt_inicio" => $request->dt_inicio,
+            "dt_final" => $request->dt_final,
+            "st_nome" => $request->st_nome,
+            "st_email" => $request->st_email,
+            "int_telefone" => $request->int_telefone,
+            "id_origem" => $request->id_origem,
+            "id_midia" => $request->id_midia,
+            "id_campanha" => $request->id_campanha,
+            "id_produtoServico" => $request->id_produtoServico,
+            "id_fase" => $request->id_fase,
+            "int_temperatura" => $request->int_temperatura,
+            "id_grupo" => $request->id_grupo,
+            "id_columnsKhanban" => $request->id_columnsKhanban,
         ];
 
         $where = "";

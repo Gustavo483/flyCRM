@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
             Route::post('Editar-Lead-admin/{id_lead}', 'EditarLeadAdmin')->name('EditarLeadAdmin');
             Route::post('registrar-leads-admin', 'registrarLeadsAdmin')->name('registrarLeadsAdmin');
             Route::post('filtrar-leads-admin', 'filtrarLeadsAdmin')->name('filtrarLeadsAdmin');
+            Route::post('filtrar-leads-avancado-admin', 'filtrarLeadsAvancadoAdmin')->name('filtrarLeadsAvancadoAdmin');
 
             //agenda
             Route::get('visualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
@@ -132,6 +133,7 @@ Route::middleware('auth')->group(function () {
             Route::get('visualizar-todas-leads-user', 'vizualizarTodasleadsUser')->name('vizualizarTodasleadsUser');
             Route::post('registrar-leads', 'registrarLeads')->name('registrarLeads');
             Route::post('filtrar-leads', 'filtrarLeads')->name('filtrarLeads');
+            Route::post('filtrar-leads-avancado-user', 'filtrarLeadsAvancadoUser')->name('filtrarLeadsAvancadoUser');
             Route::get('visualizar-lead-user/{id_lead}', 'vizualizarLeadUser')->name('vizualizarLeadUser');
             Route::post('Editar-Lead{id_lead}', 'EditarLead')->name('EditarLead');
 

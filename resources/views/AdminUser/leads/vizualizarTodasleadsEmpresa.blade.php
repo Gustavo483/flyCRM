@@ -19,6 +19,9 @@
                 <div>
                     @include('components.adminUserComponents.CadastrarLead')
                 </div>
+                <div>
+                    @include('components.adminUserComponents.FiltrarLeads')
+                </div>
 
                 <div class="d-flex justify-content-between aling-items-center mt-5">
                     <div class="divFiltro">
@@ -28,6 +31,7 @@
                                 <div class=" d-flex tamanhoDivSearch">
                                     <input value="{{$dadosForm['dt_inicio'] ? : '' }}" class="form-select me-2" type="date" name="dt_inicio">
                                     <input value="{{$dadosForm['dt_final'] ? : '' }}" class="form-select me-2" type="date" name="dt_final">
+
                                     <select class="form-select me-2" name="id_fase" aria-label="Default select example">
                                         <option value="">fases:</option>
                                         @foreach($dadosCadastroLeads['fases'] as $fases)
@@ -59,8 +63,13 @@
                         </svg>
                     </button>
                 </div>
+                <div class="mt-2">
+                    <button type="button" class="filtroavancancado" data-bs-toggle="modal" data-bs-target="#FiltrarLead">
+                        Filtro avançado
+                    </button>
+                </div>
 
-                <div class="divEmpresas mb-5 mt-5">
+                <div class="divEmpresas mb-5 mt-4">
                     @foreach($leads as $lead)
                         <div onclick="vizualizarLead({{$lead->id_lead}})" class="divEmpresas2 my-3 d-flex">
                             <div class="d-flex justify-content-between tamanho60">
