@@ -2,7 +2,6 @@ function vizualizarEmpresa(id_empresa){
     var btnEmpresa = document.getElementById(id_empresa)
     btnEmpresa.click()
 }
-
 function vizualizarLead(id_ledas){
     console.log(id_ledas)
     var btnEmpresa = document.getElementById('Leads'+id_ledas)
@@ -17,7 +16,6 @@ function vizualizarLeadKanban(id_ledas){
 function abrirLead(id_lead){
     document.getElementById('Lead'+id_lead).click()
 }
-
 function abrirDiv(id_elemento, cabecalho){
     var div = document.getElementById(id_elemento)
     var divCabecalho = document.getElementById(cabecalho)
@@ -179,4 +177,8 @@ function EditarProduto(produto){
     document.getElementById('st_descricaoEdit').value = produto.st_descricao
     document.getElementById('st_colorProdutoServicoEdit').value = produto.st_color
     btn.click()
+}
+function editarStatusOportunidade(valueSelect, id_observacao){
+    document.getElementById('selectStatusOportunidade'+valueSelect).setAttribute('selected', true)
+    document.getElementById('idObservacaoStatusOportunidade').value = id_observacao
 }

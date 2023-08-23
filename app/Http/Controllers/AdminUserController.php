@@ -28,6 +28,31 @@ use Illuminate\Support\Facades\Hash;
 class AdminUserController extends Controller
 {
 
+    public function editarStatusOportunidadeAdmin(Request $request)
+    {
+        try {
+            ObservacaoLead::where('id_observacao',$request->id_observacao)->update([
+                'bl_statusOportunidade'=>$request->bl_statusOportunidade,
+            ]);
+            return redirect()->back()->with('success', 'Status da oportunidade alterado com sucesso');
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Houve um erro ao alterar o status da oportunidade. Favor contatar o suporte.');
+        }
+    }
+    public function ConverterClienteAdmin(Lead $id_lead)
+    {
+        try {
+            $id_lead->update([
+                'bl_cliente' => 1
+            ]);
+            return redirect()->back()->with('success', 'Lead cadastrado como cliente com suceso.');
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Houve um erro ao salvar o lead como cliente. Favor contatar o suporte.');
+        }
+    }
+
     public function filtrarLeadsAvancadoAdmin(Request $request)
     {
         $empresa = auth()->user()->id_empresa;

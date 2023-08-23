@@ -75,9 +75,20 @@
                             </div>
                             <div class="d-flex justify-content-between tamanho60 align-items-center">
                                 <div class="textBlue w-25">{{isset($lead->produto) ? $lead->produto->st_nomeProdutoServico : ''}}</div>
-                                <div class="" style="width: 120px; height:10px">
-                                    <div style="width:{{$lead->int_temperatura}}%;" class="divTemperatura"></div>
-                                </div>
+                                @if($lead->int_temperatura == 0)
+                                    <div style="width: 120px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="blue" class="bi bi-zoom-out" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                                            <path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>
+                                            <path fill-rule="evenodd" d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                                        </svg>
+                                    </div>
+                                @endif
+                                @if($lead->int_temperatura != 0)
+                                    <div style="width: 120px; height:10px;">
+                                        <div style="width:{{$lead->int_temperatura}}%;" class="divTemperatura"></div>
+                                    </div>
+                                @endif
                                 <div class="d-flex  align-items-center w-25">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#b9b9b9" class="bi bi-calendar4-week" viewBox="0 0 16 16">
                                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"/>

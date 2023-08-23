@@ -80,6 +80,7 @@
 
                         <select class="form-select " name="int_temperatura" aria-label="Default select example" required>
                             <option value="">Temperatura:</option>
+                            <option {{$lead->int_temperatura === 0 ? 'selected':''}} value="0">0%</option>
                             <option {{$lead->int_temperatura === 25 ? 'selected':''}} value="25">25%</option>
                             <option {{$lead->int_temperatura === 50? 'selected':''}} value="50">50%</option>
                             <option {{$lead->int_temperatura === 75 ? 'selected':''}} value="75">75%</option>

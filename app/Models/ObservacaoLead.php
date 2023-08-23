@@ -16,7 +16,8 @@ class ObservacaoLead extends Model
         'dt_contato',
         'st_titulo',
         'st_descricao',
-        'id_empresa'
+        'id_empresa',
+        'bl_statusOportunidade',
     ];
     public function lead()
     {

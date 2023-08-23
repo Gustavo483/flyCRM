@@ -111,11 +111,17 @@ Route::middleware('auth')->group(function () {
             Route::post('registrar-kanban-admin', 'registrarDadoKanbanAdmin')->name('registrarDadoKanbanAdmin');
             Route::post('editar-kanban-admin', 'editarDadoKanbanAdmin')->name('editarDadoKanbanAdmin');
             Route::post('deletar-kanban-admin', 'deletarDadoKanbanAdmin')->name('deletarDadoKanbanAdmin');
+
             //Oportunidade
             Route::post('registrar-oportunidade-admin', 'registrarOportunidadeAdmin')->name('registrarOportunidadeAdmin');
             Route::post('registrar-observacao-admin', 'registrarObservacaoAdmin')->name('registrarObservacaoAdmin');
             Route::get('visualizar-oportunidades-user-admin', 'vizualizarOportunidadesUserAdmin')->name('vizualizarOportunidadesUserAdmin');
+            Route::post('editar-status-oportunidade-admin', 'editarStatusOportunidadeAdmin')->name('editarStatusOportunidadeAdmin');
 
+            // Converter em cliente
+            Route::get('converter-cliente-admin/{id_lead}', 'ConverterClienteAdmin')->name('ConverterClienteAdmin');
+
+            //
         });
     });
 
@@ -125,9 +131,7 @@ Route::middleware('auth')->group(function () {
 
             //agenda
             Route::get('visualizar-agenda-user', 'vizualizarAgendaUser')->name('vizualizarAgendaUser');
-
             Route::post('registrar-atividade-agenda-user', 'registrarAtividadeAgendaUser')->name('registrarAtividadeAgendaUser');
-
 
             //leads
             Route::get('visualizar-todas-leads-user', 'vizualizarTodasleadsUser')->name('vizualizarTodasleadsUser');
@@ -141,17 +145,21 @@ Route::middleware('auth')->group(function () {
             Route::get('visualizar-oportunidades-user', 'vizualizarOportunidadesUser')->name('vizualizarOportunidadesUser');
             Route::post('registrar-oportunidade', 'registrarOportunidade')->name('registrarOportunidade');
             Route::post('registrar-observacao', 'registrarObservacao')->name('registrarObservacao');
+            Route::post('editar-status-oportunidade-user', 'editarStatusOportunidadeUser')->name('editarStatusOportunidadeUser');
 
             //Produto servico
             Route::get('produto-servico-user', 'produtoServicoUser')->name('produtoServicoUser');
             Route::post('registrar-produto-servico-user', 'registrarProdutoServicoUser')->name('registrarProdutoServicoUser');
             Route::post('editar-produto-servico-user', 'editarProdutoServicoUser')->name('editarProdutoServicoUser');
 
-            Route::get('teste-kanban', 'kanbanteste')->name('kanbanteste');
-
+            // Kanban
             Route::post('registrar-dado-kanban', 'registrarDadoKanban')->name('registrarDadoKanban');
             Route::post('editar-kanban', 'editarDadoKanban')->name('editarDadoKanban');
             Route::post('deletar-kanban', 'deletarDadoKanban')->name('deletarDadoKanban');
+
+            // Converter em cliente
+            Route::get('converter-cliente-user/{id_lead}', 'ConverterClienteUser')->name('ConverterClienteUser');
+
         });
     });
 

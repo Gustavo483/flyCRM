@@ -24,6 +24,30 @@ use Throwable;
 
 class UserController extends Controller
 {
+    public function editarStatusOportunidadeUser(Request $request)
+    {
+        try {
+            ObservacaoLead::where('id_observacao',$request->id_observacao)->update([
+                'bl_statusOportunidade'=>$request->bl_statusOportunidade,
+            ]);
+            return redirect()->back()->with('success', 'Status da oportunidade alterado com sucesso');
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Houve um erro ao alterar o status da oportunidade. Favor contatar o suporte.');
+        }
+    }
+    public function ConverterClienteUser(Lead $id_lead)
+    {
+        try {
+            $id_lead->update([
+                'bl_cliente' => 1
+            ]);
+            return redirect()->back()->with('success', 'Lead cadastrado como cliente com suceso.');
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Houve um erro ao salvar o lead como cliente. Favor contatar o suporte.');
+        }
+    }
     public function filtrarLeadsAvancadoUser(Request $request)
     {
         $usuario = auth()->user()->id;
@@ -507,14 +531,7 @@ class UserController extends Controller
             'DivInfoGerais'=>$DivInfoGerais
         ]);
     }
-    public function kanbanteste()
-    {
-        $empresa = auth()->user()->id_empresa;
-        $columns = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban', 1)->orderBy('int_posicao')->get();
-        return view('User.teste', [
-            'columns'=>$columns
-        ]);
-    }
+
     public function saveTasksOrder(Request $request)
     {
         try {

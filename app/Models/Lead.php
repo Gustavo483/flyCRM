@@ -29,7 +29,8 @@ class Lead extends Model
         'id_userResponsavel',
         'id_columnsKhanban',
         'id_empresa',
-        'bl_atendimento'
+        'bl_atendimento',
+        'bl_cliente',
     ];
 
     public function observacoes(){
