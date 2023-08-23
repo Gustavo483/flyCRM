@@ -19,4 +19,8 @@ class ProdutoServico extends Model
         'st_color',
         'st_descricao'
     ];
+
+    public function leads(){
+        return $this->hasMany('App\Models\Lead','id_produtoServico', 'id_produtoServico');
+    }
 }

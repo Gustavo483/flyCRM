@@ -122,17 +122,23 @@
 
                 <div class="mt-5">
                     <div class="d-flex justify-content-between mb-2">
-                        <div id="" style="width: 80%" class="textIndices">Produtos</div>
+                        <div id="" style="width: 60%" class="textIndices">Produtos</div>
+                        <div style="width: 20%;text-align: center;" class="textIndices">
+                            Leads atrelado
+                        </div>
                         <div id="" style="width: 20%" class="textIndices text-end pe-3">Ações</div>
                     </div>
                     @foreach($produtos as  $produto)
                         <div class="divCabecalho mt-3">
                             <div class="d-flex justify-content-between w-100">
-                                <div style="width: 40%" class="d-flex align-items-center">
+                                <div style="width: 60%" class="d-flex align-items-center">
                                     <div style="background:{{$produto->st_color}}" class="desenho2"></div>
                                     <div class="ps-2 textIndices">
                                         {{$produto->st_nomeProdutoServico}}
                                     </div>
+                                </div>
+                                <div style="width: 20%;text-align: center;" class="textIndices">
+                                    {{$produto->leads->count()}}
                                 </div>
                                 <div style="width: 20%" class="textIndices2 text-end pe-3">
                                     <a onclick="EditarProduto({{$produto}})" class="linkEdit" href="#">
