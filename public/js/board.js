@@ -201,7 +201,6 @@ _defineProperty(Ajax, "requestReorder", function (json) {
     };
     xhr.send(data);
 });
-
 rodapes.forEach(function (rodape) {
     return rodape.addEventListener('dragenter', Kanban.rodapeDragenter);
 });

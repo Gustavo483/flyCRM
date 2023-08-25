@@ -262,7 +262,6 @@
                                             {{ $column->st_titulo }}
                                         </label>
                                     @endif
-
                                 </div>
 
                                 <div class="coluna-body">

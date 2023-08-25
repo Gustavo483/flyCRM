@@ -67,16 +67,16 @@
 
                 <div class="divEmpresas mb-5 mt-5">
                     @foreach($leads as $lead)
-                        <div onclick="vizualizarLead({{$lead->id_lead}})" class="divEmpresas2 my-3 d-flex">
-                            <div class="d-flex justify-content-between tamanho60">
+                        <div class="divEmpresas2 my-3 d-flex">
+                            <div onclick="vizualizarLead({{$lead->id_lead}})"  style="width: 40%" class="d-flex justify-content-between">
                                 <div class="textBlue d-flex align-items-center w-25">{{isset($lead->fase->st_nomeFase)?$lead->fase->st_nomeFase:''}}</div>
                                 <div class="textGray d-flex align-items-center w-50">{{$lead->st_nome}}</div>
                                 <div class="textGray d-flex align-items-center justify-content-start w-25">{{$lead->int_telefone}}</div>
                             </div>
-                            <div class="d-flex justify-content-between tamanho60 align-items-center">
+                            <div  class="d-flex justify-content-between tamanho60 align-items-center">
                                 <div class="textBlue w-25">{{isset($lead->produto) ? $lead->produto->st_nomeProdutoServico : ''}}</div>
                                 @if($lead->int_temperatura == 0)
-                                    <div style="width: 120px;">
+                                    <div onclick="vizualizarLead({{$lead->id_lead}})"  style="width: 120px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="blue" class="bi bi-zoom-out" viewBox="0 0 16 16">
                                             <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
                                             <path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>
@@ -85,16 +85,23 @@
                                     </div>
                                 @endif
                                 @if($lead->int_temperatura != 0)
-                                    <div style="width: 120px; height:10px;">
+                                    <div onclick="vizualizarLead({{$lead->id_lead}})"  style="width: 120px; height:10px;">
                                         <div style="width:{{$lead->int_temperatura}}%;" class="divTemperatura"></div>
                                     </div>
                                 @endif
-                                <div class="d-flex  align-items-center w-25">
+                                <div onclick="vizualizarLead({{$lead->id_lead}})"  class="d-flex  align-items-center w-25">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#b9b9b9" class="bi bi-calendar4-week" viewBox="0 0 16 16">
                                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"/>
                                         <path d="M11 7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-2 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
                                     </svg>
                                     <div class="textGray3 d-flex align-items-center ps-3" >{{isset($lead->observacoes->last()->dt_contato)? $lead->observacoes->last()->dt_contato : '--'}}</div>
+                                </div>
+                                <div class="me-2">
+                                    <select id="selectMudarStatus{{$lead->id_lead}}" onchange="alterarStatusLead({{$lead->id_lead}},'atualizar-status-lead-user/')" class="form-control">
+                                        @foreach($dadosCadastroLeads['status'] as $status)
+                                            <option {{$status->id_columnsKhanban == $lead->id_columnsKhanban ? 'selected' :''}} value="{{$status->id_columnsKhanban}}">{{$status->st_titulo}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div>
                                     <a target=”_blank” href="https://web.whatsapp.com/send/?l=pt_BR&phone=55{{$lead->int_telefone}}">

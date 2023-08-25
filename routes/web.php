@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
             Route::post('registrar-leads-admin', 'registrarLeadsAdmin')->name('registrarLeadsAdmin');
             Route::post('filtrar-leads-admin', 'filtrarLeadsAdmin')->name('filtrarLeadsAdmin');
             Route::post('filtrar-leads-avancado-admin', 'filtrarLeadsAvancadoAdmin')->name('filtrarLeadsAvancadoAdmin');
+            Route::get('atualizar-status-lead-admin/{id_lead}/{id_status}', 'AtualizarStatusLeadAdmin')->name('AtualizarStatusLeadAdmin');
 
             //agenda
             Route::get('visualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
@@ -121,7 +122,9 @@ Route::middleware('auth')->group(function () {
             // Converter em cliente
             Route::get('converter-cliente-admin/{id_lead}', 'ConverterClienteAdmin')->name('ConverterClienteAdmin');
 
-            //
+            // Relatorio
+            Route::post('relatorio-empresa', 'relatorioEmpresa')->name('relatorioEmpresa');
+
         });
     });
 
@@ -140,6 +143,7 @@ Route::middleware('auth')->group(function () {
             Route::post('filtrar-leads-avancado-user', 'filtrarLeadsAvancadoUser')->name('filtrarLeadsAvancadoUser');
             Route::get('visualizar-lead-user/{id_lead}', 'vizualizarLeadUser')->name('vizualizarLeadUser');
             Route::post('Editar-Lead{id_lead}', 'EditarLead')->name('EditarLead');
+            Route::get('atualizar-status-lead-user/{id_lead}/{id_status}', 'AtualizarStatusLeadUser')->name('AtualizarStatusLeadUser');
 
             // Oportunidades
             Route::get('visualizar-oportunidades-user', 'vizualizarOportunidadesUser')->name('vizualizarOportunidadesUser');

@@ -24,6 +24,17 @@ use Throwable;
 
 class UserController extends Controller
 {
+    public function AtualizarStatusLeadUser(Lead $id_lead, $id_status)
+    {
+        try {
+            $id_lead->update([
+                'id_columnsKhanban'=>$id_status,
+            ]);
+            return 200;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
     public function editarStatusOportunidadeUser(Request $request)
     {
         try {

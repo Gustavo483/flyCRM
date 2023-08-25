@@ -9,6 +9,41 @@
 
     background: #f4f4f4;
 }
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: navy;
+    border-color: navy;
+}
+.dfbdfb{
+    color: red;!important;
+}
+header{
+    background: #8E2DE2;
+    background: -webkit-linear-gradient(to right, #4A00E0, #8E2DE2);
+    background: linear-gradient(to right, #4A00E0, #8E2DE2);
+}
+.sdfvdcvx{
+    background: red;
+}
+
+/*estilos para la tabla*/
+table th {
+    background-color: #337ab7 !important;
+    color: white;
+}
+table>tbody>tr>td {
+    vertical-align: middle !important;
+}
+
+/*para alinear los botones y cuadro de busqueda*/
+.btn-group, .btn-group-vertical {
+    position: absolute !important;
+}
+.dsdfgdfg{
+    color: black;
+}
 .tamanhoDivConteudo{
     min-height: 80vh;
 }
@@ -53,6 +88,11 @@
 }
 .tamanho60{
     width: 60%;
+}
+.btnLink{
+    background: none;
+    border: none;
+
 }
 
 .divCabecalho{
@@ -349,6 +389,19 @@
     padding: 10px;
     width: 90%;
 }
+.flexRelatorio{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.divFiltroRelatorio{
+    border: 0.3px solid rgba(145, 255, 185, 0.8);
+    box-shadow: 0 1px 5px rgba(145, 255, 185, 0.8);
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+}
+
 .divFiltro2{
     border: 1px solid rgba(145, 255, 185, 0.8);
     border-radius: 10px;

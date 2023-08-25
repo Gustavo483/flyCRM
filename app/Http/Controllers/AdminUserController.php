@@ -28,6 +28,127 @@ use Illuminate\Support\Facades\Hash;
 class AdminUserController extends Controller
 {
 
+    public function relatorioEmpresa(Request $request)
+    {
+        $colunas = isset($request->colunas) ? $request->colunas : [
+            'st_nome','st_email', 'int_telefone', 'id_fase', 'id_columnsKhanban',
+            'id_produtoServico', 'id_campanha', 'id_origem', 'id_midia', 'id_grupo', 'int_temperatura'];
+
+        $empresa = auth()->user()->id_empresa;
+
+        $dadosForm = [
+            "dt_inicio" => isset($request->todosCampos) ? null : $request->dt_inicio,
+            "dt_final" => isset($request->todosCampos) ? null : $request->dt_final,
+            "st_nome" => isset($request->todosCampos) ? null : $request->st_nome,
+            "st_email" => isset($request->todosCampos) ? null : $request->st_email,
+            "int_telefone" => isset($request->todosCampos) ? null : $request->int_telefone,
+            "id_origem" => isset($request->todosCampos) ? null : $request->id_origem,
+            "id_midia" => isset($request->todosCampos) ? null : $request->id_midia,
+            "id_campanha" => isset($request->todosCampos) ? null : $request->id_campanha,
+            "id_produtoServico" => isset($request->todosCampos) ? null : $request->id_produtoServico,
+            "id_fase" => isset($request->todosCampos) ? null : $request->id_fase,
+            "int_temperatura" => isset($request->todosCampos) ? null : $request->int_temperatura,
+            "id_grupo" => isset($request->todosCampos) ? null : $request->id_grupo,
+            "id_columnsKhanban" => isset($request->todosCampos) ? null : $request->id_columnsKhanban,
+            "id_userResponsavel" => isset($request->todosCampos) ? null : $request->id_userResponsavel,
+        ];
+
+        $where = "";
+        $atualizouData = 0;
+        $primeiroWhere = 0;
+
+        $usarLike = ['st_nome','st_email','int_telefone'];
+        foreach ($dadosForm as $key => $filtro){
+            if ($dadosForm['dt_inicio'] && $key === 'dt_inicio' && $dadosForm['dt_final']){
+                $atualizouData !== 0 ? $where.=' and ' :'';
+                $where.="created_at BETWEEN '$request->dt_inicio' AND '$request->dt_final'" ;
+                $atualizouData ++;
+                $primeiroWhere ++;
+                continue;
+            }
+            if ($dadosForm['dt_inicio'] && $key === 'dt_inicio' && !$dadosForm['dt_final']){
+                $atualizouData !== 0 ? $where.=' and ' :'';
+                $where.="created_at >= '$request->dt_inicio'";
+                $primeiroWhere ++;
+                continue;
+            }
+            if ($dadosForm['dt_final'] && !$dadosForm['dt_inicio'] && $key === 'dt_final' && ! $atualizouData){
+                $atualizouData !== 0 ? $where.=' and ' :'';
+                $where.="created_at <= '$request->dt_final'";
+                $primeiroWhere ++;
+                continue;
+            }
+            if ($key !== 'dt_inicio' && $key !== 'dt_final'){
+                if ($dadosForm[$key] && in_array($key,$usarLike)){
+                    $primeiroWhere ? $where.=" and " :'';
+                    $like = '%'.$dadosForm[$key].'%';
+                    $where.=" $key like '$like'";
+                    $primeiroWhere ++;
+                }
+                if ($dadosForm[$key] && ! in_array($key,$usarLike)){
+                    $primeiroWhere ? $where.=" and " :'';
+                    $where.=" $key = '$dadosForm[$key]'";
+                    $primeiroWhere ++;
+                }
+            }
+        }
+
+        if ($where){
+            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_empresa = '.$empresa;
+        }else{
+            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_empresa = '.$empresa;
+        }
+
+        $leadsSql = DB::select($sqlLeads);
+
+        $ids_leads = [];
+        foreach ($leadsSql as $lead){
+            array_push($ids_leads,$lead->id_lead);
+        }
+
+        $leads = Lead::wherein('id_lead',$ids_leads)->get();
+
+        $hoje = new DateTime();
+        $intervalo = new DateInterval('P15D');
+        $intervalodias = $hoje->sub($intervalo)->format('Y-m-d');
+        $hoje2 = date('Y-m-d');
+
+        $id_leads = [];
+
+        foreach ($leads as $lead){
+            array_push($id_leads,$lead->id_lead);
+        }
+
+
+        $dadosCadastroLeads = [
+            'origens' => Origem::where('id_empresa', $empresa)->get(),
+            'campanhas' => Campanha::where('id_empresa', $empresa)->get(),
+            'Produtos' => ProdutoServico::where('id_empresa', $empresa)->get(),
+            'fases' => Fase::where('id_empresa', $empresa)->get(),
+            'grupos' => Grupo::where('id_empresa', $empresa)->get(),
+            'status' => ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),
+            'midias' => Midia::where('id_empresa', $empresa)->get(),
+            'id_userResponsavel'=>User::where('id_empresa', auth()->user()->id_empresa)->where('int_permisionAccess',0)->get()
+        ];
+
+        return view('AdminUser.relatorio.vizualizarDados', ['tela' =>'relatorio','dadosCadastroLeads'=>$dadosCadastroLeads,'leads'=>$leads, 'dadosForm'=>$dadosForm, 'colunas'=>$colunas]);
+
+    }
+
+
+
+
+    public function AtualizarStatusLeadAdmin(Lead $id_lead, $id_status)
+    {
+        try {
+            $id_lead->update([
+                'id_columnsKhanban'=>$id_status,
+            ]);
+            return 200;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
     public function editarStatusOportunidadeAdmin(Request $request)
     {
         try {
@@ -157,6 +278,7 @@ class AdminUserController extends Controller
             'id_userResponsavel'=>User::where('id_empresa', auth()->user()->id_empresa)->where('int_permisionAccess',0)->get()
         ];
         return view('AdminUser.leads.vizualizarTodasleadsEmpresa', ['tela' =>'leads','dadosInfo'=>$dadosInfo,'dadosCadastroLeads'=>$dadosCadastroLeads,'leads'=>$leads, 'dadosForm'=>$dadosForm]);
+
     }
     public function registrarAtividadeAgenda(Request $request)
     {
