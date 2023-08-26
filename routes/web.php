@@ -23,6 +23,10 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/dashboard', [AuthenticatedSessionController::class, 'validatePermission'])->middleware(['auth', 'verified'])->name('dashboard');
 
+
+Route::get('/registrar-lead-externo', [AdminUserController::class, 'registrarLeadExterno'])->name('registrarLeadExterno');
+
+
 Route::middleware('auth')->group(function () {
 
     Route::middleware('AdminAccess')->group(function () {
@@ -39,6 +43,7 @@ Route::middleware('auth')->group(function () {
 
             // Rotas Chamados
             Route::get('visualizar-chamados', 'vizualizarChamados')->name('vizualizarChamados');
+
         });
     });
 
@@ -54,6 +59,8 @@ Route::middleware('auth')->group(function () {
             Route::post('filtrar-leads-admin', 'filtrarLeadsAdmin')->name('filtrarLeadsAdmin');
             Route::post('filtrar-leads-avancado-admin', 'filtrarLeadsAvancadoAdmin')->name('filtrarLeadsAvancadoAdmin');
             Route::get('atualizar-status-lead-admin/{id_lead}/{id_status}', 'AtualizarStatusLeadAdmin')->name('AtualizarStatusLeadAdmin');
+            Route::post('Import-lead-excel', 'ImportLeadExcel')->name('ImportLeadExcel');
+
 
             //agenda
             Route::get('visualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
@@ -124,6 +131,10 @@ Route::middleware('auth')->group(function () {
 
             // Relatorio
             Route::post('relatorio-empresa', 'relatorioEmpresa')->name('relatorioEmpresa');
+
+            //Venda
+            Route::post('registrar-venda-admin/{id_lead}', 'registrarVendaAdmin')->name('registrarVendaAdmin');
+
 
         });
     });

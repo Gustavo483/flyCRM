@@ -1,6 +1,10 @@
-@extends('components.basicComponent')
+@extends('components.basicComponent2')
 
 @section('titulo', 'DashboarRoot')
+
+@push('css')
+    <link href="{{asset('css/style.css')}}" rel="stylesheet">
+@endpush
 
 @section('content')
     <div class="">
@@ -50,6 +54,61 @@
                         @if($lead->bl_cliente === 0)
                             <a href="{{route('ConverterClienteAdmin',['id_lead'=>$lead->id_lead])}}" class="linksLeads me-3">Converter em cliente</a>
                         @endif
+                        <a type="button" class="linksLeads me-3" data-bs-toggle="modal" data-bs-target="#AdicionarVenda">
+                            Adicionar venda
+                        </a>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="AdicionarVenda" data-bs-backdrop="static" data-bs-keyboard="false"
+                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header ">
+                                    <h5 class="modal-title colorTitle" id="staticBackdropLabel">Cadastro de venda</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                    </button>
+                                </div>
+                                <div class="modal-body ">
+                                    <form method="post" action="{{route('registrarVendaAdmin', ['id_lead'=>$lead->id_lead])}}">
+                                        @csrf
+
+                                        <div class="mt-2">
+                                            <label>Preço:</label>
+                                            <input class="form-control" type="text" name="int_preco" required>
+                                        </div>
+
+                                        <div class="mt-2">
+                                            <label>Data da venda:</label>
+                                            <input class="form-control" type="date" name="dt_venda" required>
+                                        </div>
+
+                                        <div class="my-4">
+                                            <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Deixe sua observação aqui:"
+                                                      name="st_descricao" id=""
+                                                      style="height: 100px"></textarea>
+                                                <label for="floatingTextarea2">Descrição:</label>
+                                            </div>
+                                        </div>
+
+                                        <label>Produto:</label>
+                                        <div class="">
+                                            @foreach($produtoServico as $produtos)
+                                                <label class="container">{{$produtos->st_nomeProdutoServico}}
+                                                    <input name="produtos[]" value="{{$produtos->id_produtoServico}}" type="checkbox">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            @endforeach
+                                        </div>
+
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit" class="BtnBlue my-3">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Modal -->
@@ -184,6 +243,14 @@
                                             </button>
                                         </div>
                                     @endif
+                                        @if($observacao->bl_oportunidade === 2)
+                                            <div class="DivVenda mt-4">
+                                                <div>
+                                                    <p>{{$observacao->st_titulo}}</p>
+                                                    {!!  $observacao->st_descricao !!}
+                                                </div>
+                                            </div>
+                                        @endif
                                     @if($observacao->bl_oportunidade === 0)
                                         <div class="DivNormal d-flex justify-content-between align-items-center mt-4">
                                             <div>
@@ -231,6 +298,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

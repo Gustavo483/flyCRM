@@ -23,4 +23,8 @@ class ProdutoServico extends Model
     public function leads(){
         return $this->hasMany('App\Models\Lead','id_produtoServico', 'id_produtoServico');
     }
+    public function venda()
+    {
+        return $this->belongsToMany(Venda::class, 'tb_venda_produto');
+    }
 }

@@ -394,6 +394,18 @@ table>tbody>tr>td {
     flex-wrap: wrap;
     flex-direction: column;
 }
+.vendaDiv{
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    background: #f9f9f9;
+}
+.DivVenda{
+    border: 2px solid #2bc4c3;
+    color: #2bc4c3;
+    border-radius: 10px;
+    padding: 10px;
+}
 .divFiltroRelatorio{
     border: 0.3px solid rgba(145, 255, 185, 0.8);
     box-shadow: 0 1px 5px rgba(145, 255, 185, 0.8);
