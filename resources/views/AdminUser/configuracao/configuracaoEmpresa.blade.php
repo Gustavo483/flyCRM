@@ -12,9 +12,15 @@
                 <div>
                     @include('layouts.sucessoErrorRequest')
                 </div>
-                <div class=" colorgray">
-                    Configuração do sistema
+                <div class="d-flex justify-content-between">
+                    <div class=" colorgray">
+                        Configuração do sistema
+                    </div>
+                    <div>
+                        <a href="{{route('GerarPlanilhaVeriaveis')}}">Gerar planilha de veriáveis</a>
+                    </div>
                 </div>
+
 
                 <!-- Configurações para os usuarios -->
                 <div>

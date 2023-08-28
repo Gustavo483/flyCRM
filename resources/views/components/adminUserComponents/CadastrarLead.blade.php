@@ -101,12 +101,15 @@
                                 <option value="{{$status->id_columnsKhanban}}">{{$status->st_titulo}}</option>
                             @endforeach
                         </select>
-                        <select class="form-select " name="id_userResponsavel" aria-label="Default select example" required>
-                            <option value="">Responsável:</option>
-                            @foreach($dadosCadastroLeads['id_userResponsavel'] as $responsavel)
-                                <option value="{{$responsavel->id}}">{{$responsavel->name}}</option>
-                            @endforeach
-                        </select>
+                    </div>
+                    <label>Responsáveis:</label>
+                    <div class="">
+                        @foreach($dadosCadastroLeads['id_userResponsavel'] as $responsavel)
+                            <label class="container">{{$responsavel->name}}
+                                <input name="responsaveis[]" value="{{$responsavel->id}}" type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
+                        @endforeach
                     </div>
 
                     <div class="my-4">

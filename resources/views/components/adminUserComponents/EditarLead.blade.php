@@ -104,14 +104,16 @@
                             @endforeach
                         </select>
 
-                        <select class="form-select " name="id_userResponsavel" aria-label="Default select example" required>
-                            <option value="">Responsável:</option>
-                            @foreach($dadosCadastroLeads['id_userResponsavel'] as $responsavel)
-                                <option {{isset($lead->id_userResponsavel) && $lead->id_userResponsavel === $responsavel->id ? 'selected':''}} value="{{$responsavel->id}}">{{$responsavel->name}}</option>
-                            @endforeach
-                        </select>
                     </div>
-
+                    <label>Responsáveis:</label>
+                    <div class="">
+                        @foreach($dadosCadastroLeads['id_userResponsavel'] as $responsavel)
+                            <label class="container">{{$responsavel->name}}
+                                <input name="responsaveis[]" value="{{$responsavel->id}}" type="checkbox" {{in_array($responsavel->id, $id_responsaveis) ? 'checked' :''}}>
+                                <span class="checkmark"></span>
+                            </label>
+                        @endforeach
+                    </div>
                     <div class="my-4">
                         <div class="form-floating">
                                             <textarea class="form-control" placeholder="Deixe sua observação aqui:"

@@ -213,7 +213,6 @@
                                 <p class="colorgray3 m-0 ">Origem: {{isset($lead->origem->st_nomeOrigem) ?  $lead->origem->st_nomeOrigem : ''}}</p>
                                 <p class="colorgray3 m-0">Mídia: {{isset($lead->midia->st_nomeMidia) ? $lead->midia->st_nomeMidia:''}}</p>
                                 <p class="colorgray3 m-0">Campanha: {{isset($lead->campanha->st_nomeCampanha) ? $lead->campanha->st_nomeCampanha:''}}</p>
-                                <p class="colorgray3 m-0">Responsável: {{isset($lead->responsavel->name) ? $lead->responsavel->name : ''}}</p>
                             </div>
 
                             <div class="my-5">

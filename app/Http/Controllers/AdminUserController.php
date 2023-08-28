@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\Siope\SiopeExport;
+use App\Exports\VariaveisExport;
 use App\Models\Agenda;
 use App\Models\Campanha;
 use App\Models\ColumnsKhanban;
@@ -26,11 +28,43 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 class AdminUserController extends Controller
 {
+    public function GerarPlanilhaVeriaveis()
+    {
+        $empresa = auth()->user()->id_empresa;
+
+        $informacoes = [];
+        $camposVariaveis = [
+            'Origem'=>[Origem::where('id_empresa', $empresa)->get(),'st_nomeOrigem', 'id_origem'],
+            'Midia'=>[Midia::where('id_empresa', $empresa)->get(),'st_nomeMidia','id_midia'],
+            'Campanha'=>[Campanha::where('id_empresa', $empresa)->get(),'st_nomeCampanha', 'id_campanha'],
+            'Fase'=>[Fase::where('id_empresa', $empresa)->get(), 'st_nomeFase', 'id_fase'],
+            'Grupo'=>[ Grupo::where('id_empresa', $empresa)->get(),'st_nomeGrupo', 'id_grupo'],
+            'Status'=>[ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),'st_titulo','id_columnsKhanban'],
+            'Usuario'=>[User::where('id_empresa', $empresa)->where('int_permisionAccess', 0)->get(), 'name', 'id']
+        ];
+
+        foreach ($camposVariaveis as $key => $dados){
+            if (count($dados[0]) > 0) {
+                foreach ($dados[0] as $dado) {
+                    $nome = $dados[1];
+                    $id = $dados[2];
+                    array_push($informacoes,[
+                        $key,
+                        $dado->$nome,
+                        $dado->$id,
+                    ]);
+                }
+            }
+        }
+        return Excel::download(new VariaveisExport($informacoes), "variaveisFlyCrm.xlsx");
+
+    }
     public function registrarLeadExterno(Request $request)
     {
         if (!$request->empresa || !$request->nome || !$request->telefone || !$request->email || !$request->responsavel) {
@@ -67,13 +101,13 @@ class AdminUserController extends Controller
             'id_campanha' => isset($request->campanha) ? $request->campanha :null,
             'id_produtoServico' => isset($request->produto) ? $request->produto :null,
             'id_fase' => isset($request->fase) ? $request->fase :null,
-            'int_temperatura' => isset($request->temperatura) ? $request->temperatura :null,
+            'int_temperatura' => isset($request->temperatura) ? $request->temperatura : 0,
             'id_grupo' => isset($request->grupo) ? $request->grupo :null,
             'st_observacoes' => isset($request->observacao) ? $request->observacao :null,
-            'id_userResponsavel' => isset($request->responsavel) ? $request->responsavel :null,
             'id_columnsKhanban' => isset($request->status) ? $request->status :null,
             'id_empresa' => $id_empresa
         ]);
+        $lead->responsavel()->attach($request->responsavel);
         $agora = new DateTime();
         $dia = $agora->format('d/m/Y');
         $hora = $agora->format('H:i:s');
@@ -117,13 +151,14 @@ class AdminUserController extends Controller
                 'id_campanha' => $dados[5],
                 'id_produtoServico' => $dados[6],
                 'id_fase' => $dados[7],
-                'int_temperatura' => $dados[8],
+                'int_temperatura' => $dados[8] ?: 0,
                 'id_grupo' => $dados[9],
                 'st_observacoes' => $dados[12],
-                'id_userResponsavel' => $dados[11],
                 'id_columnsKhanban' => $dados[10],
                 'id_empresa' => $id_empresa
             ]);
+
+            $lead->responsavel()->attach($dados[11]);
 
             $agora = new DateTime();
             $dia = $agora->format('d/m/Y');
@@ -289,7 +324,7 @@ class AdminUserController extends Controller
                 $primeiroWhere ++;
                 continue;
             }
-            if ($key !== 'dt_inicio' && $key !== 'dt_final'){
+            if ($key !== 'dt_inicio' && $key !== 'dt_final' && $key !== 'id_userResponsavel' ){
                 if ($dadosForm[$key] && in_array($key,$usarLike)){
                     $primeiroWhere ? $where.=" and " :'';
                     $like = '%'.$dadosForm[$key].'%';
@@ -304,10 +339,23 @@ class AdminUserController extends Controller
             }
         }
 
+        $responsavel = $request->id_userResponsavel ? :'';
         if ($where){
-            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_empresa = '.$empresa;
+            if ($responsavel){
+                $sqlLeads= 'SELECT l.id_lead FROM tb_leads l
+               left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+               WHERE '.$where.' and id_empresa = '.$empresa.' and rl.id_responsavel ='.$responsavel;
+            }else{
+                $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_empresa = '.$empresa;
+            }
         }else{
-            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_empresa = '.$empresa;
+            if ($responsavel){
+                $sqlLeads= 'SELECT l.id_lead FROM tb_leads l
+                left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+                WHERE id_empresa = '.$empresa.' and rl.id_responsavel ='.$responsavel;
+            }else{
+                $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_empresa = '.$empresa;
+            }
         }
 
         $leadsSql = DB::select($sqlLeads);
@@ -431,7 +479,7 @@ class AdminUserController extends Controller
                 $primeiroWhere ++;
                 continue;
             }
-            if ($key !== 'dt_inicio' && $key !== 'dt_final'){
+            if ($key !== 'dt_inicio' && $key !== 'dt_final' && $key !== 'id_userResponsavel'){
                 if ($dadosForm[$key] && in_array($key,$usarLike)){
                     $primeiroWhere ? $where.=" and " :'';
                     $like = '%'.$dadosForm[$key].'%';
@@ -446,10 +494,23 @@ class AdminUserController extends Controller
             }
         }
 
+        $responsavel = $request->id_userResponsavel ? :'';
         if ($where){
-            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_empresa = '.$empresa;
+            if ($responsavel){
+                $sqlLeads= 'SELECT l.id_lead FROM tb_leads l
+               left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+               WHERE '.$where.' and id_empresa = '.$empresa.' and rl.id_responsavel ='.$responsavel;
+            }else{
+                $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_empresa = '.$empresa;
+            }
         }else{
-            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_empresa = '.$empresa;
+            if ($responsavel){
+                $sqlLeads= 'SELECT l.id_lead FROM tb_leads l
+                left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+                WHERE id_empresa = '.$empresa.' and rl.id_responsavel ='.$responsavel;
+            }else{
+                $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_empresa = '.$empresa;
+            }
         }
 
         $leadsSql = DB::select($sqlLeads);
@@ -665,6 +726,7 @@ class AdminUserController extends Controller
     }
     public function registrarLeadsAdmin(Request $request)
     {
+
         try {
             $validacao = [
                 'st_nome' => 'required',
@@ -704,10 +766,11 @@ class AdminUserController extends Controller
             'int_temperatura'=>$request->int_temperatura,
             'id_grupo'=>$request->id_grupo,
             'st_observacoes'=>$request->st_observacoes ? $request->st_observacoes : null ,
-            'id_userResponsavel'=>$request->id_userResponsavel,
             'id_columnsKhanban'=>$request->id_columnsKhanban,
             'id_empresa'=>$id_empresa
         ]);
+        $lead->responsavel()->attach($request->responsaveis);
+
 
         $agora = new DateTime();
         $dia = $agora->format('d/m/Y');
@@ -726,6 +789,11 @@ class AdminUserController extends Controller
     }
     public function EditarLeadAdmin(Lead $id_lead, Request $request)
     {
+        if ($request->responsaveis){
+            $id_lead->responsavel()->detach();
+            $id_lead->responsavel()->attach($request->responsaveis);
+        }
+
         $id_lead->update($request->all());
         return redirect()->back()->with('success', 'Lead atualizado com sucesso.');
     }
@@ -823,7 +891,13 @@ class AdminUserController extends Controller
 
         $vendas = Venda::where('id_lead',$id_lead->id_lead)->get();
 
-        return view('AdminUser.leads.vizualizarLeadAdminUser',['vendas'=>$vendas,'produtoServico'=>$produtoServico,'lead'=>$Lead,'dadosCadastroLeads'=>$dadosCadastroLeads]);
+        $responsaveis = $id_lead->responsavel;
+        $id_responsaveis = [];
+        foreach ($responsaveis as $respons){
+            array_push($id_responsaveis, $respons->id);
+        }
+
+        return view('AdminUser.leads.vizualizarLeadAdminUser',['id_responsaveis'=>$id_responsaveis,'vendas'=>$vendas,'produtoServico'=>$produtoServico,'lead'=>$Lead,'dadosCadastroLeads'=>$dadosCadastroLeads]);
     }
 
     public function editarDadoKanbanAdmin(Request $request)

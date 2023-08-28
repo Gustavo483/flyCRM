@@ -52,4 +52,9 @@ class User extends Authenticatable
     public function empresa(){
         return $this->hasOne('App\Models\Empresa','id_empresa', 'id_empresa');
     }
+
+    public function leads()
+    {
+        return $this->belongsToMany('App\Models\Lead','tb_responsavel_lead', 'id_lead', 'id_responsavel');
+    }
 }

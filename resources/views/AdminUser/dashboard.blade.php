@@ -104,11 +104,11 @@
                                         <div class="w-75">
                                             {{isset($lead->lead) ? $lead->lead->st_nome : ''}}
                                         </div>
-                                        <div class="w-25 me-5">
-                                            <button class="infoResponsavel ps-1" data-toggle="tooltip" data-placement="bottom" title="{{$lead->lead->responsavel->name}}">
-                                                {{isset($lead->lead->responsavel) ? $lead->lead->responsavel->st_iniciaisNome : ''}}
-                                            </button>
-                                        </div>
+{{--                                        <div class="w-25 me-5">--}}
+{{--                                            <button class="infoResponsavel ps-1" data-toggle="tooltip" data-placement="bottom" title="{{$lead->lead->responsavel->name}}">--}}
+{{--                                                {{isset($lead->lead->responsavel) ? $lead->lead->responsavel->st_iniciaisNome : ''}}--}}
+{{--                                            </button>--}}
+{{--                                        </div>--}}
                                     </div>
                                     <div class="textGray d-flex align-items-center justify-content-start w-25">{{isset($lead->lead) ? $lead->lead->int_telefone: ''}}</div>
                                 </div>

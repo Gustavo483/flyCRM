@@ -9,6 +9,7 @@ use App\Models\Fase;
 use App\Models\Grupo;
 use App\Models\Lead;
 use App\Models\Midia;
+use App\Models\User;
 use App\Models\ObservacaoLead;
 use App\Models\Origem;
 use App\Models\ProdutoServico;
@@ -121,9 +122,13 @@ class UserController extends Controller
         }
 
         if ($where){
-            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_userResponsavel = '.$usuario;
+            $sqlLeads= 'SELECT l.id_lead FROM tb_leads l
+               left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+               WHERE '.$where.' and rl.id_responsavel ='.$usuario;
         }else{
-            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_userResponsavel = '.$usuario;
+            $sqlLeads= 'SELECT l.id_lead FROM tb_leads l
+                 left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+                 WHERE rl.id_responsavel ='.$usuario;
         }
 
         $leadsSql = DB::select($sqlLeads);
@@ -137,10 +142,11 @@ class UserController extends Controller
 
         $hoje2 = new DateTime();
 
+        $user = User::where('id', $usuario)->first();
         $dadosInfo = [
             'leads'=> count($leads),
             'Oportunidades'=>ObservacaoLead::wherein('id_lead',$ids_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
-            'atendimento'=>Lead::where('id_userResponsavel',$usuario)->where('bl_atendimento', 1)->count(),
+            'atendimento'=>$user->leads->where('bl_atendimento',1)->count(),
         ];
 
         $dadosCadastroLeads = [
@@ -374,10 +380,11 @@ class UserController extends Controller
             'int_temperatura'=>$request->int_temperatura,
             'id_grupo'=>$request->id_grupo,
             'st_observacoes'=>$request->st_observacoes ? $request->st_observacoes : null ,
-            'id_userResponsavel'=>$usuario,
             'id_columnsKhanban'=>$request->id_columnsKhanban,
             'id_empresa'=>$id_empresa
         ]);
+
+        $lead->responsavel()->attach($usuario);
 
         $agora = new DateTime();
         $dia = $agora->format('d/m/Y');
@@ -406,7 +413,8 @@ class UserController extends Controller
         $userResponsavel = auth()->user()->id;
         $userCountByDay = Lead::selectRaw('DATE(created_at) as day, COUNT(*) as count')
             ->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )
-            ->whereRaw("id_userResponsavel = '$userResponsavel'" )
+            ->leftJoin("tb_responsavel_lead as rl", "rl.id_lead", "=", "tb_leads.id_lead")
+            ->whereRaw("rl.id_responsavel = '$userResponsavel'" )
             ->groupBy('day')
             ->orderBy('day', 'ASC')
             ->get();
@@ -442,13 +450,15 @@ class UserController extends Controller
 
         $sqlFases = 'SELECT f.st_nomeFase AS fase, COUNT(*) AS count FROM tb_leads as l
                     left JOIN tb_fases AS f ON l.id_fase = f.id_fase
-                    WHERE id_userResponsavel = '.$userResponsavel.' GROUP BY fase';
+                    left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+                    WHERE rl.id_responsavel = '.$userResponsavel.' GROUP BY fase';
 
         $fases = DB::select($sqlFases);
 
         $sqlStatus = 'SELECT s.st_titulo AS status, COUNT(*) AS count FROM tb_leads as l
                     left JOIN tb_columns_khanban AS s ON l.id_columnsKhanban = s.id_columnsKhanban
-                    WHERE id_userResponsavel = '.$userResponsavel.' GROUP BY status';
+                    left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+                    WHERE rl.id_responsavel = '.$userResponsavel.' GROUP BY status';
 
         $status = DB::select($sqlStatus);
 
@@ -484,7 +494,8 @@ class UserController extends Controller
 
         $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
-        $leads = Lead::where('id_userResponsavel',$usuario)->get();
+        $user = User::where('id',$usuario)->first();
+        $leads = $user->leads;
 
         $id_leads = [];
 
@@ -501,9 +512,11 @@ class UserController extends Controller
         $intervalo2 = new DateInterval('P1D');
         $final = $hoje2->add($intervalo2)->format('Y-m-d');
 
+        $user = User::where('id',$usuario)->first();
+        $leads = $user->leads;
 
         $DivInfoGerais = [
-            'leads'=> Lead::where('id_userResponsavel',$usuario)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->count(),
+            'leads'=> Lead::wherein('id_lead',$id_leads)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->count(),
             'oportunidades'=> ObservacaoLead::wherein('id_lead',$id_leads)->where('bl_oportunidade',1)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->count(),
             'conversoes'=> 1
         ];
@@ -511,7 +524,7 @@ class UserController extends Controller
         $dadosInfo = [
             'leads'=> count($leads),
             'Oportunidades'=>ObservacaoLead::wherein('id_lead',$id_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
-            'atendimento'=>Lead::where('id_userResponsavel',$usuario)->where('bl_atendimento', 1)->count(),
+            'atendimento'=>Lead::wherein('id_lead',$id_leads)->where('bl_atendimento', 1)->count(),
         ];
 
         $dadosCadastroLeads = [
@@ -627,7 +640,8 @@ class UserController extends Controller
 
         $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
-        $leads = Lead::where('id_userResponsavel',$usuario)->get();
+        $user = User::where('id',$usuario)->first();
+        $leads = $user->leads;
         $id_leads = [];
 
         foreach ($leads as $lead){
@@ -639,7 +653,7 @@ class UserController extends Controller
         $dadosInfo = [
             'leads'=> count($leads),
             'Oportunidades'=>ObservacaoLead::wherein('id_lead',$id_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
-            'atendimento'=>Lead::where('id_userResponsavel',$usuario)->where('bl_atendimento', 1)->count(),
+            'atendimento'=>Lead::wherein('id_lead',$id_leads)->where('bl_atendimento', 1)->count(),
         ];
 
         $dadosCadastroLeads = [
@@ -703,9 +717,13 @@ class UserController extends Controller
         }
 
         if ($where){
-            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE '.$where.' and id_userResponsavel = '.$usuario;
+            $sqlLeads= 'SELECT l.id_lead FROM tb_leads l
+             left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+             WHERE '.$where.' and rl.id_responsavel ='.$usuario;
         }else{
-            $sqlLeads= 'SELECT id_lead FROM tb_leads WHERE id_userResponsavel = '.$usuario;
+            $sqlLeads= 'SELECT l.id_lead FROM tb_leads l
+            left join tb_responsavel_lead rl on rl.id_lead =  l.id_lead
+            WHERE rl.id_responsavel ='.$usuario;
         }
 
         $leadsSql = DB::select($sqlLeads);
@@ -722,7 +740,7 @@ class UserController extends Controller
         $dadosInfo = [
             'leads'=> count($leads),
             'Oportunidades'=>ObservacaoLead::wherein('id_lead',$ids_leads)->where('dt_contato',$hoje2)->where('bl_oportunidade',1)->count(),
-            'atendimento'=>Lead::where('id_userResponsavel',$usuario)->where('bl_atendimento', 1)->count(),
+            'atendimento'=>Lead::wherein('id_lead',$ids_leads)->where('bl_atendimento', 1)->count(),
         ];
 
         $dadosCadastroLeads = [
@@ -738,13 +756,12 @@ class UserController extends Controller
         return view('User.leads.vizualizarTodasLeadsUser', ['tela' =>'leads','dadosInfo'=>$dadosInfo,'dadosCadastroLeads'=>$dadosCadastroLeads,'leads'=>$leads, 'dadosForm'=>$dadosForm]);
     }
 
-
-
     public function vizualizarOportunidadesUser()
     {
         $usuario = auth()->user()->id;
         $empresa = auth()->user()->id_empresa;
-        $leads = Lead::where('id_userResponsavel',$usuario)->get();
+        $user = User::where('id', $usuario)->first();
+        $leads = $user->leads;
         $hoje = new DateTime();
 
         $oportunidadesHoje = new Collection();

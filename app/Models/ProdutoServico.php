@@ -20,7 +20,8 @@ class ProdutoServico extends Model
         'st_descricao'
     ];
 
-    public function leads(){
+    public function leads()
+    {
         return $this->hasMany('App\Models\Lead','id_produtoServico', 'id_produtoServico');
     }
     public function venda()

@@ -26,7 +26,6 @@ class Lead extends Model
         'int_temperatura',
         'id_grupo',
         'st_observacoes',
-        'id_userResponsavel',
         'id_columnsKhanban',
         'id_empresa',
         'bl_atendimento',
@@ -56,9 +55,7 @@ class Lead extends Model
     public function produto(){
         return $this->hasOne('App\Models\ProdutoServico','id_produtoServico', 'id_produtoServico');
     }
-    public function responsavel(){
-        return $this->hasOne('App\Models\User','id', 'id_userResponsavel');
-    }
+
     public function grupo(){
         return $this->hasOne('App\Models\Grupo','id_grupo', 'id_grupo');
     }
@@ -68,4 +65,12 @@ class Lead extends Model
     public function status(){
         return $this->hasOne('App\Models\ColumnsKhanban','id_columnsKhanban', 'id_columnsKhanban');
     }
+
+    public function responsavel()
+    {
+        return $this->belongsToMany('App\Models\User','tb_responsavel_lead', 'id_lead', 'id_responsavel');
+    }
+    //    public function responsavel(){
+//        return $this->hasOne('App\Models\User','id', 'id_userResponsavel');
+//    }
 }

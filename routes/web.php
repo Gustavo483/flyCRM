@@ -51,6 +51,8 @@ Route::middleware('auth')->group(function () {
         Route::controller(AdminUserController::class)->group(function () {
             Route::get('dashboard-admin-user', 'dashboardAdminUser')->name('dashboardAdminUser');
 
+            Route::get('gerar-planilha-veriaveis', 'GerarPlanilhaVeriaveis')->name('GerarPlanilhaVeriaveis');
+
             //Leads
             Route::get('visualizar-todas-leads-empresa', 'vizualizarTodasleadsEmpresa')->name('vizualizarTodasleadsEmpresa');
             Route::get('visualizar-lead-admin-user/{id_lead}', 'vizualizarLeadAdminUser')->name('vizualizarLeadAdminUser');
