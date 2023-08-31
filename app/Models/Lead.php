@@ -30,6 +30,8 @@ class Lead extends Model
         'id_empresa',
         'bl_atendimento',
         'bl_cliente',
+        'int_interacoes',
+        'int_interacoesAteFechamento'
     ];
 
     public function observacoes(){

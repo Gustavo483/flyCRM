@@ -59,10 +59,41 @@
                         </svg>
                     </button>
                 </div>
-                <div class="mt-2">
+                <div class="d-flex justify-content-between">
                     <button type="button" class="filtroavancancado" data-bs-toggle="modal" data-bs-target="#FiltrarLead">
                         Filtro avançado
                     </button>
+                    <div class="mt-2">
+                        <button type="button" class="filtroavancancado" data-bs-toggle="modal" data-bs-target="#ImportLead">
+                            Upload de Lead Por planilha
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade treste123123" id="ImportLead" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="ImportLead" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header ">
+                                <h5 class="modal-title colorTitle" id="staticBackdropLabel">Upload de lead por planilha</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body ">
+                                <form method="post" action="{{route('ImportLeadExcel')}}" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="borderPareamennto mt-2">
+                                        <input type="file" name="arquiloLeads" class="form-control" accept=".xlsx">
+                                    </div>
+
+                                    <div class="d-flex justify-content-center">
+                                        <button type="submit" class="BtnBlue my-3">import</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="divEmpresas mb-5 mt-5">

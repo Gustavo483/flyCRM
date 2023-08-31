@@ -48,18 +48,6 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Houve um erro ao alterar o status da oportunidade. Favor contatar o suporte.');
         }
     }
-    public function ConverterClienteUser(Lead $id_lead)
-    {
-        try {
-            $id_lead->update([
-                'bl_cliente' => 1
-            ]);
-            return redirect()->back()->with('success', 'Lead cadastrado como cliente com suceso.');
-
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Houve um erro ao salvar o lead como cliente. Favor contatar o suporte.');
-        }
-    }
     public function filtrarLeadsAvancadoUser(Request $request)
     {
         $usuario = auth()->user()->id;
@@ -280,6 +268,10 @@ class UserController extends Controller
             'id_empresa'=>$usuario->id_empresa
         ]);
 
+        Lead::where('id_lead', $request->id_lead)->update([
+            'updated_at'=>date('Y-m-d')
+        ]);
+
         return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
     }
 
@@ -315,8 +307,25 @@ class UserController extends Controller
             'id_empresa'=>$usuario->id_empresa
         ]);
 
+        Lead::where('id_lead', $request->id_lead)->update([
+            'updated_at'=>date('Y-m-d')
+        ]);
+
         return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
     }
+
+    public function indicadoresLeads($lead)
+    {
+        $totalObservacoes = ObservacaoLead::where('id_lead', $lead->id_lead)->get();
+        $totalOportunidade = $totalObservacoes->where('bl_oportunidade', 1);
+        $oportunidadeSucesso = $totalOportunidade->where('bl_statusOportunidade', 1);
+        $diferencaEmDias = Carbon::parse($lead->updated_at->format('Y-m-d'))->diffInDays(Carbon::parse(date('Y-m-d')));
+        $leedNutrido = $lead->int_interacoes > 20 ? 'lead bem nutrido' : 'lead pouco nutrido';
+
+        return ["totalOportunidade"=>count($totalOportunidade), "oportunidadeSucesso"=>count($oportunidadeSucesso),'diferencaEmDias'=>$diferencaEmDias, 'leedNutrido'=>$leedNutrido];
+    }
+
+
     public function vizualizarLeadUser( Lead $id_lead)
     {
         $empresa = auth()->user()->id_empresa;
@@ -329,8 +338,13 @@ class UserController extends Controller
             'status' => ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),
             'midias' => Midia::where('id_empresa', $empresa)->get()
         ];
+        $produtoServico = ProdutoServico::where('id_empresa',$empresa)->get();
+
+        $indicadoresLead = $this->indicadoresLeads($id_lead);
+
         $Lead = $id_lead;
-        return view('User.leads.vizualizarLeadUser',['lead'=>$Lead,'dadosCadastroLeads'=>$dadosCadastroLeads]);
+
+        return view('User.leads.vizualizarLeadUser',['indicadoresLead'=>$indicadoresLead,'lead'=>$Lead,'produtoServico'=>$produtoServico,'dadosCadastroLeads'=>$dadosCadastroLeads]);
     }
     public function EditarLead(Lead $id_lead, Request $request)
     {
@@ -397,6 +411,29 @@ class UserController extends Controller
             'bl_oportunidade'=>0,
             'id_empresa'=>$usuario->id_empresa
         ]);
+
+        if ($request->st_observacoes){
+
+            $agora = new DateTime();
+            $dia = $agora->format('d/m/Y');
+            $hora = $agora->format('H:i:s');
+
+            $usuario = auth()->user();
+
+            ObservacaoLead::create([
+                'id_lead'=>$lead->id_lead,
+                'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' adicionou uma observação: ' ,
+                'st_descricao'=>$request->st_observacoes,
+                'bl_oportunidade'=>0,
+                'id_empresa'=>$usuario->id_empresa
+            ]);
+        }
+
+        $lead->update([
+            'updated_at'=>date('Y-m-d')
+        ]);
+
+
 
         return redirect()->route('vizualizarLeadUser', ['id_lead'=>$lead->id_lead])->with('success', 'Lead cadastrado com sucesso.');
     }
@@ -539,6 +576,13 @@ class UserController extends Controller
         $columnsStatus = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban', 1)->orderBy('int_posicao')->get();
 
         $columnsToDo = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban',2)->orderBy('int_posicao')->get();
+
+        $campanhasAtiva = Campanha::where('id_empresa',$empresa)->where('bl_campanhaAtiva', 1)->first();
+
+        $hoje = Carbon::today();
+        $dataMenosTrintaDias = $hoje->subDays(30);
+        $indicadorComercial = Lead::where('updated_at','<', $dataMenosTrintaDias)->where('id_userResponsavel',$usuario)->orderBy('created_at', 'desc')->take(10)->count();
+
         return view('User.dashboard', [
             'tela' =>'dashboard',
             'dadosInfo'=>$dadosInfo,
@@ -552,7 +596,9 @@ class UserController extends Controller
             'columnsToDo'=>$columnsToDo,
             'id_empresa'=>$empresa,
             'observacoes'=>$observacoes,
-            'DivInfoGerais'=>$DivInfoGerais
+            'DivInfoGerais'=>$DivInfoGerais,
+            'campanhasAtiva'=>$campanhasAtiva,
+            'indicadorComercial'=>$indicadorComercial
         ]);
     }
 

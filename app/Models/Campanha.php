@@ -16,6 +16,8 @@ class Campanha extends Model
     protected $fillable = [
         'id_campanha',
         'id_empresa',
-        'st_nomeCampanha'
+        'st_nomeCampanha',
+        'bl_campanhaAtiva',
+        'st_descricao'
     ];
 }

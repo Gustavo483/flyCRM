@@ -29,7 +29,7 @@
 </head>
 
 <body id="body">
-    <div class="tamanhoDivConteudo">
+    <div class="tamanhoDivConteudo relative">
         @yield('content')
     </div>
     <div class="my-5 d-flex justify-content-center">

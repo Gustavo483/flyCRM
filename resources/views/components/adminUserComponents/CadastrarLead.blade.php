@@ -106,7 +106,7 @@
                     <div class="">
                         @foreach($dadosCadastroLeads['id_userResponsavel'] as $responsavel)
                             <label class="container">{{$responsavel->name}}
-                                <input name="responsaveis[]" value="{{$responsavel->id}}" type="checkbox">
+                                <input name="responsaveis[]" value="{{$responsavel->id}}" type="checkbox" checked>
                                 <span class="checkmark"></span>
                             </label>
                         @endforeach

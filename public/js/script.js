@@ -138,11 +138,37 @@ function DeleteOrigem(origem){
     document.getElementById('st_nomeOrigemDelete').innerText = origem.st_nomeOrigem
     btn.click()
 }
+function fecharIndicador()
+{
+    console.log('entrei aqui')
+    $.ajax({
+        'processing': true,
+        'serverSide': false,
+        type: "GET",
+        url: "/fechar-indicador",
+        success: function(s) {
+            console.log(s)
+        },
+        error: function (s){
+            console.log(s)
+        }
+    });
 
+    document.getElementById('DivIndicadorComercial').classList.add('none')
+}
+
+function DirecionarLeadParaFiltro(){
+    document.getElementById('IndicadorComercialLink').click()
+}
 function EditarCampanha(campanha){
+    console.log(campanha.st_descricao)
     var btn = document.getElementById('EditarCampanhaBtn')
     document.getElementById('id_campanhaEdit').value = campanha.id_campanha
     document.getElementById('st_nomeCampanhaEdit').value = campanha.st_nomeCampanha
+    document.getElementById('st_descricaoCampanha').value = campanha.st_descricao
+    var campanhaAtiva = campanha.bl_campanhaAtiva == 1 ?1 :0
+    document.getElementById('StatusCampanha'+campanhaAtiva).setAttribute('selected', true)
+    StatusCampanha1
     btn.click()
 }
 function DeleteCampanha(campanha){

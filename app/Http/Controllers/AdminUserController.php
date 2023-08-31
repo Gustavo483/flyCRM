@@ -38,6 +38,7 @@ class AdminUserController extends Controller
     {
         $empresa = auth()->user()->id_empresa;
 
+        $empresaDados = Empresa::where('id_empresa',$empresa)->first();
         $informacoes = [];
         $camposVariaveis = [
             'Origem'=>[Origem::where('id_empresa', $empresa)->get(),'st_nomeOrigem', 'id_origem'],
@@ -62,6 +63,11 @@ class AdminUserController extends Controller
                 }
             }
         }
+        array_push($informacoes,[
+            'Empresa',
+            $empresaDados->st_nomeEmpresa,
+            $empresaDados->id_empresa,
+        ]);
         return Excel::download(new VariaveisExport($informacoes), "variaveisFlyCrm.xlsx");
 
     }
@@ -115,163 +121,26 @@ class AdminUserController extends Controller
 
         $this->adicionarHistoricoLead($lead->id_lead,0,$mds,$id_empresa);
 
-        return ['statusRequisicao'=>'error','message'=>"lead cadastro com sucesso no sistema"];
+        return ['statusRequisicao'=>'success','message'=>"lead cadastro com sucesso no sistema"];
 
     }
-    public function validarXlsx($dados, $user)
-    {
-        $id_empresa = $user->id_empresa;
 
-        if (!$dados[0] || !$dados[2] || !$dados[1] || !$dados[11]) {
-            return [1, 'Os campos Nome,E-mail,Telefone,Responsável devem ser preenchidos.'];
-        }
 
-        $list = [];
-        $dados[3] && Origem::where('id_empresa', $id_empresa)->where('id_origem', $dados[3])->count() < 1 ? array_push($list,'Origem') : '';
-        $dados[4] && Midia::where('id_empresa', $id_empresa)->where('id_midia', $dados[4])->count() < 1 ? array_push($list,'Midia') : '';
-        $dados[5] && Campanha::where('id_empresa', $id_empresa)->where('id_campanha', $dados[5])->count() < 1 ? array_push($list,'Campanha') : '';
-        $dados[6] && ProdutoServico::where('id_empresa', $id_empresa)->where('id_produtoServico', $dados[6])->count() < 1 ? array_push($list,'Produto') : '';
-        $dados[7] && Fase::where('id_empresa', $id_empresa)->where('id_fase', $dados[7])->count() < 1 ? array_push($list,'Fase') : '';
-        $dados[9] && Grupo::where('id_empresa', $id_empresa)->where('id_grupo', $dados[9])->count() < 1 ? array_push($list,'Grupo') : '';
-        $dados[10] && ColumnsKhanban::where('id_empresa', $id_empresa)->where('id_columnsKhanban', $dados[10])->count() < 1 ? array_push($list,'Status') : '';
-        User::where('id_empresa', $id_empresa)->where('id', $dados[11])->count() < 1 ? array_push($list,'Responsável') : '';
-
-        if (count($list) > 0) {
-            return [2, 'verifique os ids de referencias da sua empresa para o registro correto do Lead'];
-        }
-
-        try {
-            $lead = Lead::create([
-                'st_nome' => $dados[0],
-                'int_telefone' => $dados[2],
-                'int_posicao' => $dados[10] ? Lead::where('id_columnsKhanban', $dados[10])->count() + 1 : null,
-                'st_email' => $dados[1],
-                'id_origem' => $dados[3],
-                'id_midia' => $dados[4],
-                'id_campanha' => $dados[5],
-                'id_produtoServico' => $dados[6],
-                'id_fase' => $dados[7],
-                'int_temperatura' => $dados[8] ?: 0,
-                'id_grupo' => $dados[9],
-                'st_observacoes' => $dados[12],
-                'id_columnsKhanban' => $dados[10],
-                'id_empresa' => $id_empresa
-            ]);
-
-            $lead->responsavel()->attach($dados[11]);
-
-            $agora = new DateTime();
-            $dia = $agora->format('d/m/Y');
-            $hora = $agora->format('H:i:s');
-            $mds = $dia.' às '.$hora.' - '.$user->name.' - Lead Cadastrado no sistema.';
-
-            $this->adicionarHistoricoLead($lead->id_lead,0,$mds);
-
-            return [3, 'Sucesso ao salvar o lead'];
-        } catch (Exception $e) {
-            return [4, 'Erro ao salvar o lead'];
-        }
-    }
-    public function ImportLeadExcel(Request $request)
-    {
-        $archivo = $request->file('arquiloLeads');
-        $hoja = IOFactory::load($archivo)->getActiveSheet();
-
-        $contador = 0;
-        $linhasComErro = [];
-        $user = auth()->user();
-        foreach ($hoja->getRowIterator() as $fila) {
-            $celdas = $fila->getCellIterator();
-            $filaData = [];
-
-            foreach ($celdas as $celda) {
-                $valor = $celda->getValue();
-                $filaData[] = $valor;
-            }
-
-            $erro = 0;
-            if ($contador === 0){
-                $filaData[0] !== "Nome" ? $erro++ : '';
-                $filaData[1] !== "E-mail" ? $erro++ : '';
-                $filaData[2] !== "Telefone" ? $erro++ : '';
-                $filaData[3] !== "Origem" ? $erro++ : '';
-                $filaData[4] !== "Midia" ? $erro++ : '';
-                $filaData[5] !== "Campanha" ? $erro++ : '';
-                $filaData[6] !== "Produto" ? $erro++ : '';
-                $filaData[7] !== "Fases" ? $erro++ : '';
-                $filaData[8] !== "Temperatura" ? $erro++ : '';
-                $filaData[9] !== "Grupo" ? $erro++ : '';
-                $filaData[10] !== "Status" ? $erro++ : '';
-                $filaData[11] !== "Responsável" ? $erro++ : '';
-                $filaData[12] !== "Observação" ? $erro++ : '';
-
-                if ($erro){
-                    return redirect()->back()->with('error', 'O arquivo não esta nos moldes solicitados pelo sistema. Favor olhar a documentação !');
-                }
-            }else{
-                $subset = array_slice($filaData, 0, 13);
-                $erroValidacao = $this->validarXlsx($subset, $user);
-
-                if ($erroValidacao[0] !== 3){
-                    array_push($linhasComErro, $contador);
-                }
-            }
-            $contador ++;
-        }
-        if ($linhasComErro){
-            return redirect()->back()->with('error', 'As linhas '. implode(", ", $linhasComErro).' não foram salvos no sistema, favor verifique os dados e tente novamente.');
-        }
-        return redirect()->back()->with('success', 'Arquivos salvos com sucesso');
-    }
-
-    public function adicionarHistoricoLead($id_lead,$tipoMensagem, $st_titulo,$id_empresa = null, $st_descricao = null ,$dt_contato = null)
+    public function adicionarHistoricoLead(Lead $id_lead,$tipoMensagem, $st_titulo,$id_empresa = null, $st_descricao = null ,$dt_contato = null)
     {
         ObservacaoLead::create([
             'dt_contato'=>$dt_contato,
-            'id_lead'=>$id_lead,
+            'id_lead'=>$id_lead->id_lead,
             'st_titulo'=>$st_titulo,
             'st_descricao'=>$st_descricao,
             'bl_oportunidade'=>$tipoMensagem,
             'id_empresa'=>isset($id_empresa) ?$id_empresa : auth()->user()->id_empresa
         ]);
 
-    }
-    public function registrarVendaAdmin(Request $request, Lead $id_lead)
-    {
-        try {
-            $venda = Venda::create([
-                'int_preco'=>$request->int_preco,
-                'st_descricao'=>$request->st_descricao,
-                'dt_venda'=>$request->dt_venda,
-                'id_lead'=>$id_lead->id_lead
-            ]);
-
-            $venda->produtos()->attach($request->produtos);
-
-            $agora = new DateTime();
-            $dia = $agora->format('d/m/Y');
-            $hora = $agora->format('H:i:s');
-
-            $usuario = auth()->user();
-
-            $produtossd = '';
-            foreach ($request->produtos as $produto){
-                $produtossd = $produtossd.'<li>'.$produto.'</li>';
-            }
-            $dataObjeto = DateTime::createFromFormat('Y-m-d', $request->dt_venda);
-
-            $titulo = $dia.' às '.$hora.' - '.$usuario->name.' adicionou uma venda.';
-            $st_descricao = '<div class="d-flex justify-content-between"><div>Data da venda : '.$dataObjeto->format('d/m/Y').'</div>
-            <div>valor : R$ '.$request->int_preco.'</div></div><div>Produtos vendidos:<div>'.$produtossd.'</div></div>';
-
-
-            $this->adicionarHistoricoLead($id_lead->id_lead,2,$titulo, null,$st_descricao);
-
-            return redirect()->route('vizualizarLeadAdminUser',['id_lead'=>$id_lead->id_lead])->with('success', 'Venda cadastrada com sucesso.');
-
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Houve um erro ao salvar o venda, favor entrar em contato com suporte');
-        }
+        $id_lead->update([
+            'updated_at'=>date('Y-m-d'),
+            'int_interacoes'=>intval($id_lead->int_interacoes) + 1,
+        ]);
 
     }
     public function relatorioEmpresa(Request $request)
@@ -420,19 +289,6 @@ class AdminUserController extends Controller
             return redirect()->back()->with('error', 'Houve um erro ao alterar o status da oportunidade. Favor contatar o suporte.');
         }
     }
-    public function ConverterClienteAdmin(Lead $id_lead)
-    {
-        try {
-            $id_lead->update([
-                'bl_cliente' => 1
-            ]);
-            return redirect()->back()->with('success', 'Lead cadastrado como cliente com suceso.');
-
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Houve um erro ao salvar o lead como cliente. Favor contatar o suporte.');
-        }
-    }
-
     public function filtrarLeadsAvancadoAdmin(Request $request)
     {
         $empresa = auth()->user()->id_empresa;
@@ -777,12 +633,26 @@ class AdminUserController extends Controller
         $hora = $agora->format('H:i:s');
         $usuario = auth()->user();
 
-        ObservacaoLead::create([
-            'id_lead'=>$lead->id_lead,
-            'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' - Lead Cadastrado no sistema.',
-            'bl_oportunidade'=>0,
-            'id_empresa'=>$usuario->id_empresa
-        ]);
+        $titulo = $dia.' às '.$hora.' - '.$usuario->name.' - Lead Cadastrado no sistema.';
+        $this->adicionarHistoricoLead($lead->id_lead,0, $titulo,$usuario->id_empresa);
+
+        if ($request->st_observacoes){
+
+            $agora = new DateTime();
+            $dia = $agora->format('d/m/Y');
+            $hora = $agora->format('H:i:s');
+
+            $usuario = auth()->user();
+
+            ObservacaoLead::create([
+                'id_lead'=>$lead->id_lead,
+                'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' adicionou uma observação: ' ,
+                'st_descricao'=>$request->st_observacoes,
+                'bl_oportunidade'=>0,
+                'id_empresa'=>$usuario->id_empresa
+            ]);
+        }
+
         $produtoServico = ProdutoServico::where('id_empresa',$id_empresa)->get();
 
         return redirect()->route('vizualizarLeadAdminUser',['id_lead'=>$lead->id_lead])->with('success', 'Lead cadastrado com sucesso.');
@@ -833,6 +703,13 @@ class AdminUserController extends Controller
             'id_empresa'=>$usuario->id_empresa
         ]);
 
+        $lead = Lead::where('id_lead',$request->id_lead)->first();
+
+        $lead->update([
+            'updated_at'=>date('Y-m-d'),
+            'int_interacoes'=>intval($lead->int_interacoes) + 1,
+        ]);
+
         return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
     }
     public function registrarObservacaoAdmin(Request $request)
@@ -867,7 +744,25 @@ class AdminUserController extends Controller
             'id_empresa'=>$usuario->id_empresa
         ]);
 
+        $lead = Lead::where('id_lead',$request->id_lead)->first();
+
+        $lead->update([
+            'updated_at'=>date('Y-m-d'),
+            'int_interacoes'=>intval($lead->int_interacoes) + 1,
+        ]);
+
         return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
+    }
+
+    public function indicadoresLeads($lead)
+    {
+        $totalObservacoes = ObservacaoLead::where('id_lead', $lead->id_lead)->get();
+        $totalOportunidade = $totalObservacoes->where('bl_oportunidade', 1);
+        $oportunidadeSucesso = $totalOportunidade->where('bl_statusOportunidade', 1);
+        $diferencaEmDias = Carbon::parse($lead->updated_at->format('Y-m-d'))->diffInDays(Carbon::parse(date('Y-m-d')));
+        $leedNutrido = $lead->int_interacoes > 20 ? 'lead bem nutrido' : 'lead pouco nutrido';
+
+        return ["totalOportunidade"=>count($totalOportunidade), "oportunidadeSucesso"=>count($oportunidadeSucesso),'diferencaEmDias'=>$diferencaEmDias, 'leedNutrido'=>$leedNutrido];
     }
 
     public function vizualizarLeadAdminUser( Lead $id_lead)
@@ -893,11 +788,14 @@ class AdminUserController extends Controller
 
         $responsaveis = $id_lead->responsavel;
         $id_responsaveis = [];
+
         foreach ($responsaveis as $respons){
             array_push($id_responsaveis, $respons->id);
         }
 
-        return view('AdminUser.leads.vizualizarLeadAdminUser',['id_responsaveis'=>$id_responsaveis,'vendas'=>$vendas,'produtoServico'=>$produtoServico,'lead'=>$Lead,'dadosCadastroLeads'=>$dadosCadastroLeads]);
+        $indicadoresLead = $this->indicadoresLeads($id_lead);
+
+        return view('AdminUser.leads.vizualizarLeadAdminUser',['indicadoresLead'=>$indicadoresLead,'id_responsaveis'=>$id_responsaveis,'vendas'=>$vendas,'produtoServico'=>$produtoServico,'lead'=>$Lead,'dadosCadastroLeads'=>$dadosCadastroLeads]);
     }
 
     public function editarDadoKanbanAdmin(Request $request)
@@ -1155,6 +1053,12 @@ class AdminUserController extends Controller
 
         $columnsToDo = ColumnsKhanban::where('id_empresa',$empresa)->where('int_tipoKhanban',2)->orderBy('int_posicao')->get();
 
+        $campanhasAtiva = Campanha::where('id_empresa',$empresa)->where('bl_campanhaAtiva', 1)->first();
+
+        $hoje = Carbon::today();
+        $dataMenosTrintaDias = $hoje->subDays(30);
+        $indicadorComercial = Lead::where('id_empresa',$empresa)->where('updated_at','<', $dataMenosTrintaDias)->orderBy('created_at', 'desc')->take(10)->count();
+
         return view('AdminUser.dashboard', [
             'tela' =>'dashboard',
             'dadosInfo'=>$dadosInfo,
@@ -1168,7 +1072,9 @@ class AdminUserController extends Controller
             'columnsToDo'=>$columnsToDo,
             'id_empresa'=>$empresa,
             'observacoes'=>$observacoes,
-            'DivInfoGerais'=>$DivInfoGerais
+            'DivInfoGerais'=>$DivInfoGerais,
+            'campanhasAtiva'=>$campanhasAtiva,
+            'indicadorComercial'=>$indicadorComercial
         ]);
     }
 
@@ -1677,10 +1583,11 @@ class AdminUserController extends Controller
         try {
             $validacao = [
                 'st_nomeCampanha' => 'required',
+                'bl_campanhaAtiva'=>'required'
             ];
 
             $feedback = [
-                'st_nomeCampanha' => 'O campo é requirido',
+                'required' => 'O campo é requirido',
             ];
             $request->validate($validacao, $feedback);
 
@@ -1693,6 +1600,8 @@ class AdminUserController extends Controller
         Campanha::create([
             'id_empresa'=>$id_empresa,
             'st_nomeCampanha'=>$request->st_nomeCampanha,
+            'bl_campanhaAtiva'=>$request->bl_campanhaAtiva,
+            'st_descricao'=>$request->st_descricao,
         ]);
 
         return  redirect()->back()->with('success', 'Campanha cadastrada com sucesso.');
@@ -1717,6 +1626,8 @@ class AdminUserController extends Controller
         $campanha = Campanha::where('id_campanha', $request->id_campanha)->first();
 
         $campanha->update([
+            'bl_campanhaAtiva' => $request->bl_campanhaAtiva,
+            'st_descricao' => $request->st_descricao,
             'st_nomeCampanha' => $request->st_nomeCampanha
         ]);
 

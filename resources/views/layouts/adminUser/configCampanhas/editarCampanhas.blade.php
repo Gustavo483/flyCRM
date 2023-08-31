@@ -24,6 +24,22 @@
                         <div class="colorRed">
                             {{ $errors->has('st_nomeCampanha') ? $errors->first('st_nomeCampanha') : '' }}
                         </div>
+
+                        <div class="my-4">
+                            <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Descrição da campanha:"
+                                                      name="st_descricao" id="st_descricaoCampanha"
+                                                      style="height: 100px">
+                                            </textarea>
+                                <label for="floatingTextarea2">Descrição/Observações</label>
+                            </div>
+                        </div>
+
+                        <select class="form-select" name="bl_campanhaAtiva" aria-label="Default select example" required>
+                            <option value="">Status campanha:</option>
+                            <option id="StatusCampanha1" value="1">Ativa</option>
+                            <option id="StatusCampanha0" value="0">Inativa</option>
+                        </select>
                     </div>
 
                     <div class="d-flex justify-content-center">

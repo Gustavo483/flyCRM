@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\UniversalController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,8 +27,27 @@ Route::get('/dashboard', [AuthenticatedSessionController::class, 'validatePermis
 
 Route::get('/registrar-lead-externo', [AdminUserController::class, 'registrarLeadExterno'])->name('registrarLeadExterno');
 
-
 Route::middleware('auth')->group(function () {
+
+    Route::controller(UniversalController::class)->group(function () {
+        Route::get('tarefas-arquivadas/{permissao}', 'tarefasArquivadas')->name('tarefasArquivadas');
+
+        // Converter em cliente
+        Route::get('converter-cliente/{id_lead}', 'ConverterCliente')->name('ConverterCliente');
+
+        //Venda
+        Route::post('registrar-venda/{id_lead}/{bl_admin}', 'registrarVenda')->name('registrarVenda');
+
+        // import lead excell
+        Route::post('Import-lead-excel', 'ImportLeadExcel')->name('ImportLeadExcel');
+
+
+        Route::get('fechar-indicador', 'fecharIndicador')->name('fecharIndicador');
+
+        Route::get('indicador-comercial', 'IndicadorComercial')->name('IndicadorComercial');
+
+
+    });
 
     Route::middleware('AdminAccess')->group(function () {
         Route::controller(AdminController::class)->group(function () {
@@ -61,8 +81,6 @@ Route::middleware('auth')->group(function () {
             Route::post('filtrar-leads-admin', 'filtrarLeadsAdmin')->name('filtrarLeadsAdmin');
             Route::post('filtrar-leads-avancado-admin', 'filtrarLeadsAvancadoAdmin')->name('filtrarLeadsAvancadoAdmin');
             Route::get('atualizar-status-lead-admin/{id_lead}/{id_status}', 'AtualizarStatusLeadAdmin')->name('AtualizarStatusLeadAdmin');
-            Route::post('Import-lead-excel', 'ImportLeadExcel')->name('ImportLeadExcel');
-
 
             //agenda
             Route::get('visualizar-agenda', 'vizualizarAgenda')->name('vizualizarAgenda');
@@ -128,14 +146,8 @@ Route::middleware('auth')->group(function () {
             Route::get('visualizar-oportunidades-user-admin', 'vizualizarOportunidadesUserAdmin')->name('vizualizarOportunidadesUserAdmin');
             Route::post('editar-status-oportunidade-admin', 'editarStatusOportunidadeAdmin')->name('editarStatusOportunidadeAdmin');
 
-            // Converter em cliente
-            Route::get('converter-cliente-admin/{id_lead}', 'ConverterClienteAdmin')->name('ConverterClienteAdmin');
-
             // Relatorio
             Route::post('relatorio-empresa', 'relatorioEmpresa')->name('relatorioEmpresa');
-
-            //Venda
-            Route::post('registrar-venda-admin/{id_lead}', 'registrarVendaAdmin')->name('registrarVendaAdmin');
 
 
         });
@@ -173,10 +185,6 @@ Route::middleware('auth')->group(function () {
             Route::post('registrar-dado-kanban', 'registrarDadoKanban')->name('registrarDadoKanban');
             Route::post('editar-kanban', 'editarDadoKanban')->name('editarDadoKanban');
             Route::post('deletar-kanban', 'deletarDadoKanban')->name('deletarDadoKanban');
-
-            // Converter em cliente
-            Route::get('converter-cliente-user/{id_lead}', 'ConverterClienteUser')->name('ConverterClienteUser');
-
         });
     });
 

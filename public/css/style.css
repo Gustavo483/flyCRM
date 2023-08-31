@@ -107,7 +107,7 @@ table>tbody>tr>td {
 }
 .DivInfoGerais{
     width: 300px;
-    height: 325px;
+
     background: white;
     padding: 10px;
     border-radius: 10px;
@@ -406,6 +406,16 @@ table>tbody>tr>td {
     border-radius: 10px;
     padding: 10px;
 }
+.FlexTarefas{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+.divTarefas{
+    padding: 10px;
+    box-shadow: 0px 10px 15px -3px rgba(71, 102, 255, 0.33);
+    border-radius: 10px ;
+}
 .divFiltroRelatorio{
     border: 0.3px solid rgba(145, 255, 185, 0.8);
     box-shadow: 0 1px 5px rgba(145, 255, 185, 0.8);
@@ -522,6 +532,34 @@ table>tbody>tr>td {
 
 .BtnCriarLeads:hover{
     background: #2bc4c3;
+}
+.relative{
+    position: relative;
+}
+.pointer{
+    cursor: pointer;
+}
+
+.positionAbsolut{
+    position: fixed;
+    top: 82vh;
+    right: 40px;
+}
+.flesdsd{
+    background: #b7e7e6;
+    border-radius: 10px;
+}
+.fechar{
+    font-size: 40px;
+}
+.DivComercial{
+    color: #8e9a9a;
+    font-weight: bolder;
+    border-radius: 10px;
+}
+.campanhaVigente{
+    background: #b7e7e6;
+    border-radius: 10px;
 }
 .linkProfile{
     display: flex;
