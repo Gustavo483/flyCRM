@@ -12,8 +12,13 @@
                 <div>
                     @include('layouts.sucessoErrorRequest')
                 </div>
-                <div class="colorgray">
-                    Relatórios
+                <div class="d-flex justify-content-between">
+                    <div class=" colorgray">
+                        Relatórios
+                    </div>
+                    <div>
+                        <a onclick="window.history.back();"  class="btn btn-primary">Voltar</a>
+                    </div>
                 </div>
                 <div>
                     @include('components.adminUserComponents.relatorioFiltro')

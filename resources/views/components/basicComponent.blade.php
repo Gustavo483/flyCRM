@@ -25,6 +25,9 @@
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+
 
 </head>
 
@@ -41,6 +44,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{asset('js/script.js')}}"></script>
 <script type="text/javascript">
+    $(".celular").mask("(00) 00000-0000");
+
     function alterarStatusLead(id_lead){
         var id_status = document.getElementById('selectMudarStatus'+id_lead).value
         $.ajax({
@@ -49,12 +54,6 @@
             type: "GET",
             data: {item_categoria: $("#item_categoria").val()},
             url: "/atualizar-status-lead-admin/"+id_lead+"/"+id_status,
-            success: function(s) {
-                console.log('deu gostosinho')
-            },
-            error: function (s){
-                console.log('deu merad')
-            }
         });
     }
 </script>

@@ -13,6 +13,7 @@ main > section {
     max-width: 1500px;
     margin: auto;
 }
+
 main{
     border-radius: 10px;
 }
@@ -20,7 +21,6 @@ main{
 article {
     flex-grow: 1;
     width: 100px;
-    height: 300px;
     margin: 0.4rem;
     overflow: hidden;
     display: flex;

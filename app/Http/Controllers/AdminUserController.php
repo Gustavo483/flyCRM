@@ -34,7 +34,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class AdminUserController extends Controller
 {
-    public function GerarPlanilhaVeriaveis()
+    public function GerarPlanilhaVariaveis()
     {
         $empresa = auth()->user()->id_empresa;
 
@@ -47,7 +47,8 @@ class AdminUserController extends Controller
             'Fase'=>[Fase::where('id_empresa', $empresa)->get(), 'st_nomeFase', 'id_fase'],
             'Grupo'=>[ Grupo::where('id_empresa', $empresa)->get(),'st_nomeGrupo', 'id_grupo'],
             'Status'=>[ColumnsKhanban::where('id_empresa', $empresa)->where('int_tipoKhanban',1)->get(),'st_titulo','id_columnsKhanban'],
-            'Usuario'=>[User::where('id_empresa', $empresa)->where('int_permisionAccess', 0)->get(), 'name', 'id']
+            'Usuario'=>[User::where('id_empresa', $empresa)->where('int_permisionAccess', 0)->get(), 'name', 'id'],
+            'Produto'=>[ProdutoServico::where('id_empresa', $empresa)->get(),'st_nomeProdutoServico', 'id_produtoServico'],
         ];
 
         foreach ($camposVariaveis as $key => $dados){
@@ -71,60 +72,6 @@ class AdminUserController extends Controller
         return Excel::download(new VariaveisExport($informacoes), "variaveisFlyCrm.xlsx");
 
     }
-    public function registrarLeadExterno(Request $request)
-    {
-        if (!$request->empresa || !$request->nome || !$request->telefone || !$request->email || !$request->responsavel) {
-            return 'Os campos Nome ,E-mail ,Telefone ,Responsável e empresa devem ser preenchidos.';
-        }
-        $empresa = Empresa::where('id_empresa', $request->empresa)->count();
-
-        if ($empresa < 1){
-            return 'A empresa não tem cadastro na plataforma. ';
-        }
-
-        $id_empresa = $request->empresa;
-        $list = [];
-
-        isset($request->origem) && Origem::where('id_empresa', $id_empresa)->where('id_origem', $request->origem)->count() < 1 ? array_push($list,'origem') : '';
-        isset($request->midia)  && Midia::where('id_empresa', $id_empresa)->where('id_midia', $request->midia)->count() < 1 ? array_push($list,'midia') : '';
-        isset($request->campanha)  && Campanha::where('id_empresa', $id_empresa)->where('id_campanha', $request->campanha)->count() < 1 ? array_push($list,'campanha') : '';
-        isset($request->produto)  && ProdutoServico::where('id_empresa', $id_empresa)->where('id_produtoServico', $request->produto)->count() < 1 ? array_push($list,'produto') : '';
-        isset($request->fase)  && Fase::where('id_empresa', $id_empresa)->where('id_fase', $request->fase)->count() < 1 ? array_push($list,'fase') : '';
-        isset($request->grupo)  && Grupo::where('id_empresa', $id_empresa)->where('id_grupo', $request->grupo)->count() < 1 ? array_push($list,'grupo') : '';
-        isset($request->status)  && ColumnsKhanban::where('id_empresa', $id_empresa)->where('id_columnsKhanban', $request->status)->count() < 1 ? array_push($list,'status') : '';
-        User::where('id_empresa', $id_empresa)->where('id', $request->responsavel)->count() < 1 ? array_push($list,'responsavel') : '';
-
-        if ($list){
-            return ['statusRequisicao'=>'error','message'=>"Os numeros informados para os campos : ".implode(', ', $list)." nao existem para a empresa informada. Favor consultar as variaveis da empresa"];
-        }
-        $lead = Lead::create([
-            'st_nome' => $request->nome,
-            'int_telefone' => $request->telefone,
-            'int_posicao' => isset($request->status) ? Lead::where('id_columnsKhanban', $request->status)->count() + 1 : null,
-            'st_email' => $request->email,
-            'id_origem' => isset($request->origem) ? $request->origem :null,
-            'id_midia' => isset($request->midia) ? $request->midia :null,
-            'id_campanha' => isset($request->campanha) ? $request->campanha :null,
-            'id_produtoServico' => isset($request->produto) ? $request->produto :null,
-            'id_fase' => isset($request->fase) ? $request->fase :null,
-            'int_temperatura' => isset($request->temperatura) ? $request->temperatura : 0,
-            'id_grupo' => isset($request->grupo) ? $request->grupo :null,
-            'st_observacoes' => isset($request->observacao) ? $request->observacao :null,
-            'id_columnsKhanban' => isset($request->status) ? $request->status :null,
-            'id_empresa' => $id_empresa
-        ]);
-        $lead->responsavel()->attach($request->responsavel);
-        $agora = new DateTime();
-        $dia = $agora->format('d/m/Y');
-        $hora = $agora->format('H:i:s');
-        $mds = $dia.' às '.$hora.' - Link Externo - Lead Cadastrado no sistema.';
-
-        $this->adicionarHistoricoLead($lead->id_lead,0,$mds,$id_empresa);
-
-        return ['statusRequisicao'=>'success','message'=>"lead cadastro com sucesso no sistema"];
-
-    }
-
 
     public function adicionarHistoricoLead(Lead $id_lead,$tipoMensagem, $st_titulo,$id_empresa = null, $st_descricao = null ,$dt_contato = null)
     {
@@ -582,31 +529,6 @@ class AdminUserController extends Controller
     }
     public function registrarLeadsAdmin(Request $request)
     {
-
-        try {
-            $validacao = [
-                'st_nome' => 'required',
-                'st_email' => 'required',
-                'int_telefone' => 'required',
-                'id_origem' => 'required',
-                'id_midia' => 'required',
-                'id_campanha' => 'required',
-                'id_produtoServico' => 'required',
-                'id_fase' => 'required',
-                'id_grupo' => 'required',
-                'id_columnsKhanban' => 'required'
-            ];
-
-            $feedback = [
-                'required' => 'O campo é requirido',
-            ];
-
-            $request->validate($validacao, $feedback);
-
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Não foi possível adicionar o Lead. Favor verificar os dados e tentar novamente.');
-        }
-
         $id_empresa = auth()->user()->id_empresa;
 
         $lead = Lead::create([
@@ -633,32 +555,47 @@ class AdminUserController extends Controller
         $hora = $agora->format('H:i:s');
         $usuario = auth()->user();
 
-        $titulo = $dia.' às '.$hora.' - '.$usuario->name.' - Lead Cadastrado no sistema.';
-        $this->adicionarHistoricoLead($lead->id_lead,0, $titulo,$usuario->id_empresa);
-
-        if ($request->st_observacoes){
-
-            $agora = new DateTime();
-            $dia = $agora->format('d/m/Y');
-            $hora = $agora->format('H:i:s');
-
-            $usuario = auth()->user();
-
-            ObservacaoLead::create([
-                'id_lead'=>$lead->id_lead,
-                'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' adicionou uma observação: ' ,
-                'st_descricao'=>$request->st_observacoes,
-                'bl_oportunidade'=>0,
-                'id_empresa'=>$usuario->id_empresa
-            ]);
+        if ($request->st_observacoes) {
+            $titulo = $dia . ' às ' . $hora . ' - ' . $usuario->name . ' - Lead Cadastrado no sistema com observação :';
+            $this->adicionarHistoricoLead($lead, 0, $titulo, $usuario->id_empresa, $request->st_observacoes);
+        } else {
+            $titulo = $dia . ' às ' . $hora . ' - ' . $usuario->name . ' - Lead Cadastrado no sistema.';
+            $this->adicionarHistoricoLead($lead, 0, $titulo, $usuario->id_empresa);
         }
-
-        $produtoServico = ProdutoServico::where('id_empresa',$id_empresa)->get();
 
         return redirect()->route('vizualizarLeadAdminUser',['id_lead'=>$lead->id_lead])->with('success', 'Lead cadastrado com sucesso.');
     }
     public function EditarLeadAdmin(Lead $id_lead, Request $request)
     {
+        $agora = new DateTime();
+        $dia = $agora->format('d/m/Y');
+        $hora = $agora->format('H:i:s');
+
+        $dados = [
+            'id_origem'=>['tb_origens','st_nomeOrigem','Origem'],
+            'id_midia'=>['tb_midias','st_nomeMidia', 'Midia'],
+            'id_campanha'=>['tb_campanhas', 'st_nomeCampanha', 'Campanhas'],
+            'id_produtoServico'=>['tb_produto_servicos','st_nomeProdutoServico', 'Produto'],
+            'id_fase'=>['tb_fases','st_nomeFase', 'Fase'],
+            'id_grupo'=>['tb_grupos','st_nomeGrupo', 'Grupo'],
+            'id_columnsKhanban'=>['tb_columns_khanban','st_titulo','Status']
+        ];
+
+        if ($request->int_temperatura != $id_lead->int_temperatura){
+            $mds = $dia.' às '.$hora.' - Temperatura do lead foi alterado para '.$request->int_temperatura.'%';
+            $this->adicionarHistoricoLead($id_lead, 0, $mds);
+        }
+
+        foreach ($dados as $key => $dado ){
+            if ($id_lead->$key != $request->$key){
+                $sql = 'SELECT '. $dado[1].' FROM '.$dado[0].' WHERE '.$key.' = '.$request->$key;
+                $resultSql = DB::select($sql);
+                $campo = $dado[1];
+                $mds = $dia.' às '.$hora.' - '.$dado[2].' do lead foi alterado para "'.$resultSql[0]->$campo.'"';
+                $this->adicionarHistoricoLead($id_lead, 0, $mds);
+            }
+        }
+
         if ($request->responsaveis){
             $id_lead->responsavel()->detach();
             $id_lead->responsavel()->attach($request->responsaveis);
@@ -708,6 +645,7 @@ class AdminUserController extends Controller
         $lead->update([
             'updated_at'=>date('Y-m-d'),
             'int_interacoes'=>intval($lead->int_interacoes) + 1,
+            'bl_atendimento' => 1
         ]);
 
         return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
@@ -749,6 +687,7 @@ class AdminUserController extends Controller
         $lead->update([
             'updated_at'=>date('Y-m-d'),
             'int_interacoes'=>intval($lead->int_interacoes) + 1,
+            'bl_atendimento'=>1
         ]);
 
         return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
@@ -1011,11 +950,7 @@ class AdminUserController extends Controller
         $empresa = auth()->user()->id_empresa;
         $leads = Lead::where('id_empresa',$empresa)->get();
 
-        $id_leads = [];
-
-        foreach ($leads as $lead){
-            array_push($id_leads,$lead->id_lead);
-        }
+        $id_leads = $leads->pluck('id_lead')->toArray();
 
         $observacoes = ObservacaoLead::wherein('id_lead',$id_leads)->where('dt_contato','>=',date('Y-m-d'))->where('bl_oportunidade',1)->orderby('dt_contato')->limit(5)->get();
 
@@ -1026,10 +961,12 @@ class AdminUserController extends Controller
 
         $intervalo2 = new DateInterval('P1D');
         $final = $hoje2->add($intervalo2)->format('Y-m-d');
+        $intervaloLeads15dias = Lead::where('id_empresa',$empresa)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->get();
+
         $DivInfoGerais = [
-            'leads'=> Lead::where('id_empresa',$empresa)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->count(),
+            'leads'=> count($intervaloLeads15dias),
             'oportunidades'=> ObservacaoLead::wherein('id_lead',$id_leads)->where('bl_oportunidade',1)->whereRaw("dt_contato BETWEEN '$intervalodias' AND '$final'" )->count(),
-            'conversoes'=> 0
+            'conversoes'=> venda::wherein('id_lead',$id_leads)->whereRaw("dt_venda BETWEEN '$intervalodias' AND '$final'" )->count()
         ];
 
         $dadosInfo = [

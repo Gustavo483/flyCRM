@@ -27,9 +27,8 @@ class ColumnsKhanban extends Model
     }
     public function leadsKanbanStatus()
     {
-        return $this->hasMany('App\Models\Lead','id_columnsKhanban', 'id_columnsKhanban')->orderBy('int_posicao')->limit(6);
+        return $this->hasMany('App\Models\Lead','id_columnsKhanban', 'id_columnsKhanban')->orderByDesc('updated_at')->limit(8);
     }
-
     public function ToDoUser(){
         return $this->hasMany('App\Models\ToDoKhanban','id_columnsKhanban', 'id_columnsKhanban')->where('id_user',auth()->user()->id)->where('bl_ativo',1);
     }

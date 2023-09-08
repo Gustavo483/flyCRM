@@ -22,9 +22,9 @@
                                value="{{$dadosForm['st_nome'] ? : '' }}">
                     </div>
                     <div class="d-flex">
-                        <input type="text" class="form-control me-2" placeholder="E-mail:" name="st_email"
+                        <input type="email" class="form-control me-2" placeholder="E-mail:" name="st_email"
                                aria-describedby="basic-addon1" value="{{$dadosForm['int_telefone'] ? : '' }}">
-                        <input type="text" class="form-control  w-75" placeholder="Telefone:"
+                        <input type="text" class="form-control celular w-75" placeholder="Telefone:"
                                name="int_telefone" aria-describedby="basic-addon1"
                                value="{{$dadosForm['int_telefone'] ? : '' }}">
                     </div>

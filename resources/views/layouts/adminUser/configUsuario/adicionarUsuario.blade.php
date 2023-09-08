@@ -19,7 +19,7 @@
                     </div>
 
                     <div class="my-3">
-                        <input type="text" class="form-control" placeholder="E-mail:" name="email"
+                        <input type="email" class="form-control" placeholder="E-mail:" name="email"
                                aria-describedby="basic-addon1" value="{{ old('email') }}" required>
                         <div id="email" class="colorRed">
                             {{ $errors->has('email') ? $errors->first('email') : '' }}

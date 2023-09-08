@@ -25,7 +25,7 @@ Route::middleware('guest')->group(function () {
 Route::get('/dashboard', [AuthenticatedSessionController::class, 'validatePermission'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
-Route::get('/registrar-lead-externo', [AdminUserController::class, 'registrarLeadExterno'])->name('registrarLeadExterno');
+Route::get('/registrar-lead-externo', [UniversalController::class, 'registrarLeadExterno'])->name('registrarLeadExterno');
 
 Route::middleware('auth')->group(function () {
 
@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
         Route::controller(AdminUserController::class)->group(function () {
             Route::get('dashboard-admin-user', 'dashboardAdminUser')->name('dashboardAdminUser');
 
-            Route::get('gerar-planilha-veriaveis', 'GerarPlanilhaVeriaveis')->name('GerarPlanilhaVeriaveis');
+            Route::get('gerar-planilha-variaveis', 'GerarPlanilhaVariaveis')->name('GerarPlanilhaVariaveis');
 
             //Leads
             Route::get('visualizar-todas-leads-empresa', 'vizualizarTodasleadsEmpresa')->name('vizualizarTodasleadsEmpresa');

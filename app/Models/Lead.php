@@ -31,7 +31,8 @@ class Lead extends Model
         'bl_atendimento',
         'bl_cliente',
         'int_interacoes',
-        'int_interacoesAteFechamento'
+        'int_interacoesAteFechamento',
+        'updated_at'
     ];
 
     public function observacoes(){
@@ -40,6 +41,9 @@ class Lead extends Model
 
     public function proxObservacoes(){
         return $this->hasMany('App\Models\ObservacaoLead','id_lead', 'id_lead')->where('bl_oportunidade',1)->orderBy('dt_contato', 'desc')->limit(7);
+    }
+    public function vendas(){
+        return $this->hasMany('App\Models\Venda','id_lead', 'id_lead');
     }
 
     public function fase(){

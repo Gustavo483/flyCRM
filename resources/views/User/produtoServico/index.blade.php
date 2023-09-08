@@ -110,15 +110,20 @@
                 <div>
                     @include('layouts.sucessoErrorRequest')
                 </div>
-                <div class="d-flex justify-content-between align-items-center">
+
+                <div class="d-flex justify-content-between">
                     <div class=" colorgray">
                         Produtos/Serviços
                     </div>
-                    <button type="button" class=" BtnConfig m-0" data-bs-toggle="modal"
-                            data-bs-target="#AdicionarSetor">
-                        Adicionar
-                    </button>
+                    <div>
+                        <a onclick="window.history.back();"  class="btn btn-primary">Voltar</a>
+                    </div>
                 </div>
+
+                <button type="button" class=" BtnConfig m-0" data-bs-toggle="modal"
+                        data-bs-target="#AdicionarSetor">
+                    Adicionar
+                </button>
 
                 <div class="mt-5">
                     <div class="d-flex justify-content-between mb-2">

@@ -14,6 +14,7 @@ use App\Models\ObservacaoLead;
 use App\Models\Origem;
 use App\Models\ProdutoServico;
 use App\Models\ToDoKhanban;
+use App\Models\Venda;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
@@ -268,8 +269,12 @@ class UserController extends Controller
             'id_empresa'=>$usuario->id_empresa
         ]);
 
-        Lead::where('id_lead', $request->id_lead)->update([
-            'updated_at'=>date('Y-m-d')
+        $lead = Lead::where('id_lead', $request->id_lead)->first();
+
+        $lead->update([
+            'updated_at'=>date('Y-m-d'),
+            'int_interacoes'=>intval($lead->int_interacoes) + 1,
+            'bl_atendimento' => 1
         ]);
 
         return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
@@ -307,8 +312,12 @@ class UserController extends Controller
             'id_empresa'=>$usuario->id_empresa
         ]);
 
-        Lead::where('id_lead', $request->id_lead)->update([
-            'updated_at'=>date('Y-m-d')
+        $lead = Lead::where('id_lead', $request->id_lead)->first();
+
+        $lead->update([
+            'updated_at'=>date('Y-m-d'),
+            'int_interacoes'=>intval($lead->int_interacoes) + 1,
+            'bl_atendimento'=>1
         ]);
 
         return redirect()->back()->with('success', 'Oportunidade cadastrado com sucesso.');
@@ -348,34 +357,40 @@ class UserController extends Controller
     }
     public function EditarLead(Lead $id_lead, Request $request)
     {
+        $agora = new DateTime();
+        $dia = $agora->format('d/m/Y');
+        $hora = $agora->format('H:i:s');
+
+        $dados = [
+            'id_origem'=>['tb_origens','st_nomeOrigem','Origem'],
+            'id_midia'=>['tb_midias','st_nomeMidia', 'Midia'],
+            'id_campanha'=>['tb_campanhas', 'st_nomeCampanha', 'Campanhas'],
+            'id_produtoServico'=>['tb_produto_servicos','st_nomeProdutoServico', 'Produto'],
+            'id_fase'=>['tb_fases','st_nomeFase', 'Fase'],
+            'id_grupo'=>['tb_grupos','st_nomeGrupo', 'Grupo'],
+            'id_columnsKhanban'=>['tb_columns_khanban','st_titulo','Status']
+        ];
+
+        if ($request->int_temperatura != $id_lead->int_temperatura){
+            $mds = $dia.' às '.$hora.' - Temperatura do lead foi alterado para '.$request->int_temperatura.'%';
+            $this->adicionarHistoricoLead($id_lead, 0, $mds);
+        }
+
+        foreach ($dados as $key => $dado ){
+            if ($id_lead->$key != $request->$key){
+                $sql = 'SELECT '. $dado[1].' FROM '.$dado[0].' WHERE '.$key.' = '.$request->$key;
+                $resultSql = DB::select($sql);
+                $campo = $dado[1];
+                $mds = $dia.' às '.$hora.' - '.$dado[2].' do lead foi alterado para "'.$resultSql[0]->$campo.'"';
+                $this->adicionarHistoricoLead($id_lead, 0, $mds);
+            }
+        }
+
         $id_lead->update($request->all());
         return redirect()->back()->with('success', 'Lead atualizado com sucesso.');
     }
     public function registrarLeads(Request $request)
     {
-        try {
-            $validacao = [
-                'st_nome' => 'required',
-                'st_email' => 'required',
-                'int_telefone' => 'required',
-                'id_origem' => 'required',
-                'id_midia' => 'required',
-                'id_campanha' => 'required',
-                'id_produtoServico' => 'required',
-                'id_fase' => 'required',
-                'id_grupo' => 'required',
-                'id_columnsKhanban' => 'required'
-            ];
-
-            $feedback = [
-                'required' => 'O campo é requirido',
-            ];
-
-            $request->validate($validacao, $feedback);
-
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Não foi possível adicionar o Lead. Favor verificar os dados e tentar novamente.');
-        }
 
         $id_empresa = auth()->user()->id_empresa;
         $usuario = auth()->user()->id;
@@ -405,37 +420,36 @@ class UserController extends Controller
         $hora = $agora->format('H:i:s');
         $usuario = auth()->user();
 
-        ObservacaoLead::create([
-            'id_lead'=>$lead->id_lead,
-            'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' - Lead Cadastrado no sistema.',
-            'bl_oportunidade'=>0,
-            'id_empresa'=>$usuario->id_empresa
-        ]);
-
-        if ($request->st_observacoes){
-
-            $agora = new DateTime();
-            $dia = $agora->format('d/m/Y');
-            $hora = $agora->format('H:i:s');
-
-            $usuario = auth()->user();
-
-            ObservacaoLead::create([
-                'id_lead'=>$lead->id_lead,
-                'st_titulo'=>$dia.' às '.$hora.' - '.$usuario->name.' adicionou uma observação: ' ,
-                'st_descricao'=>$request->st_observacoes,
-                'bl_oportunidade'=>0,
-                'id_empresa'=>$usuario->id_empresa
-            ]);
+        if ($request->st_observacoes) {
+            $titulo = $dia . ' às ' . $hora . ' - ' . $usuario->name . ' - Lead Cadastrado no sistema com observação :';
+            $this->adicionarHistoricoLead($lead, 0, $titulo, $usuario->id_empresa, $request->st_observacoes);
+        } else {
+            $titulo = $dia . ' às ' . $hora . ' - ' . $usuario->name . ' - Lead Cadastrado no sistema.';
+            $this->adicionarHistoricoLead($lead, 0, $titulo, $usuario->id_empresa);
         }
 
         $lead->update([
             'updated_at'=>date('Y-m-d')
         ]);
 
-
-
         return redirect()->route('vizualizarLeadUser', ['id_lead'=>$lead->id_lead])->with('success', 'Lead cadastrado com sucesso.');
+    }
+    public function adicionarHistoricoLead(Lead $id_lead,$tipoMensagem, $st_titulo,$id_empresa = null, $st_descricao = null ,$dt_contato = null)
+    {
+        ObservacaoLead::create([
+            'dt_contato'=>$dt_contato,
+            'id_lead'=>$id_lead->id_lead,
+            'st_titulo'=>$st_titulo,
+            'st_descricao'=>$st_descricao,
+            'bl_oportunidade'=>$tipoMensagem,
+            'id_empresa'=>isset($id_empresa) ?$id_empresa : auth()->user()->id_empresa
+        ]);
+
+        $id_lead->update([
+            'updated_at'=>date('Y-m-d'),
+            'int_interacoes'=>intval($id_lead->int_interacoes) + 1,
+        ]);
+
     }
 
     public function leadsUltimosQuinzeDias(): mixed
@@ -534,11 +548,7 @@ class UserController extends Controller
         $user = User::where('id',$usuario)->first();
         $leads = $user->leads;
 
-        $id_leads = [];
-
-        foreach ($leads as $lead){
-            array_push($id_leads,$lead->id_lead);
-        }
+        $id_leads = $leads->pluck('id_lead')->toArray();
 
         $observacoes = ObservacaoLead::wherein('id_lead',$id_leads)->where('dt_contato','>=',date('Y-m-d'))->where('bl_oportunidade',1)->orderby('dt_contato')->limit(5)->get();
 
@@ -555,7 +565,7 @@ class UserController extends Controller
         $DivInfoGerais = [
             'leads'=> Lead::wherein('id_lead',$id_leads)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->count(),
             'oportunidades'=> ObservacaoLead::wherein('id_lead',$id_leads)->where('bl_oportunidade',1)->whereRaw("created_at BETWEEN '$intervalodias' AND '$final'" )->count(),
-            'conversoes'=> 1
+            'conversoes'=> venda::wherein('id_lead',$id_leads)->whereRaw("dt_venda BETWEEN '$intervalodias' AND '$final'" )->count()
         ];
 
         $dadosInfo = [
@@ -622,9 +632,17 @@ class UserController extends Controller
                         $lead->update([
                             'id_columnsKhanban'=>$tarefa['coluna'],
                             'int_posicao'=>$tarefa['posicao'],
-                            'bl_atendimento'=>1
+                            'bl_atendimento'=>1,
+                            'updated_at'=>date('Y-m-d H:i:s'),
                         ]);
+
+                        $agora = new DateTime();
+                        $dia = $agora->format('d/m/Y');
+                        $hora = $agora->format('H:i:s');
+                        $mds = $dia.' às '.$hora.' - Status do lead foi alterado para "'.$lead->status->st_titulo.'"';
+                        $this->adicionarHistoricoLead($lead, 0, $mds);
                     }
+
                 }
             }
         }

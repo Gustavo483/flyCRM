@@ -12,8 +12,13 @@
                 <div>
                     @include('layouts.sucessoErrorRequest')
                 </div>
-                <div class=" colorgray">
-                    Todos os leads
+                <div class="d-flex justify-content-between">
+                    <div class=" colorgray">
+                        Todos os leads
+                    </div>
+                    <div>
+                        <a onclick="window.history.back();"  class="btn btn-primary">Voltar</a>
+                    </div>
                 </div>
                 @include('components.adminUserComponents.infos')
                 <div>

@@ -6,10 +6,29 @@
     padding-left: 120px;
 }
 #body{
-
     background: #f4f4f4;
 }
-
+/*body {*/
+/*    font-family: 'Inter', sans-serif;*/
+/*}*/
+div{
+    font-family: 'Inter', sans-serif;
+}
+span{
+    font-family: 'Inter', sans-serif;
+}
+a{
+    font-family: 'Inter', sans-serif;
+}
+li{
+    font-family: 'Inter', sans-serif;
+}
+ul{
+    font-family: 'Inter', sans-serif;
+}
+body{
+    font-family: 'Inter', sans-serif;
+}
 .page-item.active .page-link {
     z-index: 1;
     color: #fff;

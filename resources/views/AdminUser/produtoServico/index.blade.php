@@ -147,10 +147,17 @@
                 <div>
                     @include('layouts.sucessoErrorRequest')
                 </div>
-                <div class="d-flex pt-3 justify-content-between align-items-center">
+
+                <div class="d-flex justify-content-between">
                     <div class=" colorgray">
                         Produtos/Serviços
                     </div>
+                    <div>
+                        <a onclick="window.history.back();"  class="btn btn-primary">Voltar</a>
+                    </div>
+                </div>
+
+                <div class="d-flex pt-3 justify-content-between align-items-center">
                     <button type="button" class=" BtnConfig m-0" data-bs-toggle="modal"
                             data-bs-target="#AdicionarSetor">
                         Adicionar

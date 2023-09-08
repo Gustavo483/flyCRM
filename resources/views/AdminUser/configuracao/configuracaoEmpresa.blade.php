@@ -17,7 +17,12 @@
                         Configuração do sistema
                     </div>
                     <div>
-                        <a href="{{route('GerarPlanilhaVeriaveis')}}">Gerar planilha de variáveis</a>
+                        <a onclick="window.history.back();"  class="btn btn-primary">Voltar</a>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-2">
+                    <div>
+                        <a href="{{route('GerarPlanilhaVariaveis')}}">Gerar planilha de variáveis</a>
                     </div>
                 </div>
 

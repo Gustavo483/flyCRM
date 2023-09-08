@@ -17,15 +17,19 @@
         <div>
             @include('layouts.sucessoErrorRequest')
         </div>
-        <div class="d-flex pt-3 justify-content-between align-items-center">
+        <div class="d-flex justify-content-between">
             <div class=" colorgray">
                 Agenda
             </div>
-            <button type="button" class=" BtnConfig2 m-0" data-bs-toggle="modal"
-                    data-bs-target="#AdicionarDadoCalendario">
-                Adicionar
-            </button>
+            <div>
+                <a onclick="window.history.back();"  class="btn btn-primary">Voltar</a>
+            </div>
         </div>
+        <button type="button" class=" BtnConfig2 m-0" data-bs-toggle="modal"
+                data-bs-target="#AdicionarDadoCalendario">
+            Adicionar
+        </button>
+
         <div class="modal fade" id="AdicionarDadoCalendario" data-bs-backdrop="static" data-bs-keyboard="false"
              tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
